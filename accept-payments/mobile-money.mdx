@@ -1,0 +1,182 @@
+---
+title: Mobile Money Payments
+description: Accept payments via Mobile Money services across Africa
+---
+
+# Mobile Money Payments
+
+Mobile Money is one of the most popular payment methods in Africa, allowing customers to pay using their mobile phone accounts. Notch Pay supports various Mobile Money providers across multiple African countries.
+
+## Supported Mobile Money Providers
+
+Notch Pay supports the following Mobile Money providers:
+
+<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+    <h3 className="text-md font-semibold mb-2">MTN Mobile Money</h3>
+    <p className="text-sm">Available in Cameroon, Côte d'Ivoire, and other countries where MTN operates.</p>
+  </div>
+  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+    <h3 className="text-md font-semibold mb-2">Orange Money</h3>
+    <p className="text-sm">Available in Cameroon, Senegal, Côte d'Ivoire, and other countries where Orange operates.</p>
+  </div>
+  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+    <h3 className="text-md font-semibold mb-2">Other Providers</h3>
+    <p className="text-sm">We also support other local Mobile Money providers depending on the country.</p>
+  </div>
+</div>
+
+## How Mobile Money Payments Work
+
+The Mobile Money payment flow with Notch Pay works as follows:
+
+1. **Initialize Payment**: Create a payment with customer and transaction details
+2. **Customer Enters Phone Number**: The customer enters their Mobile Money phone number
+3. **Payment Request**: Notch Pay sends a payment request to the Mobile Money provider
+4. **Customer Confirmation**: The customer receives a prompt on their phone to confirm the payment
+5. **Payment Processing**: The Mobile Money provider processes the payment
+6. **Confirmation**: Notch Pay confirms the payment status and notifies your application
+
+## Integration Options
+
+### Using Collect
+
+The simplest way to accept Mobile Money payments is through [Notch Pay Collect](/docs/accept-payments/collect). When creating a payment, the customer will be presented with Mobile Money as a payment option.
+
+### Direct API Integration
+
+For more control over the payment flow, you can use the Notch Pay API to process Mobile Money payments directly:
+
+#### 1. Initialize a Payment
+
+```javascript
+// Create a payment
+fetch('https://api.notchpay.co/payments', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    amount: 5000,
+    currency: 'XAF',
+    customer: {
+      name: 'John Doe',
+      email: 'john@example.com',
+      phone: '+237600000000'
+    },
+    description: 'Payment for Order #123',
+    reference: 'order_123'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  // Store the payment reference for the next step
+  const paymentReference = data.transaction.reference;
+})
+```
+
+#### 2. Process the Payment with Mobile Money
+
+```javascript
+// Process the payment with Mobile Money
+fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    channel: 'cm.mtn', // or 'cm.orange' for Orange Money
+    data: {
+      phone: '+237680000000' // Customer's Mobile Money phone number
+    }
+  })
+})
+.then(response => response.json())
+.then(data => {
+  // Payment is now processing
+  // The customer will receive a prompt on their phone
+})
+```
+
+#### 3. Verify the Payment Status
+
+```javascript
+// Check the payment status
+fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
+  headers: {
+    'Authorization': 'YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  if (data.transaction.status === 'complete') {
+    // Payment successful
+  } else if (data.transaction.status === 'failed') {
+    // Payment failed
+  } else {
+    // Payment still processing
+  }
+})
+```
+
+## Mobile Money Channel Codes
+
+When processing a payment with Mobile Money, you need to specify the correct channel code based on the provider and country:
+
+| Provider | Country | Channel Code |
+|----------|---------|--------------|
+| MTN | Cameroon | `cm.mtn` |
+| Orange | Cameroon | `cm.orange` |
+| MTN | Côte d'Ivoire | `ci.mtn` |
+| Orange | Côte d'Ivoire | `ci.orange` |
+| Wave | Senegal | `sn.wave` |
+| Orange | Senegal | `sn.orange` |
+
+For a complete list of supported channels, use the [Channels API](/api/resources#list-payment-channels).
+
+## Best Practices
+
+1. **Validate Phone Numbers**: Ensure that the phone number is in the correct format for the selected Mobile Money provider
+2. **Handle Timeouts**: Mobile Money payments may take some time to complete, especially if the customer delays confirming the payment
+3. **Implement Webhooks**: Set up webhooks to receive real-time notifications when the payment status changes
+4. **Provide Clear Instructions**: Guide your customers on how to complete the payment on their mobile phones
+5. **Test Thoroughly**: Use test credentials to simulate different payment scenarios before going live
+
+## Troubleshooting
+
+### Common Issues
+
+- **Invalid Phone Number**: Ensure the phone number is in the correct international format (e.g., +237XXXXXXXXX)
+- **Insufficient Funds**: The customer may not have enough funds in their Mobile Money account
+- **Transaction Timeout**: The customer may not have confirmed the payment within the allowed time
+- **Network Issues**: Mobile network problems can affect the payment process
+
+### Error Codes
+
+| Error Code | Description | Solution |
+|------------|-------------|----------|
+| `invalid_phone` | The phone number format is invalid | Check the phone number format |
+| `insufficient_funds` | The customer has insufficient funds | Ask the customer to top up their account |
+| `user_cancelled` | The customer cancelled the payment | Inform the customer and allow them to try again |
+| `timeout` | The payment request timed out | Ask the customer to try again |
+
+## Testing Mobile Money Payments
+
+To test Mobile Money payments in the sandbox environment:
+
+1. Use your test API key
+2. Use the following test phone numbers:
+   - MTN: `+237670000000`
+   - Orange: `+237690000000`
+3. The test payments will be automatically approved or declined based on the test scenario
+
+For more information on testing, see the [Testing Guide](/docs/testing).
+
+## Next Steps
+
+- [Collect](/docs/accept-payments/collect) - Use our hosted payment page for a quick integration
+- [API Integration](/docs/accept-payments/api-integration) - Build a custom payment experience
+- [Invoices](/docs/accept-payments/invoices) - Create and manage professional invoices
+- [Webhooks](/docs/webhooks) - Set up webhooks for payment notifications

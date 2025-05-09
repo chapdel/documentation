@@ -1,0 +1,166 @@
+---
+title: Verifying Webhooks
+description: Learn how to verify webhook signatures to ensure they come from Notch Pay
+---
+
+# Verifying Webhooks
+
+When receiving webhooks from Notch Pay, it's crucial to verify that they actually come from Notch Pay and not from a malicious source. This guide will show you how to verify webhook signatures to ensure the authenticity of webhook notifications.
+
+## Why Verify Webhooks?
+
+Verifying webhooks is essential for security reasons:
+
+- It ensures that the webhook was sent by Notch Pay
+- It prevents malicious actors from sending fake webhook events
+- It confirms that the webhook payload hasn't been tampered with
+
+## How Webhook Verification Works
+
+Notch Pay signs each webhook with your hash key using HMAC SHA-256. When you receive a webhook:
+
+1. Notch Pay includes a signature in the `X-Notch-Signature` header
+2. You use your webhook hash to compute the expected signature
+3. You compare the expected signature with the received signature
+4. If they match, the webhook is authentic
+
+## Understanding Notch Pay API Keys
+
+Notch Pay provides three types of API keys, each with a specific purpose:
+
+1. **Public Key**: Used for most API interactions like creating payments
+2. **Private Key**: Used for higher-level operations like transfers, balance inquiries, and webhook management
+3. **Hash**: Used specifically for encrypting and decrypting webhook signatures
+
+Each of these keys exists in both sandbox (test) and production environments. It's important to use the correct set of keys for each environment:
+
+- **Sandbox Keys**: Used for development and testing, prefixed with `test_`
+- **Production Keys**: Used for live transactions, prefixed with `live_`
+
+Never mix keys between environments. Always use sandbox keys for testing and production keys for live transactions.
+
+## Getting Your Webhook Hash
+
+To verify webhooks, you need your webhook hash:
+
+1. Log in to your [Notch Pay Business suite](https://business.notchpay.co)
+2. Navigate to Settings > Webhooks
+3. Find your webhook endpoint and note the "Webhook Hash"
+
+Keep this hash secure and never expose it in client-side code. This hash is specifically designed for webhook signature verification.
+
+## Verifying Signatures in Different Languages
+
+### Node.js
+
+```javascript
+const crypto = require('crypto');
+
+function verifyWebhookSignature(payload, signature, hash) {
+  const hmac = crypto.createHmac('sha256', hash);
+  const expectedSignature = hmac.update(payload).digest('hex');
+  return crypto.timingSafeEqual(
+    Buffer.from(signature),
+    Buffer.from(expectedSignature)
+  );
+}
+
+app.post('/webhooks/notchpay', (req, res) => {
+  const payload = JSON.stringify(req.body);
+  const signature = req.headers['x-notch-signature'];
+  const hash = 'your_webhook_hash'; // Use test_hash for sandbox, live_hash for production
+  
+  if (!verifyWebhookSignature(payload, signature, hash)) {
+    return res.status(403).send('Invalid signature');
+  }
+  
+  // Process the webhook
+  // ...
+});
+```
+
+### PHP
+
+```php
+<?php
+function verifyWebhookSignature($payload, $signature, $hash) {
+    $expectedSignature = hash_hmac('sha256', $payload, $hash);
+    return hash_equals($expectedSignature, $signature);
+}
+
+$payload = file_get_contents('php://input');
+$signature = $_SERVER['HTTP_X_NOTCH_SIGNATURE'];
+$hash = 'your_webhook_hash'; // Use test_hash for sandbox, live_hash for production
+
+if (!verifyWebhookSignature($payload, $signature, $hash)) {
+    http_response_code(403);
+    echo json_encode(['error' => 'Invalid signature']);
+    exit;
+}
+
+// Process the webhook
+// ...
+```
+
+### Python
+
+```python
+import hmac
+import hashlib
+
+def verify_webhook_signature(payload, signature, hash_key):
+    expected_signature = hmac.new(
+        hash_key.encode('utf-8'),
+        payload.encode('utf-8'),
+        hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(expected_signature, signature)
+
+@app.route('/webhooks/notchpay', methods=['POST'])
+def webhook():
+    payload = request.data.decode('utf-8')
+    signature = request.headers.get('X-Notch-Signature')
+    hash_key = 'your_webhook_hash'  # Use test_hash for sandbox, live_hash for production
+    
+    if not verify_webhook_signature(payload, signature, hash_key):
+        return jsonify({'error': 'Invalid signature'}), 403
+    
+    # Process the webhook
+    # ...
+```
+
+## Best Practices for Webhook Verification
+
+1. **Always Verify Signatures**: Never skip signature verification, even in development
+2. **Use Constant-Time Comparison**: Use functions like `crypto.timingSafeEqual()` or `hash_equals()` to prevent timing attacks
+3. **Keep Your Hash Secure**: Store your webhook hash securely and never expose it in client-side code
+4. **Validate the Payload**: After verifying the signature, validate the payload structure
+5. **Handle Errors Gracefully**: Return appropriate error responses when verification fails
+6. **Use the Correct API Key**: Remember to use the hash key specifically for webhook verification, not your public or private API keys
+
+## Testing Webhook Verification
+
+To test your webhook verification:
+
+1. Set up your webhook endpoint with verification
+2. Use the "Test" feature in your Notch Pay dashboard
+3. Verify that valid webhooks are processed correctly
+4. Test with an invalid signature to ensure verification fails as expected
+
+## Troubleshooting Verification Issues
+
+If you're having trouble with webhook verification:
+
+1. **Check the Hash Key**: Ensure you're using the correct webhook hash, not your public or private API key
+2. **Check the Environment**: Make sure you're using sandbox hash for test webhooks and production hash for live webhooks
+3. **Check the Header Name**: Make sure you're reading the correct header (`X-Notch-Signature`)
+4. **Check for Whitespace**: Ensure there's no extra whitespace in your hash or payload
+5. **Check the Payload Format**: The payload should be the raw JSON string
+6. **Check the Algorithm**: Ensure you're using HMAC SHA-256
+7. **Verify API Key Type**: Confirm you're using the hash key specifically designed for webhook verification
+
+## Next Steps
+
+- [Webhook Setup](/docs/get-started/webhooks/setup) - Learn how to set up webhook endpoints
+- [Webhook Events](/docs/webhooks/events) - Learn about the different webhook events and their payloads
+- [Webhooks API](/api/webhooks) - Use the API to manage your webhook endpoints

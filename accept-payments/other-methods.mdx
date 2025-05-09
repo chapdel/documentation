@@ -1,0 +1,275 @@
+---
+title: Other Payment Methods
+description: Accept payments through bank transfers and alternative payment methods
+---
+
+# Other Payment Methods
+
+In addition to [Mobile Money](/docs/accept-payments/mobile-money), Notch Pay supports various other payment methods to help you reach more customers across Africa.
+
+## Digital Wallets
+
+Digital wallets allow customers to pay using their mobile wallet accounts. This method is increasingly popular across Africa due to its convenience and accessibility.
+
+### How Digital Wallet Payments Work
+
+1. **Initialize Payment**: Create a payment with customer and transaction details
+2. **Wallet Selection**: The customer selects their digital wallet from the available options
+3. **Authentication**: The customer logs in to their wallet or follows the wallet's authentication process
+4. **Authorization**: The customer authorizes the payment
+5. **Confirmation**: Notch Pay confirms the payment status and notifies your application
+
+### Supported Digital Wallets
+
+Notch Pay supports payments from various digital wallets across Africa:
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Popular Wallets</h3>
+    <ul className="list-disc pl-5">
+      <li>Assoh</li>
+      <li>Kudi</li>
+      <li>Chipper Cash</li>
+      <li>Wave</li>
+      <li>And more</li>
+    </ul>
+  </div>
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Regional Coverage</h3>
+    <ul className="list-disc pl-5">
+      <li>Wallets in Cameroon</li>
+      <li>Wallets in Côte d'Ivoire</li>
+      <li>Wallets in Senegal</li>
+      <li>Wallets in other supported countries</li>
+    </ul>
+  </div>
+</div>
+
+### Integration Example
+
+```javascript
+// Create a payment
+fetch('https://api.notchpay.co/payments', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    amount: 5000,
+    currency: 'XAF',
+    customer: {
+      name: 'John Doe',
+      email: 'john@example.com'
+    },
+    description: 'Payment for Order #123',
+    reference: 'order_123'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  // Redirect to checkout where digital wallets will be an option
+  window.location.href = data.authorization_url;
+})
+```
+
+## USSD Payments
+
+USSD (Unstructured Supplementary Service Data) payments allow customers to pay using their mobile phones without requiring internet access. This is particularly useful in areas with limited internet connectivity.
+
+### How USSD Payments Work
+
+1. **Initialize Payment**: Create a payment with customer and transaction details
+2. **USSD Code Generation**: Notch Pay generates a USSD code for the payment
+3. **Customer Dialing**: The customer dials the USSD code on their phone
+4. **Authentication**: The customer follows the prompts to authenticate and authorize the payment
+5. **Confirmation**: Notch Pay confirms the payment status and notifies your application
+
+### Supported USSD Services
+
+Notch Pay supports USSD payments through various mobile operators:
+
+- MTN USSD
+- Orange USSD
+- Other local operators depending on the country
+
+### Integration Example
+
+```javascript
+// Create a payment
+fetch('https://api.notchpay.co/payments', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    amount: 5000,
+    currency: 'XAF',
+    customer: {
+      name: 'John Doe',
+      phone: '+237600000000'
+    },
+    description: 'Payment for Order #123',
+    reference: 'order_123'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  // Process with USSD
+  fetch(`https://api.notchpay.co/payments/${data.transaction.reference}`, {
+    method: 'POST',
+    headers: {
+      'Authorization': 'YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      channel: 'cm.mtn.ussd',
+      data: {
+        phone: '+237600000000'
+      }
+    })
+  })
+  .then(response => response.json())
+  .then(ussdData => {
+    // Display USSD code to customer
+    console.log(`Dial ${ussdData.ussd_code} to complete payment`);
+  })
+})
+```
+
+## QR Code Payments
+
+QR code payments allow customers to pay by scanning a QR code with their mobile banking or payment app. This method is becoming increasingly popular due to its convenience and contactless nature.
+
+### How QR Code Payments Work
+
+1. **Initialize Payment**: Create a payment with customer and transaction details
+2. **QR Code Generation**: Notch Pay generates a QR code for the payment
+3. **Customer Scanning**: The customer scans the QR code with their mobile app
+4. **Authentication**: The customer authorizes the payment in their app
+5. **Confirmation**: Notch Pay confirms the payment status and notifies your application
+
+### Supported QR Code Standards
+
+Notch Pay supports various QR code payment standards depending on the region:
+
+- EMVCo QR Code
+- Proprietary QR codes for specific payment providers
+
+### Integration Example
+
+```javascript
+// Create a payment
+fetch('https://api.notchpay.co/payments', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    amount: 5000,
+    currency: 'XAF',
+    customer: {
+      name: 'John Doe',
+      email: 'john@example.com'
+    },
+    description: 'Payment for Order #123',
+    reference: 'order_123'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  // Process with QR Code
+  fetch(`https://api.notchpay.co/payments/${data.transaction.reference}/qrcode`, {
+    headers: {
+      'Authorization': 'YOUR_API_KEY'
+    }
+  })
+  .then(response => response.json())
+  .then(qrData => {
+    // Display QR code to customer
+    document.getElementById('qrcode-container').innerHTML = `<img src="${qrData.qr_code_url}" alt="Scan to pay">`;
+  })
+})
+```
+
+## Cryptocurrency Payments
+
+Notch Pay also supports cryptocurrency payments, allowing customers to pay with digital currencies like Bitcoin, Ethereum, and others.
+
+### How Cryptocurrency Payments Work
+
+1. **Initialize Payment**: Create a payment with customer and transaction details
+2. **Wallet Address Generation**: Notch Pay generates a unique wallet address for the payment
+3. **Customer Transfer**: The customer transfers the cryptocurrency to the provided wallet address
+4. **Confirmation**: Notch Pay confirms the payment status and notifies your application
+
+### Supported Cryptocurrencies
+
+Notch Pay supports various cryptocurrencies:
+
+- Bitcoin (BTC)
+- Ethereum (ETH)
+- USDT
+- Other cryptocurrencies depending on availability
+
+### Integration Example
+
+```javascript
+// Create a payment
+fetch('https://api.notchpay.co/payments', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    amount: 5000,
+    currency: 'XAF',
+    customer: {
+      name: 'John Doe',
+      email: 'john@example.com'
+    },
+    description: 'Payment for Order #123',
+    reference: 'order_123'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  // Redirect to checkout where cryptocurrency will be an option
+  window.location.href = data.authorization_url;
+})
+```
+
+## Best Practices
+
+1. **Offer Multiple Payment Methods**: Provide customers with various payment options to increase conversion rates
+2. **Clear Instructions**: Provide clear instructions for each payment method, especially for methods that require additional steps
+3. **Handle Timeouts**: Some payment methods may take longer to complete, so implement proper timeout handling
+4. **Implement Webhooks**: Set up webhooks to receive real-time notifications when payment statuses change
+5. **Test Thoroughly**: Test all payment methods in the sandbox environment before going live
+
+## Troubleshooting
+
+### Common Issues
+
+- **Bank Transfer Delays**: Bank transfers may take longer to process, especially during non-business hours
+- **USSD Network Issues**: USSD payments may fail due to mobile network issues
+- **QR Code Scanning Problems**: Ensure QR codes are displayed clearly and with sufficient size
+- **Cryptocurrency Price Fluctuations**: Be aware that cryptocurrency prices can fluctuate during the payment process
+
+### Support
+
+If you encounter issues with any payment method:
+
+- Check the [API Reference](/api/payments) for detailed parameter documentation
+- Contact our [support team](mailto:hello@notchpay.co) for assistance
+- Join our [developer community](https://community.notchpay.co) to connect with other developers
+
+## Next Steps
+
+- [Collect](/docs/accept-payments/collect) - Use our hosted payment page for a quick integration
+- [Mobile Money](/docs/accept-payments/mobile-money) - Accept mobile money payments
+- [Invoices](/docs/accept-payments/invoices) - Create and manage professional invoices
+- [API Integration](/docs/accept-payments/api-integration) - Build a custom payment experience

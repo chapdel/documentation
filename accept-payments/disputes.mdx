@@ -1,0 +1,229 @@
+---
+title: Disputes
+description: Handle payment disputes and chargebacks with Notch Pay
+---
+
+# Disputes
+
+Payment disputes (also known as chargebacks) occur when a customer questions a transaction with their payment provider. This guide explains how to handle disputes, respond to them, and implement best practices to minimize disputes.
+
+## Overview
+
+With Notch Pay's dispute management, you can:
+
+- Receive notifications when a dispute is filed
+- Submit evidence to respond to disputes
+- Track the status of disputes
+- Implement preventive measures to reduce disputes
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Key Benefits</h3>
+    <ul className="list-disc pl-5">
+      <li>Centralized dispute management</li>
+      <li>Automated dispute notifications</li>
+      <li>Evidence submission tools</li>
+      <li>Detailed dispute tracking</li>
+      <li>Dispute prevention recommendations</li>
+    </ul>
+  </div>
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Common Dispute Reasons</h3>
+    <ul className="list-disc pl-5">
+      <li>Fraudulent transactions</li>
+      <li>Product or service not received</li>
+      <li>Product or service not as described</li>
+      <li>Duplicate charges</li>
+      <li>Subscription cancellation issues</li>
+    </ul>
+  </div>
+</div>
+
+## The Dispute Process
+
+The dispute process typically follows these steps:
+
+1. **Dispute Filed**: A customer files a dispute with their payment provider
+2. **Notification**: Notch Pay notifies you of the dispute
+3. **Response**: You submit evidence to respond to the dispute
+4. **Review**: The payment provider reviews the evidence
+5. **Resolution**: The dispute is resolved in favor of either the customer or the merchant
+6. **Funds Settlement**: Funds are settled based on the resolution
+
+## Managing Disputes
+
+### From the Dashboard
+
+The easiest way to manage disputes is through your Notch Pay dashboard:
+
+1. Log in to your [Notch Pay Business suite](https://business.notchpay.co)
+2. Go to **Payments** > **Disputes**
+3. You'll see a list of all disputes with their status
+4. Click on a dispute to view details and respond
+
+### Using the API
+
+You can also manage disputes programmatically using the API:
+
+#### Retrieving Disputes
+
+```javascript
+// List all disputes
+fetch('https://api.notchpay.co/disputes', {
+  headers: {
+    'Authorization': 'YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log(data.disputes);
+})
+
+// Retrieve a specific dispute
+fetch('https://api.notchpay.co/disputes/dp_123456789', {
+  headers: {
+    'Authorization': 'YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log(data.dispute);
+})
+```
+
+#### Submitting Evidence
+
+```javascript
+// Submit evidence for a dispute
+fetch('https://api.notchpay.co/disputes/dp_123456789/evidence', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    customer_name: 'John Doe',
+    customer_email: 'john@example.com',
+    billing_address: '123 Main St, City, Country',
+    shipping_address: '123 Main St, City, Country',
+    shipping_date: '2023-01-15',
+    shipping_tracking_number: 'TRK123456789',
+    product_description: 'Premium Package - 1 Year Access',
+    customer_signature: 'https://example.com/signature.png',
+    receipt: 'https://example.com/receipt.pdf',
+    service_date: '2023-01-20',
+    evidence_details: 'Customer confirmed receipt of the product via email on January 20, 2023. Email confirmation attached.',
+    uncategorized_file: 'https://example.com/email_confirmation.pdf'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  console.log(data.dispute.status);
+})
+```
+
+## Dispute Statuses
+
+Disputes can have the following statuses:
+
+| Status | Description |
+|--------|-------------|
+| warning_needs_response | A dispute has been filed and requires your response |
+| warning_under_review | Your evidence has been submitted and is under review |
+| warning_closed | The dispute has been resolved |
+| lost | The dispute was resolved in favor of the customer |
+| won | The dispute was resolved in favor of you (the merchant) |
+
+## Dispute Webhooks
+
+To receive notifications about dispute events, set up webhooks for the following events:
+
+- `dispute.created`: A new dispute has been filed
+- `dispute.updated`: A dispute has been updated
+- `dispute.closed`: A dispute has been resolved
+
+Example webhook payload for a dispute event:
+
+```json
+{
+  "type": "dispute.created",
+  "data": {
+    "id": "dp_123456789",
+    "object": "dispute",
+    "amount": 5000,
+    "currency": "XAF",
+    "payment": "pay_123456789",
+    "reason": "product_not_received",
+    "status": "warning_needs_response",
+    "evidence_due_by": "2023-02-01T23:59:59Z",
+    "created_at": "2023-01-25T12:00:00Z",
+    "metadata": {
+      "order_id": "12345"
+    }
+  }
+}
+```
+
+## Evidence Types
+
+When responding to a dispute, you can submit various types of evidence:
+
+- **Customer Information**: Name, email, billing address
+- **Product/Service Details**: Description, delivery date, proof of delivery
+- **Communication Records**: Customer correspondence, service agreements
+- **Transaction Records**: Receipts, invoices, payment confirmations
+- **Additional Documentation**: Any other relevant evidence
+
+## Preventing Disputes
+
+Implement these best practices to reduce the likelihood of disputes:
+
+1. **Clear Business Name**: Ensure your business name on statements matches your customer-facing name
+2. **Detailed Descriptions**: Provide clear product/service descriptions
+3. **Transparent Policies**: Make your refund and cancellation policies easily accessible
+4. **Responsive Support**: Address customer concerns promptly
+5. **Delivery Confirmation**: Use trackable shipping methods
+6. **Documentation**: Keep records of customer communications and transactions
+7. **Fraud Prevention**: Implement fraud detection measures
+8. **Proactive Refunds**: Issue refunds when appropriate before customers resort to disputes
+
+## Dispute Fees
+
+When a dispute is filed, there may be associated fees:
+
+- **Dispute Fee**: A fee charged when a dispute is filed
+- **Reversal Fee**: A fee charged if the dispute is lost
+
+These fees vary depending on the payment method and country. Check the [Pricing page](/pricing) for specific fee information.
+
+## Best Practices
+
+1. **Respond Quickly**: Submit evidence before the deadline to increase your chances of winning
+2. **Provide Comprehensive Evidence**: Include all relevant information and documentation
+3. **Keep Records**: Maintain detailed records of all transactions and customer interactions
+4. **Learn from Disputes**: Analyze dispute patterns to identify and address underlying issues
+5. **Update Policies**: Regularly review and update your business policies to prevent disputes
+
+## Troubleshooting
+
+### Common Issues
+
+- **Missing Evidence**: Ensure you provide all relevant evidence when responding to a dispute
+- **Late Response**: Submit your evidence before the deadline
+- **Insufficient Documentation**: Keep detailed records of all transactions and customer interactions
+- **Unclear Policies**: Make your refund and cancellation policies clear to customers
+
+### Support
+
+If you encounter issues with disputes:
+
+- Check the [API Reference](/api/disputes) for detailed parameter documentation
+- Contact our [support team](mailto:hello@notchpay.co) for assistance
+- Join our [developer community](https://community.notchpay.co) to connect with other users
+
+## Next Steps
+
+- [Refunds](/docs/accept-payments/refunds) - Learn how to process refunds
+- [Webhooks](/docs/webhooks) - Set up webhooks for payment and dispute notifications
+- [API Integration](/docs/accept-payments/api-integration) - Build a custom payment experience
+- [Best Practices](/docs/guides/best-practices) - Implement best practices for payment processing

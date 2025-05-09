@@ -1,0 +1,477 @@
+---
+title: Transfers
+description: Learn how to distribute funds to recipients using Notch Pay Transfers
+---
+
+# Transfers
+
+<div className="bg-blue-50 p-4 border-l-4 border-blue-500 rounded-md mb-6">
+  <p className="text-sm text-blue-700">
+    <strong>Terminology Note:</strong> In Notch Pay, the term "Transfers" refers to sending money to recipients (payouts, withdrawals, and fund distributions). This is the official terminology used throughout the platform and API.
+  </p>
+</div>
+
+Notch Pay Transfers allows you to distribute funds to recipients through various payment channels. This feature is essential for businesses that need to send money to customers, employees, vendors, or other beneficiaries.
+
+## Overview
+
+Notch Pay Transfers enables you to effortlessly send money to your recipients. This simplifies tasks like:
+
+- Processing refunds to customers
+- Paying salaries or commissions to employees
+- Distributing funds to vendors or suppliers
+- Sending rebates or rewards to customers
+- Making payouts to marketplace sellers
+- Withdrawing funds to your own accounts
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Key Benefits</h3>
+    <ul className="list-disc pl-5">
+      <li>Send money to mobile money accounts</li>
+      <li>Process transfers in multiple currencies</li>
+      <li>Automate recurring payouts</li>
+      <li>Track transfer status in real-time</li>
+      <li>Receive webhook notifications for transfers</li>
+    </ul>
+  </div>
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Supported Channels</h3>
+    <ul className="list-disc pl-5">
+      <li>MTN Mobile Money (Cameroon)</li>
+      <li>Orange Money (Cameroon)</li>
+      <li>Generic Mobile Money (Cameroon)</li>
+      <li>More channels coming soon</li>
+    </ul>
+  </div>
+</div>
+
+## How Transfers Work
+
+The transfer process follows these steps:
+
+1. **Create a Recipient**: First, create a transfer recipient with the necessary details (phone number, name, etc.)
+2. **Initiate Transfer**: Send a transfer request to the Notch Pay API with the recipient ID, amount, and other details
+3. **Processing**: Notch Pay processes the transfer through the appropriate payment network
+4. **Status Updates**: Receive status updates via webhooks or API calls as the transfer progresses
+5. **Completion**: The recipient receives the funds in their account
+
+## Transfer Types
+
+### Mobile Money Transfers
+
+Mobile money transfers allow you to send funds directly to mobile money accounts. This is one of the most popular transfer methods in Africa due to the widespread adoption of mobile money services.
+
+#### Supported Mobile Money Providers
+
+- **MTN Mobile Money (Cameroon)**: Send money to MTN Mobile Money accounts in Cameroon
+- **Orange Money (Cameroon)**: Send money to Orange Money accounts in Cameroon
+- **Generic Mobile Money (Cameroon)**: Automatically route transfers to the appropriate mobile money provider based on the recipient's phone number
+
+#### Mobile Money Transfer Example
+
+```javascript
+// Create a mobile money recipient
+fetch('https://api.notchpay.co/recipients', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    type: 'cm.mtn', // MTN Cameroon
+    name: 'John Doe',
+    phone: '+237600000000'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  const recipientId = data.recipient.id;
+  
+  // Initiate transfer to the recipient
+  return fetch('https://api.notchpay.co/transfers', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'YOUR_API_KEY',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      recipient: recipientId,
+      amount: 5000,
+      currency: 'XAF',
+      description: 'Payment for services'
+    })
+  });
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Transfer initiated:', data.transfer);
+})
+```
+
+### Bank Transfers
+
+Bank transfers allow you to send money directly to bank accounts. This method is useful for larger transactions or when the recipient prefers to receive funds in their bank account.
+
+*Note: Bank transfers functionality is coming soon to Notch Pay.*
+
+## Creating Transfer Recipients
+
+Before initiating a transfer, you need to create a recipient (also known as a beneficiary) who will receive the funds. This step collects and validates the recipient's information.
+
+<div className="bg-blue-50 p-4 border-l-4 border-blue-500 rounded-md mb-6">
+  <p className="text-sm text-blue-700">
+    <strong>Terminology Note:</strong> In Notch Pay, the terms "recipient" and "beneficiary" are used interchangeably to refer to the person or entity receiving funds through a transfer.
+  </p>
+</div>
+
+### Types of Recipients/Beneficiaries
+
+Notch Pay offers two main types of recipients for transfers:
+
+1. **Standard Recipients**: Created via API or dashboard, these are used for regular transfers to mobile money accounts and other payment methods.
+
+2. **Payout Accounts**: High-privilege accounts created exclusively through the Notch Pay dashboard. These accounts have elevated permissions for outgoing transactions and are typically used for:
+   - Regular business partners
+   - Trusted vendors
+   - Company accounts
+   - High-volume payment recipients
+
+Payout Accounts provide additional security and streamlined processing for frequent or high-value transfers. They cannot be created or accessed via the API and must be managed through the Notch Pay dashboard.
+
+### Supported Recipient Types
+
+For standard recipients, Notch Pay currently supports the following types:
+
+- `cm.mtn`: MTN Cameroon Mobile Money
+- `cm.orange`: Orange Cameroon Mobile Money
+- `cm.mobile`: Generic Cameroon Mobile Money (automatically routes to MTN or Orange)
+
+### Creating a Recipient via API
+
+To create a standard transfer recipient, make a POST request to the Recipient API:
+
+```javascript
+// Create a transfer recipient
+fetch('https://api.notchpay.co/recipients', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    type: 'cm.mtn', // or 'cm.orange', 'cm.mobile'
+    name: 'John Doe',
+    email: 'john@example.com', // Optional
+    phone: '+237600000000',
+    metadata: { // Optional
+      customer_id: '12345',
+      department: 'sales'
+    }
+  })
+})
+.then(response => response.json())
+.then(data => {
+  const recipientId = data.recipient.id;
+  console.log('Recipient created with ID:', recipientId);
+})
+```
+
+### Managing Standard Recipients
+
+You can retrieve, update, or delete standard recipients as needed:
+
+```javascript
+// Retrieve a recipient
+fetch('https://api.notchpay.co/recipients/rcp_123456789', {
+  headers: {
+    'Authorization': 'YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log(data.recipient);
+})
+
+// Update a recipient
+fetch('https://api.notchpay.co/recipients/rcp_123456789', {
+  method: 'PUT',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    name: 'John Smith',
+    email: 'john.smith@example.com'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Recipient updated:', data.recipient);
+})
+
+// Delete a recipient
+fetch('https://api.notchpay.co/recipients/rcp_123456789', {
+  method: 'DELETE',
+  headers: {
+    'Authorization': 'YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Recipient deleted:', data.deleted);
+})
+```
+
+### Payout Accounts
+
+Payout Accounts are high-privilege recipients that can only be created and managed through the Notch Pay dashboard. These accounts provide enhanced security and streamlined processing for frequent or high-value transfers.
+
+#### Creating Payout Accounts
+
+To create a Payout Account:
+
+1. Log in to your [Notch Pay Business dashboard](https://business.notchpay.co)
+2. Navigate to **Transfers** > **Payout Accounts**
+3. Click **Create Payout Account**
+4. Fill in the required information:
+   - Account name
+   - Account holder's name
+   - Phone number
+   - Email address (optional)
+   - Payment method (Mobile Money, Bank Account)
+   - Payment details (depending on the method)
+5. Click **Create Account**
+
+#### Benefits of Payout Accounts
+
+Payout Accounts offer several advantages over standard recipients:
+
+- **Enhanced Security**: Additional verification and security measures for high-value transfers
+- **Streamlined Processing**: Faster processing times for transfers to trusted recipients
+- **Detailed History**: Comprehensive transaction history and reporting
+- **Higher Limits**: Potentially higher transfer limits for verified accounts
+- **Batch Transfers**: Easily include in batch transfers for payroll and mass disbursements
+
+#### When to Use Payout Accounts
+
+Payout Accounts are ideal for:
+
+- **Regular Business Partners**: Vendors, suppliers, or partners you pay regularly
+- **Employee Payroll**: Staff members receiving regular salary payments
+- **Company Accounts**: Your own accounts for withdrawals or internal transfers
+- **High-Volume Recipients**: Recipients who receive frequent or large transfers
+
+#### Security Considerations
+
+Since Payout Accounts have elevated privileges, they include additional security measures:
+
+- Creation only through the secure dashboard (not via API)
+- Additional verification steps during setup
+- Option to require approval for transfers above certain thresholds
+- Detailed audit logs of all activities
+- Ability to temporarily disable accounts when not in use
+
+## Initiating Transfers
+
+Once you have created a recipient (either a standard recipient via API or a Payout Account via dashboard), you can initiate a transfer to send money to them.
+
+### Transfer Request
+
+To initiate a transfer, make a POST request to the Transfers API. This works for both standard recipients and Payout Accounts:
+
+```javascript
+// Initiate a transfer
+fetch('https://api.notchpay.co/transfers', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    recipient: 'rcp_123456789', // Recipient ID
+    amount: 5000, // Amount in the smallest currency unit (e.g., 5000 = 5000 XAF)
+    currency: 'XAF',
+    description: 'Salary payment for June 2023', // Optional
+    metadata: { // Optional
+      invoice_id: 'INV-123',
+      payment_type: 'salary'
+    }
+  })
+})
+.then(response => response.json())
+.then(data => {
+  const transferId = data.transfer.reference;
+  console.log('Transfer initiated with ID:', transferId);
+  console.log('Transfer status:', data.transfer.status);
+})
+```
+
+### Transfer Process
+
+When you initiate a transfer, it goes through several stages:
+
+1. **Request Validation**: The system validates your request to ensure it includes all necessary information
+2. **Transfer Creation**: A formal transfer record is created in the system
+3. **Approval Checks**: Depending on the amount or policies, the transfer may require approval
+4. **Processing**: The transfer is sent to the payment processor for execution
+
+### Transfer Response
+
+The API response includes details about the transfer:
+
+```json
+{
+  "status": "Accepted",
+  "message": "Transfer initialized",
+  "code": 201,
+  "transfer": {
+    "amount": 5000,
+    "amount_total": 5100, // Amount including fees
+    "sandbox": false,
+    "fee": 100, // Transfer fee
+    "converted_amount": 5000,
+    "beneficiary": "rcp_123456789",
+    "description": "Salary payment for June 2023",
+    "reference": "po.rKI4eJBYkebUAKj5stAHeCCnLyV8NZy9", // Transfer ID
+    "trxref": null,
+    "statement": null,
+    "status": "sent", // Current status
+    "currency": "XAF",
+    "geo": "127.0.0.1",
+    "created_at": "2023-06-17T21:35:51.000000Z"
+  }
+}
+```
+
+## Transfer Status
+
+Transfers can have the following statuses:
+
+| Status | Description |
+|--------|-------------|
+| `pending` | The transfer has been initiated but not yet processed |
+| `sent` | The transfer has been sent to the payment processor |
+| `processing` | The transfer is being processed by the payment network |
+| `successful` | The transfer has been successfully completed |
+| `failed` | The transfer has failed |
+| `reversed` | The transfer has been reversed |
+
+### Checking Transfer Status
+
+You can check the status of a transfer at any time:
+
+```javascript
+// Check transfer status
+fetch('https://api.notchpay.co/transfers/po.rKI4eJBYkebUAKj5stAHeCCnLyV8NZy9', {
+  headers: {
+    'Authorization': 'YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Transfer status:', data.transfer.status);
+})
+```
+
+### Verifying Transfers
+
+To verify a transfer (especially important for reconciliation):
+
+```javascript
+// Verify a transfer
+fetch('https://api.notchpay.co/transfers/po.rKI4eJBYkebUAKj5stAHeCCnLyV8NZy9/verify', {
+  headers: {
+    'Authorization': 'YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Transfer verification:', data);
+})
+```
+
+## Webhook Notifications
+
+To receive real-time updates about transfers, set up webhooks for the following events:
+
+- `transfer.pending`: A transfer has been initiated
+- `transfer.processing`: A transfer is being processed
+- `transfer.successful`: A transfer has been successfully completed
+- `transfer.failed`: A transfer has failed
+- `transfer.reversed`: A transfer has been reversed
+
+Example webhook payload for a successful transfer:
+
+```json
+{
+  "event": "transfer.successful",
+  "data": {
+    "reference": "po.rKI4eJBYkebUAKj5stAHeCCnLyV8NZy9",
+    "amount": 5000,
+    "fee": 100,
+    "currency": "XAF",
+    "status": "successful",
+    "beneficiary": "rcp_123456789",
+    "description": "Salary payment for June 2023",
+    "created_at": "2023-06-17T21:35:51.000000Z",
+    "metadata": {
+      "invoice_id": "INV-123",
+      "payment_type": "salary"
+    }
+  }
+}
+```
+
+## Transfer Fees
+
+Transfers may incur fees depending on the amount, currency, and recipient type. The fee is automatically calculated and included in the transfer response.
+
+For example, if you initiate a transfer of 5,000 XAF and the fee is 100 XAF, the total amount deducted from your account will be 5,100 XAF, while the recipient will receive 5,000 XAF.
+
+## Best Practices
+
+### Security
+
+1. **API Key Security**: Keep your API keys secure and never expose them in client-side code
+2. **Verify Webhook Signatures**: Always verify webhook signatures to prevent fraud
+3. **Use HTTPS**: Always use HTTPS for all API requests and webhook endpoints
+4. **Implement Proper Authentication**: Secure your endpoints with proper authentication
+
+### Transfer Management
+
+1. **Idempotent Requests**: Use unique references for each transfer to prevent duplicate transfers
+2. **Error Handling**: Implement proper error handling for failed transfers
+3. **Reconciliation**: Regularly reconcile transfers with your internal records
+4. **Logging**: Keep detailed logs of all transfers for auditing purposes
+
+### User Experience
+
+1. **Clear Communication**: Clearly communicate transfer status to your users
+2. **Estimated Delivery Time**: Provide estimated delivery times for transfers
+3. **Notification System**: Implement a notification system to keep users informed about their transfers
+4. **Error Messages**: Provide clear error messages when transfers fail
+
+## Troubleshooting
+
+### Common Issues
+
+- **Insufficient Funds**: Ensure your Notch Pay account has sufficient funds to cover the transfer amount and fees
+- **Invalid Recipient**: Verify that the recipient information is correct and the recipient exists
+- **Network Issues**: Some transfers may fail due to issues with the recipient's mobile money network
+- **Validation Errors**: Check that all required fields are provided and in the correct format
+
+### Support
+
+If you encounter issues with transfers:
+
+- Check the [API Reference](/api/transfers) for detailed parameter documentation
+- Contact our [support team](mailto:hello@notchpay.co) for assistance
+- Join our [developer community](https://community.notchpay.co) to connect with other developers
+
+## Next Steps
+
+- [Bulk Transfers](/docs/send-money/bulk-transfers) - Send money to multiple recipients at once
+- [Beneficiaries Management](/docs/send-money/beneficiaries) - Create and manage your recipients
+- [Webhooks](/docs/webhooks) - Set up webhooks for transfer notifications
+- [API Reference](/api/transfers) - Detailed API documentation for transfers

@@ -1,0 +1,149 @@
+---
+title: Overview
+description: Learn how to accept payments with Notch Pay through various methods
+---
+
+# Accept Payments with Notch Pay
+
+Notch Pay offers multiple ways to accept payments from your customers. Whether you're running an e-commerce store, a SaaS platform, or any other type of business, we have solutions to fit your needs.
+
+## Payment Methods Overview
+
+Notch Pay supports a wide range of payment methods popular in Africa:
+
+<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+    <h3 className="text-md font-semibold mb-2">Mobile Money</h3>
+    <p className="text-sm">Accept payments via MTN Mobile Money, Orange Money, and other mobile money providers across Africa.</p>
+    <a href="/docs/accept-payments/mobile-money" className="text-blue-600 hover:underline text-sm">Learn more →</a>
+  </div>
+  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+    <h3 className="text-md font-semibold mb-2">Digital Wallets</h3>
+    <p className="text-sm">Accept payments from digital wallets like Assoh, Kudi, and other wallet providers across Africa.</p>
+    <a href="/docs/accept-payments/other-methods" className="text-blue-600 hover:underline text-sm">Learn more →</a>
+  </div>
+  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+    <h3 className="text-md font-semibold mb-2">Other Methods</h3>
+    <p className="text-sm">Accept payments via USSD, QR codes, and other alternative payment methods.</p>
+    <a href="/docs/accept-payments/other-methods" className="text-blue-600 hover:underline text-sm">Learn more →</a>
+  </div>
+</div>
+
+## Integration Options
+
+Choose the integration method that best suits your business needs:
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Collect</h3>
+    <p className="mb-4">Use our hosted payment page for a quick and secure integration with minimal coding required.</p>
+    <ul className="list-disc pl-5 mb-4">
+      <li>Pre-built, responsive payment form</li>
+      <li>Supports all payment methods</li>
+      <li>Customizable to match your brand</li>
+      <li>Handles payment security for you</li>
+    </ul>
+    <a href="/docs/accept-payments/collect" className="text-blue-600 hover:underline">Learn about Collect →</a>
+  </div>
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Payment Links</h3>
+    <p className="mb-4">Create shareable payment links without any coding required.</p>
+    <ul className="list-disc pl-5 mb-4">
+      <li>No development needed</li>
+      <li>Share via email, SMS, or social media</li>
+      <li>Track payment status in your dashboard</li>
+      <li>Customize with your branding</li>
+    </ul>
+    <a href="/docs/accept-payments/payment-links" className="text-blue-600 hover:underline">Learn about Payment Links →</a>
+  </div>
+</div>
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">API Integration</h3>
+    <p className="mb-4">Integrate Notch Pay directly into your application using our RESTful API for maximum flexibility.</p>
+    <ul className="list-disc pl-5 mb-4">
+      <li>Complete control over the payment flow</li>
+      <li>Seamless integration with your existing systems</li>
+      <li>Support for all payment methods</li>
+      <li>Webhook notifications for payment events</li>
+    </ul>
+    <a href="/docs/accept-payments/api-integration" className="text-blue-600 hover:underline">Learn about API Integration →</a>
+  </div>
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Invoices</h3>
+    <p className="mb-4">Create and manage professional invoices for your customers.</p>
+    <ul className="list-disc pl-5 mb-4">
+      <li>Professional invoice templates</li>
+      <li>Automated payment reminders</li>
+      <li>Multiple payment methods</li>
+      <li>Detailed payment tracking</li>
+    </ul>
+    <a href="/docs/accept-payments/invoices" className="text-blue-600 hover:underline">Learn about Invoices →</a>
+  </div>
+</div>
+
+## Getting Started
+
+To start accepting payments with Notch Pay:
+
+1. [Create a Notch Pay account](https://business.notchpay.co/register) if you don't have one
+2. Complete your business profile and verification
+3. Choose an integration method that suits your needs
+4. Follow the integration guide for your chosen method
+5. Test your integration in the sandbox environment
+6. Go live and start accepting real payments
+
+## Payment Flow
+
+The typical payment flow with Notch Pay works as follows:
+
+1. **Initialize Payment**: Create a payment with customer and transaction details
+2. **Customer Checkout**: Redirect the customer to the payment page or present payment options
+3. **Payment Processing**: The customer selects a payment method and completes the payment
+4. **Verification**: Notch Pay verifies the payment with the payment provider
+5. **Confirmation**: Notch Pay confirms the payment status and notifies your application
+6. **Fulfillment**: Your application fulfills the order based on the payment status
+
+## Security Best Practices
+
+When accepting payments, security is paramount:
+
+- Always use HTTPS for all payment-related pages
+- Validate and sanitize all user inputs
+- Keep your API keys secure and never expose them in client-side code
+- Verify webhook signatures to ensure notifications are authentic
+- Implement proper error handling for failed payments
+- Regularly update your integration with the latest security patches
+
+## Advanced Features
+
+Notch Pay provides several advanced features to help you manage your payments effectively:
+
+<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+    <h3 className="text-md font-semibold mb-2">Metadata</h3>
+    <p className="text-sm">Attach custom data to payments for tracking and reconciliation purposes.</p>
+    <a href="/docs/accept-payments/api-integration#using-metadata" className="text-blue-600 hover:underline text-sm">Learn more →</a>
+  </div>
+  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+    <h3 className="text-md font-semibold mb-2">Refunds</h3>
+    <p className="text-sm">Process full or partial refunds for completed payments with ease.</p>
+    <a href="/docs/accept-payments/refunds" className="text-blue-600 hover:underline text-sm">Learn more →</a>
+  </div>
+  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+    <h3 className="text-md font-semibold mb-2">Disputes</h3>
+    <p className="text-sm">Handle payment disputes and chargebacks effectively with our tools.</p>
+    <a href="/docs/accept-payments/disputes" className="text-blue-600 hover:underline text-sm">Learn more →</a>
+  </div>
+</div>
+
+## Next Steps
+
+Ready to start accepting payments? Choose one of our integration methods:
+
+- [Collect](/docs/accept-payments/collect) - Quick and easy integration with our hosted payment page
+- [Payment Links](/docs/accept-payments/payment-links) - Create shareable payment links without coding
+- [API Integration](/docs/accept-payments/api-integration) - Direct integration with our RESTful API
+- [Mobile Money](/docs/accept-payments/mobile-money) - Accept mobile money payments
+- [Invoices](/docs/accept-payments/invoices) - Create and manage professional invoices

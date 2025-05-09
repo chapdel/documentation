@@ -1,0 +1,642 @@
+---
+title: Account Management
+description: Learn how to manage connected accounts with Notch Pay Sync
+---
+
+# Account Management
+
+This guide explains how to manage connected accounts with Notch Pay Sync. Connected accounts represent the sellers, service providers, or merchants on your platform who receive payments through your platform.
+
+## Overview
+
+Managing connected accounts involves several key aspects:
+
+1. Creating connected accounts
+2. Onboarding account holders
+3. Verifying account information
+4. Monitoring account status
+5. Managing account capabilities
+6. Handling account updates and deactivation
+
+## Account Types
+
+Notch Pay Sync offers different types of connected accounts to suit your platform's needs:
+
+### Standard Accounts
+
+Standard accounts are fully-featured accounts that give account holders the most flexibility:
+
+- Complete control over branding and customer experience
+- Direct access to the Notch Pay dashboard
+- Ability to manage their own payouts
+- Full transaction history and reporting
+
+Ideal for: Platforms where sellers or service providers need full control over their payment operations.
+
+### Express Accounts
+
+Express accounts offer a simplified onboarding process with fewer requirements:
+
+- Streamlined onboarding (2-3 minutes)
+- Limited dashboard access
+- Platform-managed payouts
+- Reduced verification requirements
+
+Ideal for: Platforms with casual sellers or service providers who need a quick onboarding process.
+
+### Custom Accounts
+
+Custom accounts give your platform the most control:
+
+- Invisible to the end-user (white-labeled)
+- No direct dashboard access for account holders
+- Platform handles all account management
+- Fully integrated with your platform's experience
+
+Ideal for: Platforms that want to maintain a consistent, branded experience throughout the payment process.
+
+## Creating Connected Accounts
+
+### Via the Dashboard
+
+To create a connected account through the Notch Pay dashboard:
+
+1. Log in to your [Notch Pay Business suite](https://business.notchpay.co)
+2. Navigate to **Sync** > **Connected Accounts**
+3. Click **Create Account**
+4. Select the account type (Standard, Express, or Custom)
+5. Enter the account holder's information
+6. Click **Create Account**
+
+### Via the API
+
+To create a connected account programmatically:
+
+```javascript
+// Create a connected account
+fetch('https://api.notchpay.co/sync/accounts', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_PLATFORM_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    type: 'standard', // or 'express', 'custom'
+    business_profile: {
+      name: 'Seller Store',
+      url: 'https://sellerstore.com',
+      category: 'retail'
+    },
+    email: 'seller@example.com',
+    phone: '+237600000000',
+    metadata: {
+      seller_id: '12345',
+      internal_reference: 'SELLER_12345'
+    }
+  })
+})
+.then(response => response.json())
+.then(data => {
+  console.log(data.account.id); // The connected account ID
+})
+```
+
+## Onboarding Connected Accounts
+
+After creating a connected account, you need to onboard the account holder to collect their business and payment information. The onboarding process is a critical step that includes account setup, identity verification (KYC), and business verification.
+
+### Seamless Account Creation and KYC Process
+
+One of the key advantages of Notch Pay Sync is its seamless onboarding flow:
+
+1. **Automatic Account Creation**: If a seller doesn't already have a Notch Pay merchant account, one will be automatically created for them during the onboarding process.
+
+2. **Integrated KYC Process**: The seller can complete their Know Your Customer (KYC) verification directly within the onboarding flow, without having to leave your platform or complete separate processes.
+
+3. **Progressive Verification**: Sellers can start with basic features and unlock more capabilities as they complete additional verification steps.
+
+4. **Customizable Experience**: The entire process can be customized to match your platform's branding and requirements.
+
+### The Onboarding Flow
+
+The typical onboarding flow works as follows:
+
+1. You create a connected account with basic information (email, phone, name)
+2. You generate an onboarding link and redirect the seller to it
+3. The seller completes the onboarding form, which includes:
+   - Creating a Notch Pay account (if they don't have one)
+   - Providing personal information
+   - Uploading identity documents for KYC verification
+   - Adding business details and documentation
+   - Setting up payout methods (bank account or mobile money)
+4. Once completed, the seller is redirected back to your platform
+5. The account status is updated, and you can start processing payments for the seller
+
+### Generating Onboarding Links
+
+To generate an onboarding link for a connected account:
+
+```javascript
+// Generate an onboarding link
+fetch(`https://api.notchpay.co/sync/accounts/${accountId}/onboarding`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_PLATFORM_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    redirect_url: 'https://your-platform.com/onboarding/complete',
+    refresh_url: 'https://your-platform.com/onboarding/refresh'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  // Redirect the account holder to the onboarding URL
+  const onboardingUrl = data.url;
+  console.log(onboardingUrl);
+})
+```
+
+### Customizing the Onboarding Flow
+
+You can customize the onboarding flow to match your platform's branding and collect specific information:
+
+```javascript
+// Generate a customized onboarding link
+fetch(`https://api.notchpay.co/sync/accounts/${accountId}/onboarding`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_PLATFORM_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    redirect_url: 'https://your-platform.com/onboarding/complete',
+    refresh_url: 'https://your-platform.com/onboarding/refresh',
+    branding: {
+      logo: 'https://your-platform.com/logo.png',
+      primary_color: '#4F46E5',
+      secondary_color: '#10B981'
+    },
+    collect: {
+      business_profile: true,
+      business_type: true,
+      bank_account: true,
+      mobile_money: true
+    }
+  })
+})
+.then(response => response.json())
+.then(data => {
+  const onboardingUrl = data.url;
+  console.log(onboardingUrl);
+})
+```
+
+### KYC Requirements
+
+During the onboarding process, sellers will need to provide the following for KYC verification:
+
+1. **Personal Information**:
+   - Full name
+   - Date of birth
+   - Residential address
+   - Phone number
+   - Email address
+
+2. **Identity Verification**:
+   - Government-issued ID (National ID, Passport, or Driver's License)
+   - Selfie or photo verification
+   - Proof of address (utility bill, bank statement)
+
+3. **Business Information** (for business accounts):
+   - Business name and registration number
+   - Business address
+   - Business type and category
+   - Business registration documents
+   - Tax identification number
+
+### Tracking Onboarding and KYC Progress
+
+You can track the onboarding and KYC progress of a connected account:
+
+```javascript
+// Retrieve account information
+fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
+  headers: {
+    'Authorization': 'YOUR_PLATFORM_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  const requirements = data.account.requirements;
+  const verification = data.account.verification;
+  
+  console.log('KYC Status:', verification.status);
+  
+  if (requirements.currently_due.length === 0) {
+    console.log('All requirements met');
+  } else {
+    console.log('Requirements still needed:', requirements.currently_due);
+  }
+})
+```
+
+### Handling Incomplete Onboarding
+
+If a seller doesn't complete the onboarding process in one session, they can resume it later:
+
+```javascript
+// Generate a new onboarding link for an incomplete account
+fetch(`https://api.notchpay.co/sync/accounts/${accountId}/onboarding`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_PLATFORM_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    redirect_url: 'https://your-platform.com/onboarding/complete',
+    refresh_url: 'https://your-platform.com/onboarding/refresh'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  // Send the new onboarding URL to the seller
+  const onboardingUrl = data.url;
+  console.log(onboardingUrl);
+})
+```
+
+## Verifying Connected Accounts
+
+Connected accounts may need to go through a verification process to ensure compliance with regulations and reduce fraud risk.
+
+### Verification Requirements
+
+Verification requirements may include:
+
+- Business information (name, address, registration number)
+- Owner information (name, address, date of birth)
+- Bank account or mobile money account details
+- Identity documents (ID card, passport)
+- Business documents (registration certificate, license)
+
+### Checking Verification Status
+
+To check the verification status of a connected account:
+
+```javascript
+// Retrieve account information
+fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
+  headers: {
+    'Authorization': 'YOUR_PLATFORM_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  const verification = data.account.verification;
+  
+  if (verification.status === 'verified') {
+    console.log('Account is fully verified');
+  } else if (verification.status === 'pending') {
+    console.log('Verification is pending');
+  } else if (verification.status === 'rejected') {
+    console.log('Verification was rejected:', verification.reason);
+  }
+})
+```
+
+### Handling Verification Failures
+
+If a connected account fails verification, you should:
+
+1. Notify the account holder about the verification failure
+2. Provide clear instructions on how to correct the issues
+3. Generate a new onboarding link for them to update their information
+4. Monitor the verification status after the updates
+
+## Managing Account Capabilities
+
+Connected accounts have various capabilities that determine what they can do on your platform.
+
+### Available Capabilities
+
+- **Payments**: Ability to receive payments
+- **Transfers**: Ability to transfer funds to other accounts
+- **Payouts**: Ability to receive payouts to their bank or mobile money account
+
+### Checking Capabilities
+
+To check the capabilities of a connected account:
+
+```javascript
+// Retrieve account information
+fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
+  headers: {
+    'Authorization': 'YOUR_PLATFORM_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  const capabilities = data.account.capabilities;
+  
+  console.log('Payments capability:', capabilities.payments);
+  console.log('Transfers capability:', capabilities.transfers);
+  console.log('Payouts capability:', capabilities.payouts);
+})
+```
+
+### Updating Capabilities
+
+To update the capabilities of a connected account:
+
+```javascript
+// Update account capabilities
+fetch(`https://api.notchpay.co/sync/accounts/${accountId}/capabilities`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_PLATFORM_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    payments: 'active',
+    transfers: 'active',
+    payouts: 'inactive'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Updated capabilities:', data.account.capabilities);
+})
+```
+
+## Updating Connected Accounts
+
+You can update various aspects of a connected account as needed.
+
+### Updating Business Information
+
+To update the business information of a connected account:
+
+```javascript
+// Update business information
+fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_PLATFORM_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    business_profile: {
+      name: 'Updated Store Name',
+      url: 'https://updated-store-url.com',
+      category: 'electronics'
+    }
+  })
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Updated business profile:', data.account.business_profile);
+})
+```
+
+### Updating Contact Information
+
+To update the contact information of a connected account:
+
+```javascript
+// Update contact information
+fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_PLATFORM_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    email: 'updated-email@example.com',
+    phone: '+237610000000'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Updated email:', data.account.email);
+  console.log('Updated phone:', data.account.phone);
+})
+```
+
+### Updating Metadata
+
+To update the metadata of a connected account:
+
+```javascript
+// Update metadata
+fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_PLATFORM_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    metadata: {
+      seller_id: '12345',
+      store_type: 'premium',
+      registration_date: '2023-01-15'
+    }
+  })
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Updated metadata:', data.account.metadata);
+})
+```
+
+## Deactivating Connected Accounts
+
+When a seller or service provider leaves your platform, you may need to deactivate their connected account.
+
+### Deactivating an Account
+
+To deactivate a connected account:
+
+```javascript
+// Deactivate account
+fetch(`https://api.notchpay.co/sync/accounts/${accountId}/deactivate`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_PLATFORM_API_KEY',
+    'Content-Type': 'application/json'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Account deactivated:', data.account.deactivated);
+})
+```
+
+### Reactivating an Account
+
+To reactivate a previously deactivated account:
+
+```javascript
+// Reactivate account
+fetch(`https://api.notchpay.co/sync/accounts/${accountId}/reactivate`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_PLATFORM_API_KEY',
+    'Content-Type': 'application/json'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log('Account reactivated:', !data.account.deactivated);
+})
+```
+
+## Account Dashboard Access
+
+Each connected account has access to their own dedicated Notch Pay dashboard. This is a powerful feature that allows your sellers or service providers to manage their own payments, view transactions, and handle their business operations independently.
+
+### Personal Dashboard for Connected Accounts
+
+Every connected account gets their own Notch Pay dashboard where they can:
+
+- View and manage their transaction history
+- Track incoming payments and payouts
+- Update their account information and banking details
+- View and respond to disputes
+- Access financial reports and analytics
+- Manage their verification and compliance requirements
+- Set up notification preferences
+
+This dedicated dashboard helps your platform users feel more in control of their finances while reducing your support burden.
+
+### Dashboard Access by Account Type
+
+#### Standard Accounts
+
+Standard accounts have full access to the Notch Pay dashboard, where they can:
+
+- View complete transaction history
+- Manage payouts and payout schedules
+- Update account and business information
+- View and respond to disputes
+- Access detailed financial reports and analytics
+- Manage payment methods and settings
+
+#### Express Accounts
+
+Express accounts have streamlined access to the Notch Pay dashboard, where they can:
+
+- View transaction history
+- Update basic account information
+- View payout history
+- Manage essential settings
+
+#### Custom Accounts
+
+Custom accounts typically don't have direct dashboard access, as these are fully managed by your platform. However, you can choose to provide limited dashboard access if needed for your business model.
+
+### Generating Dashboard Links
+
+To generate a link for a connected account to access their dashboard:
+
+```javascript
+// Generate dashboard link
+fetch(`https://api.notchpay.co/sync/accounts/${accountId}/dashboard`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_PLATFORM_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    redirect_url: 'https://your-platform.com/account/dashboard'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  // Redirect the account holder to the dashboard URL
+  const dashboardUrl = data.url;
+  console.log(dashboardUrl);
+})
+```
+
+### Embedding Dashboard Features
+
+For a more integrated experience, you can embed certain dashboard features directly into your platform:
+
+```javascript
+// Generate an embedded dashboard component
+fetch(`https://api.notchpay.co/sync/accounts/${accountId}/embedded-dashboard`, {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_PLATFORM_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    component: 'transactions', // or 'payouts', 'settings', etc.
+    time_range: '30d', // Last 30 days
+    branding: {
+      colors: {
+        primary: '#4F46E5',
+        secondary: '#10B981'
+      },
+      hide_notchpay_logo: false
+    }
+  })
+})
+.then(response => response.json())
+.then(data => {
+  // Use the embed URL or code in your platform
+  const embedUrl = data.url;
+  console.log(embedUrl);
+})
+```
+
+## Best Practices
+
+### Account Creation and Onboarding
+
+1. **Collect Essential Information**: Collect only the information you need during initial account creation
+2. **Progressive Onboarding**: Allow account holders to start with basic features and complete full verification later
+3. **Clear Instructions**: Provide clear instructions on what information is needed and why
+4. **Verification Status**: Keep account holders informed about their verification status
+5. **Secure Data Handling**: Ensure all sensitive information is handled securely
+
+### Account Management
+
+1. **Regular Updates**: Encourage account holders to keep their information up to date
+2. **Capability Management**: Only enable the capabilities that account holders need
+3. **Metadata Usage**: Use metadata to link connected accounts to your internal systems
+4. **Account Monitoring**: Regularly monitor account activity for suspicious behavior
+5. **Compliance Checks**: Ensure connected accounts comply with your platform's terms and conditions
+
+### Platform Security
+
+1. **API Key Security**: Keep your platform API keys secure
+2. **Access Control**: Implement proper access controls for account management
+3. **Audit Logging**: Maintain logs of all account management actions
+4. **Fraud Prevention**: Implement measures to prevent fraudulent accounts
+5. **Compliance**: Ensure your platform complies with relevant regulations
+
+## Troubleshooting
+
+### Common Issues
+
+- **Account Creation Failures**: Ensure you're providing all required information
+- **Onboarding Issues**: Check that the redirect and refresh URLs are properly configured
+- **Verification Failures**: Ensure account holders provide accurate and up-to-date information
+- **Dashboard Access Problems**: Verify that the account has the necessary permissions
+
+### Support
+
+If you encounter issues with account management:
+
+- Check the [API Reference](/api/sync) for detailed parameter documentation
+- Contact our [support team](mailto:hello@notchpay.co) for assistance
+- Join our [developer community](https://community.notchpay.co) to connect with other platform owners
+
+## Next Steps
+
+- [Sync Integration Guide](/docs/sync/integration) - Learn how to integrate Sync into your platform
+- [Sync API Reference](/api/sync) - Detailed API documentation for Sync
+- [Webhooks](/docs/webhooks) - Set up webhooks for real-time notifications
+- [Testing](/docs/testing) - Test your account management in the sandbox environment

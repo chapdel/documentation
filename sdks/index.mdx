@@ -1,0 +1,198 @@
+---
+title: SDKs & Libraries
+description: Official Notch Pay libraries for various programming languages
+---
+
+# SDKs & Libraries
+
+Notch Pay provides official client libraries for various programming languages to simplify integration with our API. These libraries handle the complexities of API requests, authentication, and error handling, allowing you to focus on building your application.
+
+## Available SDKs
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">JavaScript</h3>
+    <p className="mb-4">Integrate Notch Pay into your web applications, Node.js backends, or React Native apps.</p>
+    <ul className="list-disc pl-5 mb-4">
+      <li>Promise-based API</li>
+      <li>TypeScript support</li>
+      <li>Browser and Node.js compatibility</li>
+      <li>Comprehensive error handling</li>
+    </ul>
+    <a href="/docs/sdks/javascript" className="text-blue-600 hover:underline">View JavaScript SDK →</a>
+  </div>
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">PHP</h3>
+    <p className="mb-4">Integrate Notch Pay into your PHP applications and frameworks like Laravel, Symfony, or WordPress.</p>
+    <ul className="list-disc pl-5 mb-4">
+      <li>PSR-4 compliant</li>
+      <li>Composer support</li>
+      <li>Laravel integration</li>
+      <li>Comprehensive error handling</li>
+    </ul>
+    <a href="/docs/sdks/php" className="text-blue-600 hover:underline">View PHP SDK →</a>
+  </div>
+</div>
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Python</h3>
+    <p className="mb-4">Integrate Notch Pay into your Python applications and frameworks like Django or Flask.</p>
+    <ul className="list-disc pl-5 mb-4">
+      <li>Python 3.6+ support</li>
+      <li>Async/await support</li>
+      <li>Django integration</li>
+      <li>Comprehensive error handling</li>
+    </ul>
+    <a href="/docs/sdks/python" className="text-blue-600 hover:underline">View Python SDK →</a>
+  </div>
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Mobile SDKs</h3>
+    <p className="mb-4">Integrate Notch Pay into your iOS and Android applications.</p>
+    <ul className="list-disc pl-5 mb-4">
+      <li>Native iOS SDK (Swift)</li>
+      <li>Native Android SDK (Kotlin)</li>
+      <li>React Native support</li>
+      <li>Flutter support</li>
+    </ul>
+    <a href="/docs/sdks/mobile" className="text-blue-600 hover:underline">View Mobile SDKs →</a>
+  </div>
+</div>
+
+## Installation
+
+Each SDK has its own installation instructions. Please refer to the specific SDK documentation for detailed installation steps.
+
+### JavaScript
+
+```bash
+# Using npm
+npm install notchpay-js
+
+# Using yarn
+yarn add notchpay-js
+```
+
+### PHP
+
+```bash
+composer require notchpay/notchpay-php
+```
+
+### Python
+
+```bash
+pip install notchpay
+```
+
+## Basic Usage
+
+All SDKs follow a similar pattern for basic operations. Here's a quick example of creating a payment using different SDKs:
+
+### JavaScript
+
+```javascript
+const Notch Pay = require('notchpay-js');
+const notchpay = new Notch Pay('YOUR_API_KEY');
+
+notchpay.payments.create({
+  amount: 5000,
+  currency: 'XAF',
+  customer: {
+    email: 'customer@example.com',
+    name: 'John Doe'
+  },
+  description: 'Payment for Order #123',
+  callback: 'https://example.com/callback'
+})
+.then(response => {
+  // Redirect to payment page
+  window.location.href = response.authorization_url;
+})
+.catch(error => {
+  console.error('Error:', error);
+});
+```
+
+### PHP
+
+```php
+<?php
+require_once 'vendor/autoload.php';
+
+$notchpay = new \Notch Pay\Notch Pay('YOUR_API_KEY');
+
+try {
+    $payment = $notchpay->payments->create([
+        'amount' => 5000,
+        'currency' => 'XAF',
+        'customer' => [
+            'email' => 'customer@example.com',
+            'name' => 'John Doe'
+        ],
+        'description' => 'Payment for Order #123',
+        'callback' => 'https://example.com/callback'
+    ]);
+    
+    // Redirect to payment page
+    header('Location: ' . $payment->authorization_url);
+    exit;
+} catch (\Notch Pay\Exception\ApiException $e) {
+    echo 'Error: ' . $e->getMessage();
+}
+```
+
+### Python
+
+```python
+import notchpay
+
+notchpay.api_key = 'YOUR_API_KEY'
+
+try:
+    payment = notchpay.Payment.create(
+        amount=5000,
+        currency='XAF',
+        customer={
+            'email': 'customer@example.com',
+            'name': 'John Doe'
+        },
+        description='Payment for Order #123',
+        callback='https://example.com/callback'
+    )
+    
+    # Redirect to payment page
+    print(payment.authorization_url)
+except notchpay.error.Notch PayError as e:
+    print(f"Error: {e}")
+```
+
+## Error Handling
+
+All SDKs provide comprehensive error handling to help you debug issues and provide appropriate feedback to your users. Each SDK throws specific exceptions or returns error objects that contain detailed information about what went wrong.
+
+## Webhooks
+
+Our SDKs also provide utilities for handling webhooks, making it easy to verify and process webhook notifications from Notch Pay.
+
+## Community Libraries
+
+In addition to our official SDKs, there are community-maintained libraries for other programming languages and frameworks. While these are not officially supported by Notch Pay, they can be useful for integrating with our API.
+
+## Need Help?
+
+If you encounter any issues with our SDKs or have questions about integration:
+
+- Check the specific SDK documentation for detailed guides and examples
+- Visit our [GitHub repositories](https://github.com/notchafrica) for source code and issue tracking
+- Contact our [support team](mailto:hello@notchpay.co) for assistance
+- Join our [developer community](https://community.notchpay.co) to connect with other developers
+
+## Next Steps
+
+Choose your preferred SDK to get started:
+
+- [JavaScript SDK](/docs/sdks/javascript)
+- [PHP SDK](/docs/sdks/php)
+- [Python SDK](/docs/sdks/python)
+- [Mobile SDKs](/docs/sdks/mobile)

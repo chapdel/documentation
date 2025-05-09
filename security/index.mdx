@@ -1,0 +1,108 @@
+---
+title: Overview
+description: Learn about Notch Pay's security features and best practices for secure integration
+---
+
+# Security
+
+Security is a top priority at Notch Pay. We implement industry-standard security measures to protect your data and transactions, and we provide tools and guidelines to help you build secure integrations.
+
+## Notch Pay Security Features
+
+### Data Encryption
+
+All data transmitted between your systems and Notch Pay is encrypted using TLS (Transport Layer Security). This ensures that sensitive information like API keys, payment details, and customer data cannot be intercepted by malicious actors.
+
+### PCI Compliance
+
+Notch Pay is PCI DSS (Payment Card Industry Data Security Standard) compliant, which means we adhere to strict security standards for handling card data. By using Notch Pay, you can accept card payments without having to worry about PCI compliance yourself.
+
+### Fraud Prevention
+
+We employ advanced fraud detection systems to identify and prevent fraudulent transactions. Our systems analyze various risk factors and patterns to flag suspicious activities and protect both merchants and customers.
+
+### Authentication and Authorization
+
+Notch Pay implements robust authentication mechanisms to ensure that only authorized users and systems can access your account and data:
+
+- API key authentication for all API requests
+- Two-factor authentication (2FA) for dashboard access
+- Role-based access control for team members
+- IP whitelisting for API access
+
+### Regular Security Audits
+
+We conduct regular security audits and penetration testing to identify and address potential vulnerabilities. Our security team works continuously to improve our security posture and respond to emerging threats.
+
+## Secure Integration Guidelines
+
+### Protecting Your API Keys
+
+Your API keys are the keys to your Notch Pay account. To keep them secure:
+
+1. **Never expose API keys in client-side code** or public repositories
+2. **Store API keys securely** using environment variables or secure vaults
+3. **Use different API keys** for different environments (development, staging, production)
+4. **Rotate API keys periodically**, especially if you suspect they may have been compromised
+5. **Implement proper access controls** to limit who can access your API keys
+
+### Secure Communication
+
+To ensure secure communication with Notch Pay:
+
+1. **Always use HTTPS** for all API requests and webhook endpoints
+2. **Validate SSL certificates** to prevent man-in-the-middle attacks
+3. **Implement certificate pinning** in mobile applications for added security
+
+### Webhook Security
+
+When using webhooks:
+
+1. **Verify webhook signatures** to ensure notifications are coming from Notch Pay
+2. **Use HTTPS** for your webhook endpoints
+3. **Implement access controls** to restrict access to your webhook endpoints
+4. **Process webhooks idempotently** to handle duplicate notifications safely
+
+### User Data Protection
+
+When handling customer data:
+
+1. **Collect only necessary information** to minimize data exposure
+2. **Implement proper data sanitization** to prevent injection attacks
+3. **Follow data protection regulations** like GDPR, CCPA, or local regulations
+4. **Implement secure data storage** with encryption at rest
+5. **Establish data retention policies** to limit how long you store sensitive data
+
+### Error Handling
+
+Proper error handling is crucial for security:
+
+1. **Don't expose sensitive information** in error messages
+2. **Log errors securely** without including sensitive data
+3. **Implement rate limiting** to prevent brute force attacks
+4. **Monitor for unusual error patterns** that might indicate an attack
+
+## Security Best Practices
+
+For a comprehensive guide to security best practices when integrating with Notch Pay, see our [Security Best Practices](/docs/security/best-practices) documentation.
+
+## Compliance
+
+Notch Pay helps you comply with various regulatory requirements:
+
+- **PCI DSS**: By using Notch Pay, you can accept card payments without handling card data directly
+- **GDPR**: We provide tools and features to help you comply with GDPR requirements
+- **Local Regulations**: We stay up-to-date with local payment regulations in the countries we operate in
+
+For more information about compliance, see our [Compliance](/docs/security/compliance) documentation.
+
+## Reporting Security Issues
+
+If you discover a security vulnerability in Notch Pay, please report it to our security team at [security@notchpay.co](mailto:security@notchpay.co). We take all security reports seriously and will respond promptly.
+
+## Security Resources
+
+- [Security Best Practices](/docs/security/best-practices) - Detailed guidelines for secure integration
+- [Compliance](/docs/security/compliance) - Information about regulatory compliance
+- [API Authentication](/api/authentication) - How to authenticate with the Notch Pay API
+- [Webhook Security](/docs/webhooks/security) - How to secure your webhook endpoints

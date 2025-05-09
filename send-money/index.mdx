@@ -1,0 +1,153 @@
+---
+title: Send Money
+description: Learn how to send money to beneficiaries using Notch Pay
+---
+
+# Send Money with Notch Pay (Transfers)
+
+<div className="bg-blue-50 p-4 border-l-4 border-blue-500 rounded-md mb-6">
+  <p className="text-sm text-blue-700">
+    <strong>Terminology Note:</strong> In Notch Pay, the term "Transfers" is the official terminology used to refer to sending money to recipients (payouts, withdrawals, and fund distributions).
+  </p>
+</div>
+
+Notch Pay makes it easy to send money to individuals and businesses across Africa. Whether you need to pay suppliers, reimburse expenses, or disburse salaries, our platform provides reliable and secure money transfer services.
+
+## Overview
+
+With Notch Pay's Transfers capabilities, you can:
+
+- Send money to mobile money accounts and bank accounts
+- Create and manage recipients for recurring transfers
+- Schedule one-time or recurring transfers
+- Track the status of your transfers in real-time
+- Receive notifications when transfers are completed
+
+Transfers in Notch Pay refer to the process of distributing funds to recipients, which includes:
+
+- **Payouts**: Sending money to customers, vendors, or employees
+- **Withdrawals**: Moving funds from your Notch Pay account to your own accounts
+- **Fund Distributions**: Distributing funds to multiple recipients, such as marketplace sellers
+
+## Transfer Methods
+
+Notch Pay supports various transfer methods depending on the recipient's location and preferences:
+
+<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+    <h3 className="text-md font-semibold mb-2">Mobile Money</h3>
+    <p className="text-sm">Send money directly to mobile money accounts like MTN Mobile Money, Orange Money, and more.</p>
+    <a href="/docs/send-money/transfers#mobile-money-transfers" className="text-blue-600 hover:underline text-sm">Learn more →</a>
+  </div>
+  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+    <h3 className="text-md font-semibold mb-2">Bank Transfers</h3>
+    <p className="text-sm">Transfer funds to bank accounts across multiple countries.</p>
+    <a href="/docs/send-money/transfers#bank-transfers" className="text-blue-600 hover:underline text-sm">Learn more →</a>
+  </div>
+  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+    <h3 className="text-md font-semibold mb-2">Bulk Transfers</h3>
+    <p className="text-sm">Send money to multiple recipients at once, perfect for payroll and mass disbursements.</p>
+    <a href="/docs/send-money/bulk-transfers" className="text-blue-600 hover:underline text-sm">Learn more →</a>
+  </div>
+</div>
+
+## Getting Started
+
+To start using Notch Pay Transfers:
+
+1. [Create a Notch Pay account](https://business.notchpay.co/register) if you don't have one
+2. Complete your business profile and verification
+3. Add funds to your Notch Pay account
+4. Create recipients or use existing ones
+5. Initiate transfers to your recipients
+
+## Transfer Flow
+
+The typical transfer flow with Notch Pay works as follows:
+
+1. **Create Recipient**: Add the recipient's details to your recipients list (optional but recommended for recurring transfers)
+2. **Initiate Transfer**: Specify the amount, currency, and recipient details
+3. **Validation**: Notch Pay validates the transfer details and recipient information
+4. **Processing**: The transfer is processed through the appropriate payment network
+5. **Status Updates**: Notch Pay updates the transfer status and sends notifications
+6. **Completion**: The recipient receives the funds in their account
+
+## Managing Recipients
+
+Recipients (also known as beneficiaries) are individuals or businesses that you send money to. By creating and managing recipients, you can:
+
+- Save recipient details for future transfers
+- Organize recipients by categories or tags
+- Track transfer history for each recipient
+- Ensure accurate and consistent recipient information
+
+### Types of Recipients
+
+Notch Pay offers two main types of recipients for transfers:
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+    <h3 className="text-md font-semibold mb-2">Standard Recipients</h3>
+    <p className="text-sm mb-2">Created via API or dashboard for regular transfers to mobile money accounts and other payment methods.</p>
+    <ul className="list-disc pl-5 text-sm">
+      <li>Can be created via API or dashboard</li>
+      <li>Used for one-time or occasional transfers</li>
+      <li>Standard verification process</li>
+    </ul>
+  </div>
+  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+    <h3 className="text-md font-semibold mb-2">Payout Accounts</h3>
+    <p className="text-sm mb-2">High-privilege accounts created exclusively through the Notch Pay dashboard for trusted recipients.</p>
+    <ul className="list-disc pl-5 text-sm">
+      <li>Created only through dashboard (not API)</li>
+      <li>Enhanced security for high-value transfers</li>
+      <li>Streamlined processing for frequent transfers</li>
+      <li>Used for trusted business partners and vendors</li>
+    </ul>
+  </div>
+</div>
+
+Learn more about [managing recipients](/docs/send-money/transfers#creating-transfer-recipients).
+
+## Security Measures
+
+Notch Pay implements several security measures to protect your transfers:
+
+- **Two-Factor Authentication**: Additional verification for high-value transfers
+- **Transfer Limits**: Customizable limits to control transfer amounts
+- **Activity Monitoring**: Real-time monitoring of transfer activity
+- **Fraud Detection**: Advanced algorithms to detect and prevent fraudulent transfers
+- **Secure API**: Encrypted communication for all transfer-related operations
+
+## Fees and Limits
+
+Transfer fees vary depending on:
+
+- The transfer method (mobile money, bank transfer)
+- The recipient's country and currency
+- The transfer amount
+
+Transfer limits are determined by:
+
+- Your account verification level
+- Regulatory requirements in the recipient's country
+- The transfer method
+
+For detailed information about fees and limits, please visit our [pricing page](https://notchpay.co/pricing).
+
+## Integration Options
+
+You can send money through Notch Pay using:
+
+- **Dashboard**: Use our web dashboard to manually initiate transfers
+- **API**: Integrate with our [Transfers API](/api/transfers) for programmatic transfers
+- **SDKs**: Use our official libraries for various programming languages
+
+## Next Steps
+
+Ready to start using Notch Pay Transfers? Explore these resources:
+
+- [Transfers Guide](/docs/send-money/transfers) - Learn how to send money to individuals and businesses
+- [Recipients Management](/docs/send-money/transfers#creating-transfer-recipients) - Create and manage your recipients
+- [Bulk Transfers](/docs/send-money/bulk-transfers) - Send money to multiple recipients at once
+- [Transfers API](/api/transfers) - API reference for programmatic transfers

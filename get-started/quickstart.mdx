@@ -1,0 +1,157 @@
+---
+title: Quickstart Guide
+description: Get up and running with Notch Pay in minutes
+---
+
+# Quickstart Guide
+
+This guide will help you integrate Notch Pay into your application or website quickly. We'll walk through the basic steps to accept your first payment.
+
+## Prerequisites
+
+Before you begin, make sure you have:
+
+- A Notch Pay account (sign up at [business.notchpay.co](https://business.notchpay.co/register) if you don't have one)
+- Your API keys (available in your dashboard under Settings > API Keys)
+- Basic knowledge of HTTP requests and JSON
+
+## Step 1: Get Your API Keys
+
+1. Log in to your [Notch Pay Business suite](https://business.notchpay.co)
+2. Navigate to Settings > API Keys
+3. Copy your API key (use your test key for development and testing)
+
+```
+YOUR_API_KEY
+```
+
+## Step 2: Create a Simple Payment
+
+Let's create a basic payment using the Notch Pay API:
+
+```javascript
+// Using fetch in JavaScript
+fetch('https://api.notchpay.co/payments', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    amount: 5000,
+    currency: 'XAF',
+    customer: {
+      name: 'John Doe',
+      email: 'john@example.com',
+      phone: '+237600000000'
+    },
+    description: 'Payment for Order #123',
+    callback: 'https://your-website.com/callback',
+    reference: 'order_123'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  // Redirect the customer to the payment page
+  window.location.href = data.authorization_url;
+})
+.catch(error => console.error('Error:', error));
+```
+
+## Step 3: Redirect to the Payment Page
+
+After creating a payment, you'll receive a response with an `authorization_url`. Redirect your customer to this URL to complete the payment:
+
+```javascript
+window.location.href = data.authorization_url;
+// Example: https://pay.notchpay.co/pay_123456789
+```
+
+## Step 4: Handle the Callback
+
+When the payment is completed (or fails), Notch Pay will redirect the customer back to your `callback` URL with the payment status:
+
+```javascript
+// Example callback handler in Express.js
+app.get('/callback', (req, res) => {
+  const reference = req.query.reference;
+  
+  // Verify the payment status
+  fetch(`https://api.notchpay.co/payments/${reference}`, {
+    headers: {
+      'Authorization': 'YOUR_API_KEY'
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.transaction.status === 'complete') {
+      // Payment successful, update your database and show success page
+      res.send('Payment successful!');
+    } else {
+      // Payment failed or is still pending
+      res.send('Payment not completed.');
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    res.status(500).send('Error verifying payment');
+  });
+});
+```
+
+## Step 5: Set Up Webhooks (Recommended)
+
+For more reliable payment notifications, set up webhooks to receive real-time updates about payment status changes:
+
+1. Go to your Dashboard > Settings > Webhooks
+2. Add a new webhook with your endpoint URL (e.g., `https://your-website.com/webhooks`)
+3. Select the events you want to receive (e.g., `payment.complete`, `payment.failed`)
+
+```javascript
+// Example webhook handler in Express.js
+app.post('/webhooks', express.json(), (req, res) => {
+  const event = req.body;
+  
+  // Verify webhook signature (recommended for security)
+  // ...
+  
+  // Handle different event types
+  switch (event.type) {
+    case 'payment.complete':
+      // Update order status to paid
+      break;
+    case 'payment.failed':
+      // Handle failed payment
+      break;
+    // Handle other event types
+  }
+  
+  // Acknowledge receipt of the webhook
+  res.status(200).send('Webhook received');
+});
+```
+
+## Next Steps
+
+Congratulations! You've successfully integrated Notch Pay for basic payment processing. Here are some next steps to enhance your integration:
+
+- [Explore different payment methods](/docs/accept-payments) to offer more options to your customers
+- [Implement customer management](/docs/customers) to save customer information for future payments
+- [Set up webhooks properly](/docs/webhooks/setup) for reliable payment notifications
+- [Test your integration thoroughly](/docs/testing) before going live
+
+## Sample Applications
+
+Check out these sample applications to see Notch Pay in action:
+
+- [JavaScript/Node.js Example](https://github.com/notchafrica/notchpay-node-example)
+- [PHP Example](https://github.com/notchafrica/notchpay-php-example)
+- [Python Example](https://github.com/notchafrica/notchpay-python-example)
+
+## Need Help?
+
+If you encounter any issues or have questions, please:
+
+- Check our [API Reference](/api) for detailed endpoint documentation
+- Contact our [support team](mailto:hello@notchpay.co) for assistance
+- Join our [developer community](https://community.notchpay.co) to connect with other developers

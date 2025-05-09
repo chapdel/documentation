@@ -1,0 +1,269 @@
+---
+title: Invoices
+description: Create and manage invoices with Notch Pay
+---
+
+# Invoices
+
+Notch Pay Invoices allows you to create, send, and manage professional invoices for your customers. This feature is perfect for businesses that need to bill clients and track payments.
+
+## Overview
+
+With Notch Pay Invoices, you can:
+
+- Create professional invoices with your branding
+- Send invoices directly to customers via email
+- Track payment status in real-time
+- Receive notifications when invoices are viewed or paid
+- Generate reports on invoice payments
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Key Benefits</h3>
+    <ul className="list-disc pl-5">
+      <li>Professional invoice templates</li>
+      <li>Automated payment reminders</li>
+      <li>Multiple payment methods</li>
+      <li>Detailed payment tracking</li>
+      <li>Customizable with your branding</li>
+    </ul>
+  </div>
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Use Cases</h3>
+    <ul className="list-disc pl-5">
+      <li>Freelancers billing clients</li>
+      <li>Businesses sending invoices to customers</li>
+      <li>Professional services (legal, consulting, etc.)</li>
+      <li>One-time billing for products or services</li>
+      <li>Project-based billing</li>
+    </ul>
+  </div>
+</div>
+
+## Creating Invoices
+
+### From the Dashboard
+
+The easiest way to create an invoice is through your Notch Pay dashboard:
+
+1. Log in to your [Notch Pay Business suite](https://business.notchpay.co)
+2. Go to **Invoices** > **All Invoices**
+3. Click **Create Invoice**
+4. Fill in the invoice details:
+   - **Customer**: Select an existing customer or add a new one
+   - **Items**: Add line items with descriptions, quantities, and prices
+   - **Due Date**: Set when the invoice is due
+   - **Notes**: Add any additional notes or terms
+   - **Custom Fields**: Add any custom fields you need
+5. Click **Save & Send** to send the invoice immediately, or **Save as Draft** to send later
+
+### Using the API
+
+You can also create invoices programmatically using the API:
+
+```javascript
+fetch('https://api.notchpay.co/invoices', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    customer: 'cus_123456789', // Customer ID or customer object
+    due_date: '2023-12-31',
+    items: [
+      {
+        name: 'Web Development Services',
+        description: 'Frontend development for company website',
+        quantity: 1,
+        unit_price: 100000,
+        currency: 'XAF'
+      },
+      {
+        name: 'Hosting (Monthly)',
+        description: 'Website hosting for December 2023',
+        quantity: 1,
+        unit_price: 10000,
+        currency: 'XAF'
+      }
+    ],
+    notes: 'Thank you for your business!',
+    metadata: { // Optional
+      project_id: '12345',
+      department: 'IT Services'
+    }
+  })
+})
+.then(response => response.json())
+.then(data => {
+  // The invoice ID and payment URL
+  const invoiceId = data.invoice.id;
+  const paymentUrl = data.invoice.payment_url;
+  console.log(invoiceId, paymentUrl);
+})
+```
+
+## Customizing Invoices
+
+### Basic Customization
+
+When creating an invoice, you can customize:
+
+- **Logo**: Add your business logo to the invoice
+- **Colors**: Set primary and secondary colors to match your brand
+- **Contact Information**: Add your business contact information
+- **Payment Terms**: Specify payment terms and conditions
+- **Due Date**: Set when the invoice is due
+- **Notes**: Add notes or terms to the invoice
+
+### Invoice Templates
+
+For more advanced customization:
+
+1. Go to **Settings** > **Invoice Templates** in your dashboard
+2. Click **Create Template**
+3. Customize the template with your branding, colors, and layout
+4. Save your template
+5. When creating an invoice, select your custom template
+
+## Managing Invoices
+
+### Viewing Invoices
+
+To view all your invoices:
+
+1. Log in to your [Notch Pay Business suite](https://business.notchpay.co)
+2. Go to **Invoices** > **All Invoices**
+3. You'll see a list of all your invoices with their status and payment information
+
+### Editing Invoices
+
+To edit an existing invoice:
+
+1. Go to **Invoices** > **All Invoices**
+2. Find the invoice you want to edit
+3. Click the **Edit** button
+4. Make your changes
+5. Click **Save Changes**
+
+Note that some properties cannot be changed after an invoice has been paid.
+
+### Sending Invoices
+
+To send an invoice to a customer:
+
+1. Go to **Invoices** > **All Invoices**
+2. Find the invoice you want to send
+3. Click the **Send** button
+4. Enter the customer's email address
+5. Customize the email message (optional)
+6. Click **Send Invoice**
+
+The customer will receive an email with a link to view and pay the invoice.
+
+### Canceling Invoices
+
+To cancel an invoice:
+
+1. Go to **Invoices** > **All Invoices**
+2. Find the invoice you want to cancel
+3. Click the **More** button and select **Cancel Invoice**
+4. Confirm the cancellation
+
+Canceled invoices cannot be paid and will be marked as canceled in your dashboard.
+
+
+
+## Invoice Statuses
+
+Invoices can have the following statuses:
+
+| Status | Description |
+|--------|-------------|
+| Draft | The invoice has been created but not sent to the customer |
+| Sent | The invoice has been sent to the customer but not yet paid |
+| Viewed | The customer has viewed the invoice |
+| Partial | The customer has made a partial payment |
+| Paid | The invoice has been fully paid |
+| Overdue | The invoice is past its due date and not fully paid |
+| Canceled | The invoice has been canceled and cannot be paid |
+
+## Payment Methods
+
+Customers can pay invoices using any payment method supported by Notch Pay:
+
+- Mobile Money (MTN, Orange, etc.)
+- Digital Wallets (Assoh, Kudi, etc.)
+- Other supported payment methods
+
+## Tracking Payments
+
+### Dashboard Tracking
+
+You can track invoice payments in your dashboard:
+
+1. Go to **Invoices** > **All Invoices**
+2. Each invoice shows its payment status
+3. Click on an invoice to view detailed payment information, including:
+   - Payment amount
+   - Payment date
+   - Payment method
+   - Transaction ID
+
+### Webhooks
+
+For automated tracking, set up webhooks to receive notifications when invoices are paid:
+
+1. Go to **Settings** > **Webhooks**
+2. Click **Add Endpoint**
+3. Enter your endpoint URL
+4. Select the events you want to receive (e.g., `invoice.paid`, `invoice.payment_failed`)
+5. Click **Save**
+
+Your server will now receive notifications when invoice statuses change.
+
+## Reporting
+
+Notch Pay provides detailed reporting on your invoices:
+
+1. Go to **Reports** > **Invoice Reports**
+2. View reports on:
+   - Total invoiced amount
+   - Paid vs. unpaid invoices
+   - Overdue invoices
+   - Payment methods used
+   - Average time to payment
+
+You can filter reports by date range, customer, and other criteria.
+
+## Best Practices
+
+1. **Clear Descriptions**: Provide clear item descriptions so customers understand what they're paying for
+2. **Reasonable Due Dates**: Set reasonable due dates based on your business terms
+3. **Follow Up**: Send reminders for overdue invoices
+4. **Branding**: Customize invoices with your branding for a professional appearance
+5. **Documentation**: Keep records of all invoices and payments for accounting purposes
+
+## Troubleshooting
+
+### Common Issues
+
+- **Email Delivery**: Ensure customer email addresses are correct and check spam folders
+- **Payment Failures**: Check that the customer is using a supported payment method
+- **Customization Problems**: Ensure your logo and branding assets are properly uploaded
+
+### Support
+
+If you encounter issues with Invoices:
+
+- Check the [API Reference](/api/invoices) for detailed parameter documentation
+- Contact our [support team](mailto:hello@notchpay.co) for assistance
+- Join our [developer community](https://community.notchpay.co) to connect with other users
+
+## Next Steps
+
+- [Collect](/docs/accept-payments/collect) - Use our hosted payment page for a quick integration
+- [Payment Links](/docs/accept-payments/payment-links) - Create shareable payment links without coding
+- [API Integration](/docs/accept-payments/api-integration) - Build a custom payment experience
+- [Mobile Money](/docs/accept-payments/mobile-money) - Learn more about mobile money payments
+- [Webhooks](/docs/webhooks) - Set up webhooks for payment notifications

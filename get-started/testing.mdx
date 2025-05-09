@@ -1,0 +1,453 @@
+---
+title: Testing Your Integration
+description: Learn how to test your NotchPay integration with Mobile Money test accounts
+---
+
+# Testing Your Integration
+
+Before going into production, it's essential to thoroughly test your NotchPay integration. This page provides all the information you need to perform comprehensive testing, particularly for Mobile Money payments which are at the heart of financial services in Africa.
+
+## Notch Pay's Commitment to Security
+
+Notch Pay maintains rigorous security standards and a sophisticated fraud detection system to protect the integrity of the payment ecosystem in Africa. Our platform is designed with multiple layers of security to prevent fraud, money laundering, and other financial crimes.
+
+As you test and implement your integration, you'll notice our strict validation requirements and security measures. These are in place to ensure that all transactions processed through Notch Pay meet the highest standards of security and compliance with financial regulations across Africa.
+
+## Test Mode vs Production Mode
+
+NotchPay offers two distinct environments:
+
+1. **Test Mode**: Use this mode for development and testing. Transactions made in test mode don't involve real money.
+2. **Production Mode**: Use this mode for real transactions. Transactions made in production mode involve real money.
+
+To switch between modes:
+
+1. Log in to your [NotchPay Dashboard](https://business.notchpay.co)
+2. Click on the environment selector in the top navigation bar
+3. Select "Test Mode" or "Production Mode"
+
+In test mode, the dashboard will display a "TEST MODE" indicator to remind you that you're not in the production environment.
+
+## Test API Keys
+
+In test mode, you'll use test API keys that start with `test_`. These keys are different from your production API keys and can only be used in the test environment.
+
+To find your test API keys:
+
+1. Go to your dashboard in test mode
+2. Navigate to Settings > API Keys
+3. Copy your test API key
+
+```
+test_sk_123456789
+```
+
+## Phone Numbers for Mobile Money Testing
+
+You can use the following test phone numbers to simulate different Mobile Money payment scenarios. These numbers are essential for testing your integration in the African context where Mobile Money is the preferred payment method.
+
+For each operator, you can use the following number patterns:
+- **XXX000000**: Success
+- **XXX000001**: Insufficient funds
+- **XXX000002**: Failure (other reason)
+- **XXX000003**: Timeout (no response)
+- **XXX000004**: Canceled by user
+
+Replace "XXX" with the appropriate prefix for each operator.
+
+### Cameroon (CM)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| MTN | +23767 | +237670000000 | cm.mtn |
+| Orange | +23769 | +237690000000 | cm.orange |
+| EU Mobile | +23768 | +237680000000 | cm.eu |
+| Yoomee | +23766 | +237660000000 | cm.yoomee |
+
+### Ivory Coast (CI)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| MTN | +22505 | +225050000000 | ci.mtn |
+| Orange | +22507 | +225070000000 | ci.orange |
+| Moov | +22501 | +225010000000 | ci.moov |
+| Wave | +22503 | +225030000000 | ci.wave |
+| Green Network | +22509 | +225090000000 | ci.green |
+
+### Nigeria (NG)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| MTN | +2348 | +2348000000000 | ng.mtn |
+| Orange | +2347 | +2347000000000 | ng.orange |
+
+### Senegal (SN)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| Orange | +22177 | +221770000000 | sn.orange |
+| Free Mobile Money | +22176 | +221760000000 | sn.free |
+
+### Gabon (GA)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| Airtel | +2410 | +24100000000 | ga.airtel |
+| Express Union | +2411 | +24110000000 | ga.eu |
+
+### Benin (BJ)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| MTN | +22990 | +229900000000 | bj.mtn |
+| Moov | +22991 | +229910000000 | bj.moov |
+| Glo | +22997 | +229970000000 | bj.glo |
+
+### Burkina Faso (BF)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| Orange | +22670 | +226700000000 | bf.orange |
+| Moov | +22671 | +226710000000 | bf.moov |
+
+### Uganda (UG)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| MTN | +25677 | +256770000000 | ug.mtn |
+| Airtel | +25675 | +256750000000 | ug.airtel |
+
+### Rwanda (RW)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| MTN | +25078 | +250780000000 | rw.mtn |
+| Airtel | +25073 | +250730000000 | rw.airtel |
+
+### DR Congo (CD)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| Airtel | +24399 | +243990000000 | cd.airtel |
+| Orange | +24389 | +243890000000 | cd.orange |
+| Vodacom | +24381 | +243810000000 | cd.vodacom |
+| Express Union | +24382 | +243820000000 | cd.eu |
+
+### Tanzania (TZ)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| Airtel | +25567 | +255670000000 | tz.airtel |
+| Tigo | +25565 | +255650000000 | tz.tigo |
+| Vodafone | +25574 | +255740000000 | tz.vodafone |
+| HaloPesa | +25562 | +255620000000 | tz.halopesa |
+
+### Kenya (KE)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| MPesa | +25470 | +254700000000 | ke.mpesa |
+| MPesa Till | +25471 | +254710000000 | ke.mpesa_till |
+| Airtel Money Till | +25473 | +254730000000 | ke.airtel_till |
+| Equitel | +25476 | +254760000000 | ke.equitel |
+| Tkash | +25477 | +254770000000 | ke.tkash |
+
+### Ghana (GH)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| MTN | +23324 | +233240000000 | gh.mtn |
+| Vodafone | +23320 | +233200000000 | gh.vodafone |
+| Airtel | +23326 | +233260000000 | gh.airtel |
+| AirtelTigo | +23327 | +233270000000 | gh.airteltigo |
+
+### Chad (TD)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| Express Union | +23566 | +235660000000 | td.eu |
+
+### Central African Republic (CF)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| Express Union | +23670 | +236700000000 | cf.eu |
+
+### Congo Brazzaville (CG)
+
+| Operator | Prefix | Example for success | Channel |
+|----------|--------|---------------------|---------|
+| Express Union | +24205 | +242050000000 | cg.eu |
+
+## Testing Webhooks
+
+Webhooks are an essential part of your integration as they allow your application to receive real-time notifications about payment events. When testing your Mobile Money integration, you should also test your webhook implementation.
+
+For detailed information on webhooks, please refer to our guides:
+- [Webhook Setup](/docs/get-started/webhooks/setup) - Learn how to set up webhook endpoints
+- [Verifying Webhooks](/docs/get-started/webhooks/verify) - Learn how to verify webhook signatures
+
+When testing webhooks with Mobile Money payments:
+
+1. Make sure to use your sandbox webhook hash (prefixed with `test_`) for signature verification
+2. Check that your code is reading the signature from the `X-Notch-Signature` header
+3. Use your sandbox private key for webhook management operations
+4. Test all relevant Mobile Money event types (payment.complete, payment.failed, etc.)
+5. Verify that your application correctly processes each event type
+6. Test error handling by intentionally causing webhook verification failures
+7. Test with different Mobile Money operators to ensure your webhook handling is robust
+
+Remember that sandbox and production environments use different sets of API keys. Never mix keys between environments.
+
+You can use tools like [ngrok](https://ngrok.com/) or [localtunnel](https://localtunnel.github.io/www/) to expose your local development server to the internet for webhook testing.
+
+## Testing Different Mobile Money Scenarios
+
+> **Important**: When testing and especially in production, avoid repeatedly using the same phone number for all transactions. Notch Pay's fraud detection system may flag accounts that consistently process transactions with the same phone number, potentially resulting in blocked transactions or account suspension.
+
+### Successful Mobile Money Payment
+
+1. Create a payment using your test API key
+2. Use a test phone number configured for success (e.g., +237670000000 for MTN Cameroon)
+3. Verify that your application handles the successful payment correctly
+4. Verify that webhooks and callbacks are processed correctly
+5. In your test suite, use different test phone numbers for different test cases
+
+### Failed Mobile Money Payment (Insufficient Funds)
+
+1. Create a payment using your test API key
+2. Use a test phone number configured to fail with "insufficient funds" (e.g., +237670000001 for MTN Cameroon)
+3. Verify that your application handles the payment failure correctly
+4. Verify that appropriate error messages are displayed to users
+
+### Failed Mobile Money Payment (Other Reason)
+
+1. Create a payment using your test API key
+2. Use a test phone number configured to fail with "other reason" (e.g., +237670000002 for MTN Cameroon)
+3. Verify that your application handles the payment failure correctly
+4. Verify that generic error messages are displayed to users
+
+### Mobile Money Payment Timeout
+
+1. Create a payment using your test API key
+2. Use a test phone number configured to simulate a timeout (e.g., +237670000003 for MTN Cameroon)
+3. Verify that your application handles timeouts correctly
+4. Verify that your application allows the user to retry or choose another payment method
+
+### Mobile Money Payment Canceled by User
+
+1. Create a payment using your test API key
+2. Use a test phone number configured to simulate a cancellation by the user (e.g., +237670000004 for MTN Cameroon)
+3. Verify that your application handles canceled payments correctly
+4. Verify that your application allows the user to retry or choose another payment method
+
+## Testing Mobile Money Transfers
+
+To test money transfers to Mobile Money accounts:
+
+1. Add funds to your test account (this is simulated in test mode)
+2. Create a beneficiary using a test Mobile Money phone number
+   - For a successful transfer: +237670000000 (MTN Cameroon)
+   - For a failed transfer: +237670000002 (MTN Cameroon)
+3. Initiate a transfer to the beneficiary by specifying the appropriate channel (e.g., "cm.mtn" for MTN Cameroon)
+4. Verify that your application handles the transfer status correctly
+5. Also test transfers to other Mobile Money operators in different countries
+6. Use different phone numbers for your test transfers
+
+> **Important**: Notch Pay's fraud detection system monitors transaction patterns. Consistently sending all transfers to the same phone number may be flagged as suspicious activity, potentially resulting in blocked transactions or account suspension. In production, ensure your transfers are distributed across different recipients.
+
+### Example of Creating a Mobile Money Transfer
+
+```javascript
+// Example with JavaScript
+fetch('https://api.notchpay.co/transfers', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'test_sk_123456789',
+    'X-Grant': 'your_private_key',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    amount: 5000,
+    currency: 'XAF',
+    beneficiary_data: {
+      name: 'John Doe',
+      phone: '+237670000000', // Test number for a successful transfer
+      email: 'john@example.com'
+    },
+    channel: 'cm.mtn', // MTN Mobile Money Cameroon channel
+    description: 'Test transfer'
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error('Error:', error));
+```
+
+## Notch Pay's Fraud Detection System
+
+Notch Pay implements a sophisticated fraud detection system to protect both merchants and customers. This system is active in both test and production environments, though with different sensitivity levels.
+
+> **Important**: For a complete understanding of our fraud detection system, please refer to our [Complete Guide to Fraud Detection System](/docs/security/fraud-detection).
+
+### Key Points to Remember During Testing
+
+1. **The system is active in sandbox**: Our fraud detection system is active even in the test environment, though with less strict parameters
+2. **Avoid recipient concentration**: Don't direct all your transactions to the same phone number
+3. **Vary amounts**: Avoid consistently using the same transaction amounts
+4. **Provide complete information**: Always include accurate and complete customer information
+5. **Test rejections**: Familiarize yourself with how your application handles rejected transactions
+
+> **Tip**: Use the sandbox environment to understand how our fraud detection system works and how your application should react when transactions are flagged as suspicious.
+
+## Common Issues During Testing
+
+### Webhook Verification Failures
+
+If webhook verification fails in test mode, make sure that:
+
+- You're using the correct webhook hash for the test environment
+- Your webhook endpoint is accessible from the Internet
+- Your server responds with a 2xx status code
+
+### API Key Confusion
+
+Make sure to use test API keys for test mode and production API keys for production. Using the wrong key will result in authentication errors.
+
+### Missing Test Data
+
+If you don't see test data in your dashboard, make sure you're in test mode. Test and production data are completely separate.
+
+## Going to Production
+
+Once you've thoroughly tested your integration and you're confident it works correctly, you can switch to production mode and start accepting real payments.
+
+### Notch Pay's Rigorous Production Environment
+
+Notch Pay maintains a highly secure and regulated production environment. Our commitment to security and compliance means:
+
+- **Strict Transaction Monitoring**: All production transactions are rigorously monitored
+- **Regulatory Compliance**: We adhere to financial regulations in all countries we operate
+- **Zero Tolerance for Fraud**: Suspicious activities are promptly investigated
+- **Account Verification**: Merchant accounts undergo thorough verification
+- **Regular Compliance Checks**: We perform ongoing compliance reviews
+
+### Production Checklist
+
+Before going to production, make sure to:
+
+1. Switch to production mode in your dashboard
+2. Update your integration to use your production API keys
+3. Update webhook endpoints to your production URLs
+4. Perform a final test with a small real payment
+5. Ensure your application distributes transactions across different phone numbers
+6. Review and comply with our security best practices
+7. Understand our [fraud detection system](/docs/security/fraud-detection) and its implications
+8. Prepare your team to handle potentially blocked transactions
+
+> **Critical Production Warning**: In production, your application must avoid sending all transactions to the same phone number. Notch Pay's fraud detection system will flag and may block accounts that consistently process transactions with the same phone number. This is a security measure to prevent fraud and money laundering. Design your application to naturally distribute transactions across different recipients or implement safeguards if your business model requires repeated transactions to the same recipients.
+
+## Mobile Money Testing Checklist
+
+Use this checklist to ensure you've tested all aspects of your Mobile Money integration:
+
+- [ ] Successful Mobile Money payment
+- [ ] Handling failed Mobile Money payments (insufficient funds)
+- [ ] Handling failed Mobile Money payments (other reasons)
+- [ ] Handling Mobile Money timeouts
+- [ ] Handling Mobile Money payments canceled by the user
+- [ ] Verification of webhooks for Mobile Money events
+- [ ] Successful Mobile Money transfers
+- [ ] Handling failed Mobile Money transfers
+- [ ] Testing with different Mobile Money operators (MTN, Orange, Moov, Wave, etc.)
+- [ ] Testing with different countries (Cameroon, Ivory Coast, Senegal, Kenya, etc.)
+- [ ] Testing specific Mobile Money validation errors (invalid number, etc.)
+- [ ] Testing Mobile Money refunds
+- [ ] Testing pagination for Mobile Money transaction lists
+- [ ] Testing filters and searches for Mobile Money transactions
+
+## Best Practices for Mobile Money Testing
+
+1. **Use a Dedicated Test Environment**: Maintain a test environment separate from your production environment.
+2. **Automate Tests**: Create automated tests to regularly verify that your Mobile Money integration works correctly.
+3. **Test All Scenarios**: Don't just test successful payments, but also the different types of failures specific to Mobile Money.
+4. **Test with Different Operators**: Make sure to test with all Mobile Money operators you plan to support.
+5. **Test with Different Countries**: Mobile Money regulations and behaviors can vary across African countries.
+6. **Monitor Processing Times**: Mobile Money payments can have variable processing times, ensure your application handles these delays correctly.
+7. **Test Error Messages**: Verify that your application displays clear and helpful error messages specific to Mobile Money.
+8. **Test Amount Limits**: Mobile Money operators often have minimum and maximum transaction limits, test these limits.
+9. **Monitor Logs**: Keep an eye on your logs to detect potential issues with Mobile Money transactions.
+10. **Test Performance**: Ensure your application can handle multiple simultaneous Mobile Money transactions.
+11. **Distribute Transactions**: Do not use the same phone number for all transactions, as this may be flagged as suspicious activity.
+
+> **Important**: Notch Pay's fraud detection system may flag or block accounts that consistently send all transactions to the same phone number. In production, ensure that your integration distributes transactions across different recipients to avoid being flagged for suspicious activity or having your merchant account blocked.
+
+## Available Mobile Money Channels
+
+Here's the complete list of Mobile Money channels available for testing, organized by region:
+
+### West Africa
+
+| Channel Code | Description | Country |
+|--------------|-------------|---------|
+| `ci.mtn` | MTN Mobile Money | Ivory Coast |
+| `ci.orange` | Orange Money | Ivory Coast |
+| `ci.moov` | Moov Money | Ivory Coast |
+| `ci.wave` | Wave | Ivory Coast |
+| `ci.green` | Green Network | Ivory Coast |
+| `ng.mtn` | MTN Mobile Money | Nigeria |
+| `ng.orange` | Orange Money | Nigeria |
+| `sn.orange` | Orange Money | Senegal |
+| `sn.free` | Free Mobile Money | Senegal |
+| `bj.mtn` | MTN Mobile Money | Benin |
+| `bj.moov` | Moov Money | Benin |
+| `bj.glo` | Glo Mobile Money | Benin |
+| `bf.orange` | Orange Money | Burkina Faso |
+| `bf.moov` | Moov Money | Burkina Faso |
+| `gh.mtn` | MTN Mobile Money | Ghana |
+| `gh.vodafone` | Vodafone Cash | Ghana |
+| `gh.airtel` | Airtel Money | Ghana |
+| `gh.airteltigo` | AirtelTigo Money | Ghana |
+
+### Central Africa
+
+| Channel Code | Description | Country |
+|--------------|-------------|---------|
+| `cm.mtn` | MTN Mobile Money | Cameroon |
+| `cm.orange` | Orange Money | Cameroon |
+| `cm.eu` | EU Mobile | Cameroon |
+| `cm.yoomee` | Yoomee Money | Cameroon |
+| `ga.airtel` | Airtel Money | Gabon |
+| `ga.eu` | Express Union | Gabon |
+| `td.eu` | Express Union | Chad |
+| `cf.eu` | Express Union | Central African Republic |
+| `cg.eu` | Express Union | Congo Brazzaville |
+| `cd.airtel` | Airtel Money | DR Congo |
+| `cd.orange` | Orange Money | DR Congo |
+| `cd.vodacom` | Vodacom M-Pesa | DR Congo |
+| `cd.eu` | Express Union | DR Congo |
+
+### East Africa
+
+| Channel Code | Description | Country |
+|--------------|-------------|---------|
+| `ke.mpesa` | M-Pesa | Kenya |
+| `ke.mpesa_till` | M-Pesa Till | Kenya |
+| `ke.airtel_till` | Airtel Money Till | Kenya |
+| `ke.equitel` | Equitel | Kenya |
+| `ke.tkash` | T-Kash | Kenya |
+| `ug.mtn` | MTN Mobile Money | Uganda |
+| `ug.airtel` | Airtel Money | Uganda |
+| `rw.mtn` | MTN Mobile Money | Rwanda |
+| `rw.airtel` | Airtel Money | Rwanda |
+| `tz.airtel` | Airtel Money | Tanzania |
+| `tz.tigo` | Tigo Pesa | Tanzania |
+| `tz.vodafone` | Vodafone M-Pesa | Tanzania |
+| `tz.halopesa` | HaloPesa | Tanzania |
+
+## Additional Resources
+
+- [Test Mode](/docs/testing/test-mode) - Learn more about the test environment
+- [Mobile Money](/docs/accept-payments/mobile-money) - Comprehensive guide on integrating Mobile Money payments
+- [Mobile Money API](/api/mobile-money) - API documentation for Mobile Money payments
+- [Production Checklist](/docs/testing/test-mode#production-checklist) - Make sure you're ready for production

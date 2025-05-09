@@ -1,0 +1,262 @@
+---
+title: Webhook Setup
+description: Learn how to set up and configure webhooks for your Notch Pay account
+---
+
+# Webhook Setup
+
+This guide will walk you through the process of setting up webhooks for your Notch Pay account. Webhooks allow your application to receive real-time notifications when events occur in your account, such as when a payment is completed or a transfer is processed.
+
+## What are Webhooks?
+
+Webhooks are HTTP callbacks that notify your application when events happen in your Notch Pay account. Instead of your application constantly polling the Notch Pay API for updates, webhooks push events to your application as they happen.
+
+Common use cases for webhooks include:
+
+- Updating order status when a payment is completed
+- Sending confirmation emails to customers
+- Updating inventory after a successful purchase
+- Logging failed payment attempts for follow-up
+
+## Prerequisites
+
+Before setting up webhooks, you should have:
+
+- A Notch Pay account with API access
+- A server that can receive HTTP POST requests
+- Basic understanding of HTTP and JSON
+
+## Understanding Notch Pay API Keys
+
+Notch Pay provides three types of API keys, each with a specific purpose:
+
+1. **Public Key**: Used for most API interactions like creating payments
+2. **Private Key**: Used for higher-level operations like transfers, balance inquiries, and webhook management
+3. **Hash**: Used specifically for encrypting and decrypting webhook signatures
+
+Each of these keys exists in both sandbox (test) and production environments:
+
+- **Sandbox Keys**: Used for development and testing, prefixed with `test_`
+- **Production Keys**: Used for live transactions, prefixed with `live_`
+
+For webhook setup and management, you'll need to use your Private Key. The Hash key will be used later for verifying webhook signatures. Always make sure to use the correct set of keys for your environment (sandbox for testing, production for live).
+
+## Setting Up Your Webhook Endpoint
+
+Your webhook endpoint is a URL on your server that will receive webhook notifications from Notch Pay. This endpoint should:
+
+1. Accept HTTP POST requests
+2. Parse JSON request bodies
+3. Respond with a 2xx status code (preferably 200 OK)
+4. Process the webhook data asynchronously if needed
+
+Here's a simple example of a webhook endpoint in different programming languages:
+
+### Node.js (Express)
+
+```javascript
+const express = require('express');
+const app = express();
+
+// Parse JSON request bodies
+app.use(express.json());
+
+app.post('/webhooks/notchpay', (req, res) => {
+  // Return a 200 response immediately
+  res.status(200).send('Webhook received');
+  
+  // Process the webhook asynchronously
+  const event = req.body;
+  processWebhook(event);
+});
+
+function processWebhook(event) {
+  const eventType = event.type;
+  const eventData = event.data;
+  
+  switch (eventType) {
+    case 'payment.complete':
+      // Handle completed payment
+      console.log(`Payment ${eventData.id} completed`);
+      break;
+    case 'payment.failed':
+      // Handle failed payment
+      console.log(`Payment ${eventData.id} failed`);
+      break;
+    // Handle other event types
+  }
+}
+
+app.listen(3000, () => {
+  console.log('Webhook server running on port 3000');
+});
+```
+
+### PHP
+
+```php
+<?php
+// Get the request body
+$input = file_get_contents('php://input');
+$event = json_decode($input, true);
+
+// Return a 200 response immediately
+http_response_code(200);
+header('Content-Type: application/json');
+echo json_encode(['status' => 'received']);
+
+// Process the webhook asynchronously
+if (function_exists('fastcgi_finish_request')) {
+    fastcgi_finish_request();
+}
+
+// Process the webhook
+$eventType = $event['type'];
+$eventData = $event['data'];
+
+switch ($eventType) {
+    case 'payment.complete':
+        // Handle completed payment
+        error_log("Payment {$eventData['id']} completed");
+        break;
+    case 'payment.failed':
+        // Handle failed payment
+        error_log("Payment {$eventData['id']} failed");
+        break;
+    // Handle other event types
+}
+```
+
+### Python (Flask)
+
+```python
+from flask import Flask, request, jsonify
+import threading
+
+app = Flask(__name__)
+
+@app.route('/webhooks/notchpay', methods=['POST'])
+def webhook():
+    # Return a 200 response immediately
+    event = request.json
+    
+    # Process the webhook asynchronously
+    threading.Thread(target=process_webhook, args=(event,)).start()
+    
+    return jsonify({'status': 'received'}), 200
+
+def process_webhook(event):
+    event_type = event['type']
+    event_data = event['data']
+    
+    if event_type == 'payment.complete':
+        # Handle completed payment
+        print(f"Payment {event_data['id']} completed")
+    elif event_type == 'payment.failed':
+        # Handle failed payment
+        print(f"Payment {event_data['id']} failed")
+    # Handle other event types
+
+if __name__ == '__main__':
+    app.run(port=3000)
+```
+
+## Registering Your Webhook in the Notch Pay Business suite
+
+Once you have set up your webhook endpoint, you need to register it in your Notch Pay dashboard:
+
+1. Log in to your [Notch Pay Business suite](https://business.notchpay.co)
+2. Navigate to Settings > Webhooks
+3. Click "Add Endpoint"
+4. Enter your webhook URL (e.g., `https://example.com/webhooks/notchpay`)
+5. Select the events you want to receive
+6. Click "Save" to create the webhook
+
+## Available Webhook Events
+
+Notch Pay can send webhooks for various events. When registering your webhook, you can choose which events you want to receive:
+
+| Event | Description |
+|-------|-------------|
+| `payment.complete` | Triggered when a payment is successfully completed |
+| `payment.failed` | Triggered when a payment fails |
+| `payment.pending` | Triggered when a payment is pending |
+| `payment.canceled` | Triggered when a payment is canceled |
+| `transfer.complete` | Triggered when a transfer is successfully completed |
+| `transfer.failed` | Triggered when a transfer fails |
+| `refund.complete` | Triggered when a refund is successfully completed |
+| `refund.failed` | Triggered when a refund fails |
+
+## Testing Your Webhook
+
+After setting up your webhook, you should test it to ensure it's working correctly:
+
+1. In your Notch Pay dashboard, go to Settings > Webhooks
+2. Find your webhook endpoint and click "Test"
+3. Select an event type to test
+4. Click "Send Test Event"
+
+Notch Pay will send a test event to your webhook endpoint. You should see the event in your server logs and verify that your application processes it correctly.
+
+## Testing Locally with Tunneling
+
+To test webhooks in your local development environment, you need to expose your local server to the internet. You can use tools like:
+
+- [ngrok](https://ngrok.com/)
+- [localtunnel](https://localtunnel.github.io/www/)
+- [Cloudflare Tunnel](https://www.cloudflare.com/products/tunnel/)
+
+Example with ngrok:
+
+```bash
+# Start your local server (e.g., on port 3000)
+npm start
+
+# In another terminal, start ngrok
+ngrok http 3000
+```
+
+You'll receive a URL like `https://abc123.ngrok.io`. Use this URL as the base for your webhook endpoint, for example `https://abc123.ngrok.io/webhooks/notchpay`.
+
+## Webhook Retries
+
+If your webhook endpoint returns a non-2xx status code, Notch Pay will retry the webhook with an exponential backoff:
+
+- First retry: 5 minutes after the initial attempt
+- Second retry: 30 minutes after the first retry
+- Third retry: 2 hours after the second retry
+- Fourth retry: 5 hours after the third retry
+- Fifth retry: 10 hours after the fourth retry
+
+After the fifth retry, if your endpoint still doesn't return a 2xx status code, Notch Pay will stop trying to deliver the webhook.
+
+## Managing Webhooks
+
+You can manage your webhook endpoints through:
+
+- **Dashboard**: Add, edit, or delete webhook endpoints in your Notch Pay dashboard
+- **API**: Use the [Webhooks API](/api/webhooks) to programmatically manage webhook endpoints
+
+## Troubleshooting
+
+If you're not receiving webhook notifications:
+
+1. Check that your endpoint is publicly accessible
+2. Verify that your server is responding with a 2xx status code
+3. Check your webhook logs in the Notch Pay dashboard
+4. Ensure your firewall or security settings aren't blocking incoming requests
+5. Test your endpoint with a tool like [Webhook Tester](https://webhook.site/)
+
+## Best Practices
+
+1. **Respond Quickly**: Return a 2xx response as soon as possible, then process the webhook asynchronously
+2. **Verify Signatures**: Always verify webhook signatures to ensure they come from Notch Pay
+3. **Handle Duplicates**: Design your webhook handler to be idempotent to handle potential duplicate events
+4. **Log Events**: Keep logs of all webhook events for debugging and auditing
+5. **Monitor Failures**: Set up monitoring for webhook failures to catch issues early
+
+## Next Steps
+
+- [Verifying Webhooks](/docs/get-started/webhooks/verify) - Learn how to verify webhook signatures
+- [Webhook Events](/docs/webhooks/events) - Learn about the different webhook events and their payloads
+- [Webhooks API](/api/webhooks) - Use the API to manage your webhook endpoints

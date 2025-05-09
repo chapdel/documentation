@@ -1,0 +1,256 @@
+---
+title: Refunds
+description: Process refunds for payments made through Notch Pay
+---
+
+# Refunds
+
+Notch Pay allows you to process refunds for payments that have been completed. This guide explains how to issue full or partial refunds, track refund status, and handle refund-related events.
+
+## Overview
+
+With Notch Pay's refund functionality, you can:
+
+- Issue full or partial refunds for completed payments
+- Track the status of refunds
+- Receive notifications when refunds are processed
+- View refund history for reconciliation
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Key Benefits</h3>
+    <ul className="list-disc pl-5">
+      <li>Simple API for processing refunds</li>
+      <li>Support for partial refunds</li>
+      <li>Automatic handling of refund logistics</li>
+      <li>Detailed refund tracking</li>
+      <li>Webhook notifications for refund events</li>
+    </ul>
+  </div>
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Use Cases</h3>
+    <ul className="list-disc pl-5">
+      <li>Customer returns or cancellations</li>
+      <li>Service delivery issues</li>
+      <li>Billing adjustments</li>
+      <li>Dispute resolutions</li>
+      <li>Promotional refunds or credits</li>
+    </ul>
+  </div>
+</div>
+
+## Processing Refunds
+
+### From the Dashboard
+
+The easiest way to process a refund is through your Notch Pay dashboard:
+
+1. Log in to your [Notch Pay Business suite](https://business.notchpay.co)
+2. Go to **Payments** > **Transactions**
+3. Find the payment you want to refund
+4. Click the **Refund** button
+5. Enter the refund amount (for partial refunds) or select **Full Refund**
+6. Add a reason for the refund (optional)
+7. Click **Process Refund**
+
+### Using the API
+
+You can also process refunds programmatically using the API:
+
+```javascript
+// Process a refund
+fetch('https://api.notchpay.co/refunds', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    payment: 'pay_123456789', // Payment ID or reference
+    amount: 5000, // For partial refunds (in the smallest currency unit)
+    // Omit amount for full refunds
+    reason: 'Customer requested cancellation',
+    metadata: { // Optional
+      order_id: '12345',
+      customer_service_rep: 'jane_doe'
+    }
+  })
+})
+.then(response => response.json())
+.then(data => {
+  console.log(data.refund.id); // The refund ID
+  console.log(data.refund.status); // The refund status
+})
+```
+
+## Refund Types
+
+### Full Refunds
+
+A full refund returns the entire payment amount to the customer:
+
+```javascript
+fetch('https://api.notchpay.co/refunds', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    payment: 'pay_123456789',
+    reason: 'Product returned'
+  })
+})
+```
+
+### Partial Refunds
+
+A partial refund returns only a portion of the payment:
+
+```javascript
+fetch('https://api.notchpay.co/refunds', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    payment: 'pay_123456789',
+    amount: 2500, // Refund half of a 5000 payment
+    reason: 'Partial order cancellation'
+  })
+})
+```
+
+## Refund Statuses
+
+Refunds can have the following statuses:
+
+| Status | Description |
+|--------|-------------|
+| pending | The refund has been initiated but not yet processed |
+| processing | The refund is being processed by the payment provider |
+| succeeded | The refund has been successfully processed |
+| failed | The refund could not be processed |
+
+## Retrieving Refunds
+
+### Retrieving a Single Refund
+
+To retrieve information about a specific refund:
+
+```javascript
+fetch('https://api.notchpay.co/refunds/ref_123456789', {
+  headers: {
+    'Authorization': 'YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log(data.refund);
+})
+```
+
+### Listing Refunds for a Payment
+
+To retrieve all refunds for a specific payment:
+
+```javascript
+fetch('https://api.notchpay.co/payments/pay_123456789/refunds', {
+  headers: {
+    'Authorization': 'YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log(data.refunds);
+})
+```
+
+### Listing All Refunds
+
+To retrieve all refunds for your account:
+
+```javascript
+fetch('https://api.notchpay.co/refunds', {
+  headers: {
+    'Authorization': 'YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  console.log(data.refunds);
+})
+```
+
+## Refund Webhooks
+
+To receive notifications about refund events, set up webhooks for the following events:
+
+- `refund.created`: A refund has been created
+- `refund.succeeded`: A refund has been successfully processed
+- `refund.failed`: A refund has failed
+
+Example webhook payload for a refund event:
+
+```json
+{
+  "type": "refund.succeeded",
+  "data": {
+    "id": "ref_123456789",
+    "object": "refund",
+    "amount": 5000,
+    "currency": "XAF",
+    "payment": "pay_123456789",
+    "reason": "Customer requested cancellation",
+    "status": "succeeded",
+    "created_at": "2023-01-01T12:00:00Z",
+    "metadata": {
+      "order_id": "12345",
+      "customer_service_rep": "jane_doe"
+    }
+  }
+}
+```
+
+## Refund Limitations
+
+When processing refunds, be aware of the following limitations:
+
+1. **Time Limits**: Refunds can typically be processed within 90 days of the original payment
+2. **Payment Method Restrictions**: Some payment methods may have restrictions on refunds
+3. **Processing Time**: Refunds may take several days to process, depending on the payment method
+4. **Fees**: While Notch Pay doesn't charge additional fees for refunds, the original processing fees are typically not refunded
+
+## Best Practices
+
+1. **Clear Refund Policy**: Establish a clear refund policy for your customers
+2. **Prompt Processing**: Process refunds promptly to maintain customer satisfaction
+3. **Detailed Records**: Keep detailed records of refund reasons for reconciliation
+4. **Communication**: Keep customers informed about the status of their refunds
+5. **Partial Refunds**: Consider offering partial refunds when appropriate
+6. **Metadata**: Use metadata to link refunds to your internal systems
+
+## Troubleshooting
+
+### Common Issues
+
+- **Insufficient Funds**: Ensure your Notch Pay account has sufficient funds to process the refund
+- **Invalid Payment**: Verify that the payment ID or reference is correct
+- **Payment Not Eligible**: Check that the payment is in a state that allows refunds
+- **Amount Exceeds Payment**: Ensure the refund amount doesn't exceed the original payment amount
+
+### Support
+
+If you encounter issues with refunds:
+
+- Check the [API Reference](/api/refunds) for detailed parameter documentation
+- Contact our [support team](mailto:hello@notchpay.co) for assistance
+- Join our [developer community](https://community.notchpay.co) to connect with other users
+
+## Next Steps
+
+- [Disputes](/docs/accept-payments/disputes) - Learn how to handle payment disputes
+- [Webhooks](/docs/webhooks) - Set up webhooks for payment and refund notifications
+- [API Integration](/docs/accept-payments/api-integration) - Build a custom payment experience
+- [Testing](/docs/testing) - Test your refund implementation in the sandbox environment

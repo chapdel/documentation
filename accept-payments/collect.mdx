@@ -1,0 +1,281 @@
+---
+title: Collect
+description: Accept payments with Notch Pay's hosted payment page
+---
+
+# Notch Pay Collect
+
+Notch Pay Collect is a hosted payment page that provides a simple and secure way to accept payments. With minimal integration effort, you can offer your customers a seamless payment experience with support for multiple payment methods.
+
+## Overview
+
+Notch Pay Collect handles the entire payment process, including:
+
+- Displaying available payment methods
+- Securely collecting payment information
+- Processing the payment
+- Handling success and failure scenarios
+- Redirecting customers back to your website
+
+## Benefits of Using Collect
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Quick Integration</h3>
+    <p>Implement payments with minimal code. No need to build your own payment form or handle payment processing logic.</p>
+  </div>
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Security</h3>
+    <p>Payment information is collected on Notch Pay's secure servers, reducing your PCI compliance burden.</p>
+  </div>
+</div>
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Multiple Payment Methods</h3>
+    <p>Support for various payment methods including Mobile Money and digital wallets like Assoh.</p>
+  </div>
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Responsive Design</h3>
+    <p>Works seamlessly on desktop and mobile devices with a responsive, user-friendly interface.</p>
+  </div>
+</div>
+
+## Integration Steps
+
+### 1. Create a Payment
+
+To use Notch Pay Collect, first create a payment using the API:
+
+```javascript
+// Using fetch in JavaScript
+fetch('https://api.notchpay.co/payments', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    amount: 5000,
+    currency: 'XAF',
+    customer: {
+      name: 'John Doe',
+      email: 'john@example.com',
+      phone: '+237600000000'
+    },
+    description: 'Payment for Order #123',
+    callback: 'https://your-website.com/callback',
+    reference: 'order_123'
+  })
+})
+.then(response => response.json())
+.then(data => {
+  // Redirect to the collect page
+  window.location.href = data.authorization_url;
+})
+.catch(error => console.error('Error:', error));
+```
+
+### 2. Redirect to Collect
+
+After creating a payment, you'll receive an `authorization_url` in the response. Redirect your customer to this URL to complete the payment:
+
+```javascript
+window.location.href = data.authorization_url;
+// Example: https://pay.notchpay.co/pay_123456789
+```
+
+### 3. Handle the Callback
+
+When the payment is completed (or fails), Notch Pay will redirect the customer back to your `callback` URL with the payment reference:
+
+```
+https://your-website.com/callback?reference=order_123
+```
+
+You should verify the payment status by calling the API:
+
+```javascript
+fetch(`https://api.notchpay.co/payments/${reference}`, {
+  headers: {
+    'Authorization': 'YOUR_API_KEY'
+  }
+})
+.then(response => response.json())
+.then(data => {
+  if (data.transaction.status === 'complete') {
+    // Payment successful, update your database and show success page
+  } else {
+    // Payment failed or is still pending
+  }
+})
+.catch(error => console.error('Error:', error));
+```
+
+## Customization Options
+
+Notch Pay Collect can be customized to match your brand and requirements:
+
+### Basic Customization
+
+When creating a payment, you can specify:
+
+- `title`: Custom title for the collect page
+- `description`: Detailed description of what the customer is paying for
+- `logo`: URL of your logo to display on the collect page
+- `callback`: URL to redirect after payment completion
+- `cancel_url`: URL to redirect if the customer cancels the payment
+
+```javascript
+fetch('https://api.notchpay.co/payments', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    amount: 5000,
+    currency: 'XAF',
+    customer: {
+      name: 'John Doe',
+      email: 'john@example.com'
+    },
+    title: 'Premium Package',
+    description: 'Access to Premium Features',
+    logo: 'https://your-website.com/logo.png',
+    callback: 'https://your-website.com/success',
+    cancel_url: 'https://your-website.com/cancel'
+  })
+})
+```
+
+### Payment Method Restrictions
+
+You can restrict the available payment methods:
+
+- `locked_channel`: Restrict to a specific payment channel
+- `locked_country`: Restrict to payment methods from a specific country
+- `locked_currency`: Restrict to a specific currency
+
+```javascript
+fetch('https://api.notchpay.co/payments', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    amount: 5000,
+    currency: 'XAF',
+    customer: {
+      name: 'John Doe',
+      email: 'john@example.com'
+    },
+    locked_channel: 'cm.mtn',  // Only allow MTN Mobile Money
+    locked_country: 'CM'       // Only allow Cameroon payment methods
+  })
+})
+```
+
+### Advanced Customization
+
+For more advanced customization, you can set up a custom collect page in your Notch Pay dashboard:
+
+1. Go to Settings > Collect
+2. Click "Create Custom Collect"
+3. Customize colors, fonts, and layout
+4. Save your custom collect template
+
+Then, when creating a payment, specify the template ID:
+
+```javascript
+fetch('https://api.notchpay.co/payments', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    amount: 5000,
+    currency: 'XAF',
+    customer: {
+      name: 'John Doe',
+      email: 'john@example.com'
+    },
+    checkout_template: 'template_123456789'
+  })
+})
+```
+
+## Payment Statuses
+
+When processing payments through Collect, it's important to understand the various transaction statuses:
+
+| Status | State | Description |
+| --- | --- | --- |
+| pending | Transitional | Transaction has been initiated and awaits customer completion on the hosted page or direct api. |
+| processing | Transitional | Customer initiated the payment process, but it has not been completed yet. |
+| incomplete | Transitional | Customer pay less than payment amount. |
+| canceled | Final | Transaction has been cancelled. This status is final. |
+| failed | Final | Transaction has failed. This status is final. |
+| rejected | Final | Transaction has been rejected by our system or by operator. This status is final. |
+| abandoned | Final | Customer abandoned the payment on our hosted page. This status is final. |
+| expired | Final | Transaction has expired after 3 hours. This status is final. |
+| complete | Mixed | Transaction has been successfully completed. This status is final but can be refunded. |
+| refunded | Final | Transaction has been successfully refunded to customer. This status is final. |
+| partialy-refunded | Final | Transaction has been partialy refunded to customer. This status is final. |
+
+## Collect Flow
+
+The Notch Pay Collect flow consists of the following steps:
+
+1. **Payment Information**: The customer sees the payment amount, description, and your business information
+2. **Payment Method Selection**: The customer selects their preferred payment method
+3. **Payment Details**: The customer enters their payment details (e.g., mobile money number)
+4. **Confirmation**: The customer confirms the payment
+5. **Processing**: Notch Pay processes the payment with the selected provider
+6. **Result**: The customer sees the payment result (success or failure)
+7. **Redirect**: The customer is redirected back to your website
+
+## Testing Collect
+
+To test the collect flow:
+
+1. Switch to Test Mode in your dashboard
+2. Create a test payment using your test API key
+3. Use test payment methods to simulate different scenarios
+4. Verify that your callback handling works correctly
+
+## Best Practices
+
+1. **Pre-fill Customer Information**: Provide customer details when creating the payment to streamline the collect process
+2. **Clear Descriptions**: Use clear and concise descriptions so customers know what they're paying for
+3. **Responsive Design**: Ensure your website is responsive, as many customers will complete payment on mobile devices
+4. **Error Handling**: Implement proper error handling for cases where customers abandon payment or payments fail
+5. **Webhooks**: Set up webhooks for reliable payment notifications, as some customers may not return to your callback URL
+
+## Troubleshooting
+
+### Common Issues
+
+- **Redirect Not Working**: Ensure your callback URL is properly URL-encoded and accessible
+- **Payment Not Showing**: Verify that you're using the correct API key and that the payment was created successfully
+- **Customization Not Applied**: Check that your logo URL is publicly accessible and that custom parameters are correctly formatted
+
+### Support
+
+If you encounter issues with Notch Pay Collect:
+
+- Check the [API Reference](/api/payments) for detailed parameter documentation
+- Contact our [support team](mailto:hello@notchpay.co) for assistance
+- Join our [developer community](https://community.notchpay.co) to connect with other developers
+
+## Next Steps
+
+- [Payment Links](/docs/accept-payments/payment-links) - Create shareable payment links without coding
+- [API Integration](/docs/accept-payments/api-integration) - Build a custom payment experience
+- [Mobile Money](/docs/accept-payments/mobile-money) - Learn more about mobile money payments
+- [Invoices](/docs/accept-payments/invoices) - Create and manage invoices
+- [Refunds](/docs/accept-payments/refunds) - Process refunds for completed payments
+- [Disputes](/docs/accept-payments/disputes) - Handle payment disputes and chargebacks
+- [Webhooks](/docs/webhooks) - Set up webhooks for payment notifications

@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "Notch Pay",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -17,60 +17,82 @@
             "group": "Get Started",
             "pages": [
               "index",
-              "quickstart",
-              "development"
+              "get-started/index",
+              "get-started/authentication",
+              "get-started/responses",
+              "get-started/errors",
+              "get-started/testing",
+              "faq"
             ]
           },
           {
-            "group": "Essentials",
+            "group": "Webhooks",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
+              "get-started/webhooks/index",
+              "get-started/webhooks/verify"
+            ]
+          },
+          {
+            "group": "Security",
+            "pages": [
+              "security/index",
+              "security/best-practices",
+              "security/compliance",
+              "security/fraud-detection"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Accept Payments",
+        "groups": [
+          {
+            "group": "Accept Payments",
+            "pages": [
+              "accept-payments/index",
+              "accept-payments/collect",
+              "accept-payments/payment-links",
+              "accept-payments/charge",
+              "accept-payments/invoices",
+              "accept-payments/mobile-money",
+              "accept-payments/order-methods",
+              "accept-payments/refunds",
+              "accept-payments/disputes"
+            ]
+          },
+          {
+            "group": "Sync",
+            "pages": [
+              "sync/index",
+              "sync/integration",
+              "sync/account-management"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Send Money",
+        "groups": [
+          {
+            "group": "Transfers",
+            "pages": [
+              "send-money/index",
+              "send-money/transfers"
             ]
           }
         ]
       },
       {
         "tab": "API Reference",
-        "groups": [
-          {
-            "group": "API Documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          },
-          {
-            "group": "Endpoint Examples",
-            "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
-            ]
-          }
-        ]
+        "openapi": "https://notch.sfo3.cdn.digitaloceanspaces.com/openapi.yaml"
       }
     ],
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
+          "anchor": "Website",
+          "href": "https://notchpay.co",
+          "icon": "link"
         }
       ]
     }
@@ -82,21 +104,26 @@
   "navbar": {
     "links": [
       {
+        "label": "Blog",
+        "href": "https://notes.notchpay.co"
+      },
+      {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:hello@notchpay.co"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://business.notchpay.co"
     }
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/notchpay",
+      "github": "https://github.com/notchpay",
+      "linkedin": "https://linkedin.com/company/notchpay",
+      "facebook": "https://facebook.com/notchpay"
     }
   }
 }

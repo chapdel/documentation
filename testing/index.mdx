@@ -1,0 +1,154 @@
+---
+title: Testing Your Integration
+description: Learn how to test your Notch Pay integration before going live
+---
+
+# Testing Your Integration
+
+Before going live with your Notch Pay integration, it's important to thoroughly test it to ensure everything works as expected. Notch Pay provides a dedicated test environment and tools to help you simulate various payment scenarios without processing real transactions.
+
+## Test Environment
+
+Notch Pay offers a sandbox environment that mirrors the production environment but doesn't process real money. This allows you to:
+
+- Test the full payment flow
+- Simulate successful and failed payments
+- Test webhooks and callbacks
+- Verify your integration logic
+
+## Accessing Test Mode
+
+To access test mode:
+
+1. Log in to your [Notch Pay Business suite](https://business.notchpay.co)
+2. Click on the environment selector in the top navigation bar
+3. Select "Test Mode"
+
+When in test mode, the dashboard will display a "TEST MODE" indicator to remind you that you're not in the production environment.
+
+## Test API Keys
+
+In test mode, you'll use test API keys that start with `test_`. These keys are different from your live API keys and can only be used in the test environment.
+
+To find your test API keys:
+
+1. Go to your dashboard in test mode
+2. Navigate to Settings > API Keys
+3. Copy your test API key
+
+```
+test_sk_123456789
+```
+
+## Test Payment Methods
+
+Notch Pay provides several test payment methods that you can use to simulate different payment scenarios.
+
+### Mobile Money Test Accounts
+
+You can use the following test mobile money accounts:
+
+| Provider | Phone Number | Result |
+|----------|--------------|--------|
+| MTN Mobile Money | +237670000000 | Success |
+| MTN Mobile Money | +237670000001 | Insufficient funds |
+| MTN Mobile Money | +237670000002 | Failed (other reason) |
+| Orange Money | +237690000000 | Success |
+| Orange Money | +237690000001 | Insufficient funds |
+| Orange Money | +237690000002 | Failed (other reason) |
+
+### Test Cards
+
+You can use the following test cards for card payments:
+
+| Card Type | Card Number | Expiry | CVV | Result |
+|-----------|-------------|--------|-----|--------|
+| Visa | 4242 4242 4242 4242 | Any future date | Any 3 digits | Success |
+| Mastercard | 5555 5555 5555 4444 | Any future date | Any 3 digits | Success |
+| Visa | 4000 0000 0000 0002 | Any future date | Any 3 digits | Declined (insufficient funds) |
+| Visa | 4000 0000 0000 0009 | Any future date | Any 3 digits | Declined (fraud) |
+| Visa | 4000 0000 0000 0127 | Any future date | Any 3 digits | Declined (incorrect CVV) |
+
+For a complete list of test cards and their behaviors, see [Test Cards](/docs/testing/test-cards).
+
+## Testing Webhooks
+
+To test webhooks in your local development environment:
+
+1. Use a tool like [ngrok](https://ngrok.com/) or [localtunnel](https://localtunnel.github.io/www/) to expose your local server to the internet
+2. Register the temporary URL as a webhook endpoint in your Notch Pay dashboard (in test mode)
+3. Trigger events (e.g., create a test payment) to generate webhook notifications
+4. Check your logs to ensure your application is receiving and processing the webhooks correctly
+
+## Testing Different Scenarios
+
+### Successful Payment
+
+1. Create a payment using your test API key
+2. Use a test payment method that's configured to succeed
+3. Verify that your application handles the successful payment correctly
+4. Check that webhooks and callbacks are processed correctly
+
+### Failed Payment
+
+1. Create a payment using your test API key
+2. Use a test payment method that's configured to fail
+3. Verify that your application handles the failed payment correctly
+4. Check that error messages are displayed appropriately to users
+
+### Canceled Payment
+
+1. Create a payment using your test API key
+2. Cancel the payment before it's completed
+3. Verify that your application handles the canceled payment correctly
+
+### Expired Payment
+
+1. Create a payment using your test API key with a short expiration time
+2. Let the payment expire without completing it
+3. Verify that your application handles the expired payment correctly
+
+## Testing Transfers
+
+To test money transfers:
+
+1. Add funds to your test account (this is simulated in test mode)
+2. Create a beneficiary using test data
+3. Initiate a transfer to the beneficiary
+4. Verify that your application handles the transfer correctly
+
+## Common Testing Issues
+
+### Webhook Verification Failures
+
+If webhook verification fails in test mode, ensure that:
+
+- You're using the correct webhook secret for the test environment
+- Your webhook endpoint is accessible from the internet
+- Your server is responding with a 2xx status code
+
+### API Key Confusion
+
+Make sure you're using test API keys for test mode and live API keys for production. Using the wrong key will result in authentication errors.
+
+### Missing Test Data
+
+If you're not seeing test data in your dashboard, ensure that you're in test mode. Test and live data are completely separate.
+
+## Going Live
+
+Once you've thoroughly tested your integration and are confident that it works correctly, you can switch to live mode and start accepting real payments.
+
+Before going live, make sure to:
+
+1. Switch to live mode in your dashboard
+2. Update your integration to use your live API keys
+3. Update webhook endpoints to your production URLs
+4. Perform a final test with a small real payment
+
+## Next Steps
+
+- [Test Mode](/docs/testing/test-mode) - Learn more about the test environment
+- [Test Cards](/docs/testing/test-cards) - View all available test cards
+- [Test Accounts](/docs/testing/test-accounts) - View all available test accounts
+- [Going Live Checklist](/docs/testing/test-mode#going-live-checklist) - Ensure you're ready for production

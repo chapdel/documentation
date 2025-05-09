@@ -1,0 +1,227 @@
+---
+title: Payment Links
+description: Create and share payment links without any coding required
+---
+
+# Payment Links
+
+Notch Pay Payment Links allow you to create shareable payment links without any coding required. This is an ideal solution for businesses that want to accept payments quickly without implementing a full integration.
+
+## Overview
+
+Payment Links are perfect for:
+
+- One-time payments
+- Donations
+- Invoice payments
+- Event registrations
+- Product sales
+- Service payments
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Key Benefits</h3>
+    <ul className="list-disc pl-5">
+      <li>No coding required</li>
+      <li>Share via email, SMS, or social media</li>
+      <li>Track payment status in your dashboard</li>
+      <li>Customize with your branding</li>
+      <li>Support for multiple payment methods</li>
+    </ul>
+  </div>
+  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
+    <h3 className="text-lg font-semibold mb-2">Use Cases</h3>
+    <ul className="list-disc pl-5">
+      <li>Small businesses without a website</li>
+      <li>Freelancers collecting client payments</li>
+      <li>Non-profits accepting donations</li>
+      <li>Event organizers selling tickets</li>
+      <li>Service providers collecting fees</li>
+    </ul>
+  </div>
+</div>
+
+## Creating Payment Links
+
+### From the Dashboard
+
+The easiest way to create a Payment Link is through your Notch Pay dashboard:
+
+1. Log in to your [Notch Pay Business suite](https://business.notchpay.co)
+2. Go to **Payments** > **Payment Links**
+3. Click **Create Payment Link**
+4. Fill in the payment details:
+   - **Title**: Name of the product or service
+   - **Amount**: Fixed amount or allow customer to enter amount
+   - **Description**: Details about what the customer is paying for
+   - **Redirect URL**: Where to send customers after payment (optional)
+   - **Expiry Date**: When the link should expire (optional)
+   - **Payment Methods**: Restrict to specific payment methods (optional)
+5. Click **Create Link**
+6. Share the generated link with your customers
+
+### Using the API
+
+You can also create Payment Links programmatically using the API:
+
+```javascript
+fetch('https://api.notchpay.co/payment-links', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'YOUR_API_KEY',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    title: 'Premium Package',
+    amount: 10000,
+    currency: 'XAF',
+    description: 'Access to Premium Features',
+    redirect_url: 'https://your-website.com/thank-you',
+    expires_at: '2023-12-31T23:59:59Z', // Optional
+    payment_methods: ['cm.mtn', 'cm.orange', 'wallet.assoh'], // Optional
+    metadata: { // Optional
+      product_id: '12345',
+      customer_type: 'premium'
+    }
+  })
+})
+.then(response => response.json())
+.then(data => {
+  // The payment link URL
+  const paymentLinkUrl = data.payment_link.url;
+  console.log(paymentLinkUrl);
+})
+```
+
+## Customizing Payment Links
+
+### Basic Customization
+
+When creating a Payment Link, you can customize:
+
+- **Title and Description**: Provide clear information about what the customer is paying for
+- **Logo**: Add your business logo to the payment page
+- **Amount**: Set a fixed amount or allow customers to enter their own amount
+- **Currency**: Choose the currency for the payment
+- **Redirect URL**: Where to send customers after payment completion
+- **Payment Methods**: Restrict to specific payment methods
+
+### Advanced Customization
+
+For more advanced customization:
+
+1. Go to **Settings** > **Checkout** in your dashboard
+2. Click **Create Custom Checkout**
+3. Customize colors, fonts, and layout
+4. Save your custom checkout template
+5. When creating a Payment Link, select your custom template
+
+## Managing Payment Links
+
+### Viewing Payment Links
+
+To view all your Payment Links:
+
+1. Log in to your [Notch Pay Business suite](https://business.notchpay.co)
+2. Go to **Payments** > **Payment Links**
+3. You'll see a list of all your Payment Links with their status and usage statistics
+
+### Editing Payment Links
+
+To edit an existing Payment Link:
+
+1. Go to **Payments** > **Payment Links**
+2. Find the Payment Link you want to edit
+3. Click the **Edit** button
+4. Make your changes
+5. Click **Save Changes**
+
+Note that some properties cannot be changed after creation, such as the currency.
+
+### Deactivating Payment Links
+
+To deactivate a Payment Link:
+
+1. Go to **Payments** > **Payment Links**
+2. Find the Payment Link you want to deactivate
+3. Click the **Deactivate** button
+
+Deactivated links will no longer accept payments, but existing payments will still be processed.
+
+## Tracking Payments
+
+### Dashboard Tracking
+
+You can track payments made through your Payment Links in your dashboard:
+
+1. Go to **Payments** > **Payment Links**
+2. Click on a specific Payment Link
+3. View the payment history, including:
+   - Total amount collected
+   - Number of successful payments
+   - List of individual transactions
+   - Payment methods used
+
+### Webhooks
+
+For automated tracking, set up webhooks to receive notifications when payments are made:
+
+1. Go to **Settings** > **Webhooks**
+2. Click **Add Endpoint**
+3. Enter your endpoint URL
+4. Select the events you want to receive (e.g., `payment.complete`)
+5. Click **Save**
+
+Your server will now receive notifications when payments are made through your Payment Links.
+
+## Sharing Payment Links
+
+Payment Links can be shared in various ways:
+
+- **Email**: Send the link directly to customers
+- **SMS**: Share the link via text message
+- **Social Media**: Post the link on your social media profiles
+- **QR Code**: Generate a QR code that links to your Payment Link
+- **Website**: Embed the link on your website as a button or text link
+
+### Generating QR Codes
+
+To generate a QR code for your Payment Link:
+
+1. Go to **Payments** > **Payment Links**
+2. Find the Payment Link you want to share
+3. Click the **QR Code** button
+4. Download the QR code image
+5. Print or share the QR code
+
+## Best Practices
+
+1. **Clear Descriptions**: Provide clear information about what the customer is paying for
+2. **Appropriate Expiry Dates**: Set expiry dates for time-sensitive offers
+3. **Track Performance**: Regularly check your dashboard to monitor payment activity
+4. **Test Links**: Always test your Payment Links before sharing them with customers
+5. **Secure Sharing**: Be careful when sharing links publicly to avoid unauthorized use
+
+## Troubleshooting
+
+### Common Issues
+
+- **Expired Links**: Payment Links may expire based on the expiry date you set
+- **Deactivated Links**: Links that have been deactivated will no longer accept payments
+- **Payment Method Restrictions**: Customers may not have access to the payment methods you've restricted to
+- **Currency Mismatches**: Ensure the currency matches the customer's preferred payment method
+
+### Support
+
+If you encounter issues with Payment Links:
+
+- Check the [API Reference](/api/payment-links) for detailed parameter documentation
+- Contact our [support team](mailto:hello@notchpay.co) for assistance
+- Join our [developer community](https://community.notchpay.co) to connect with other users
+
+## Next Steps
+
+- [Collect](/docs/accept-payments/collect) - Use our hosted payment page for a quick integration
+- [Mobile Money](/docs/accept-payments/mobile-money) - Accept mobile money payments
+- [Invoices](/docs/accept-payments/invoices) - Create and manage professional invoices
+- [API Integration](/docs/accept-payments/api-integration) - Build a custom payment experience

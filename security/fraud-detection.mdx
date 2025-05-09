@@ -1,0 +1,158 @@
+---
+title: Fraud Detection System
+description: Understanding Notch Pay's fraud detection system and how to ensure your transactions comply with our security standards
+---
+
+# Fraud Detection System
+
+Notch Pay has implemented a sophisticated fraud detection system to protect the integrity of the payment ecosystem in Africa. This system is active in both sandbox and production environments and plays a crucial role in preventing fraudulent activities.
+
+## Our Security Approach
+
+At Notch Pay, security is not an additional feature but a fundamental element of our platform. Our rigorous approach includes:
+
+- **Real-time Monitoring**: All transactions are monitored in real-time to detect suspicious behaviors
+- **Machine Learning Algorithms**: Our system continuously learns and adapts to new fraud methods
+- **Manual Verifications**: Suspicious transactions may trigger manual reviews by our security team
+- **Regulatory Compliance**: We adhere to all relevant financial regulations in the countries where we operate
+- **Regular Security Audits**: Our systems undergo regular security assessments
+
+## How Our Fraud Detection System Works
+
+Our fraud detection system monitors multiple aspects of transactions and user behaviors:
+
+### 1. Transaction Monitoring
+
+We analyze various transaction patterns and behaviors, including:
+
+- **Transaction Frequency**: Unusually high number of transactions in a short period
+- **Transaction Amounts**: Patterns of identical amounts or unusual amount sequences
+- **Recipient Concentration**: Multiple transactions to the same recipient
+- **Geographic Patterns**: Unusual patterns of transactions across different regions
+- **Time Patterns**: Transactions occurring at unusual times or in unusual sequences
+- **Device and IP Information**: Multiple accounts using the same devices or IPs
+
+### 2. Behavior Analysis
+
+Our system also examines user behaviors to detect anomalies:
+
+- **Usage Patterns**: Sudden changes in usage habits
+- **Access Attempts**: Multiple failed access or payment attempts
+- **Account Modifications**: Frequent or suspicious changes to account information
+- **Cross-border Activities**: Unusual transactions between different countries
+
+### 3. Identity Verification
+
+For high-risk transactions or merchant accounts, we may implement additional verification measures:
+
+- **KYC (Know Your Customer) Verification**: Verification of user identity
+- **Business Verification**: Validation of business information for merchant accounts
+- **Two-factor Authentication**: Additional protection for sensitive actions
+
+## Risk Levels and Actions
+
+Our system assigns risk levels to transactions and accounts, which can trigger different actions:
+
+| Risk Level | Potential Actions |
+|------------|-------------------|
+| Low | Transaction processed normally with ongoing monitoring |
+| Medium | Additional checks, possibility of requesting more information |
+| High | Transaction put on hold for review, possibility of rejection |
+| Critical | Transaction rejected, account potentially suspended for investigation |
+
+## Common Alerts and How to Avoid Them
+
+### Recipient Concentration
+
+**Alert**: Multiple transactions to the same Mobile Money phone number.
+
+**How to avoid it**:
+- Distribute transactions among different recipients
+- If your business model requires repeated transactions to the same recipients, contact our support team to document your use case
+- Implement reasonable limits on the number of transactions to the same recipient in a given period
+
+### Identical Transactions
+
+**Alert**: Multiple transactions with exactly the same amounts in a short time frame.
+
+**How to avoid it**:
+- Vary transaction amounts when possible
+- Space out similar transactions
+- Provide detailed descriptions to justify similar transactions
+
+### Unusual Activity
+
+**Alert**: Sudden change in transaction habits.
+
+**How to avoid it**:
+- Gradually increase transaction volume
+- Inform Notch Pay in advance if you anticipate a significant increase in activity
+- Maintain consistency in your transaction habits
+
+### Incomplete Information
+
+**Alert**: Transactions with incomplete or suspicious customer information.
+
+**How to avoid it**:
+- Collect and transmit complete and accurate customer information
+- Validate phone numbers and emails before submitting them
+- Use clear and specific transaction descriptions
+
+## Differences Between Sandbox and Production
+
+Our fraud detection system is active in both environments, but with some important differences:
+
+### Sandbox Environment
+
+- Less strict parameters to facilitate testing
+- Educational alerts to help developers understand risky behaviors
+- No real consequences for flagged transactions
+
+### Production Environment
+
+- Strict parameters compliant with financial industry standards
+- Real-time monitoring with possibility of manual intervention
+- Real consequences for suspicious transactions, including rejection or account suspension
+
+## Best Practices for Developers
+
+To ensure your integrations comply with our security standards:
+
+1. **Test Rigorously**: Use the sandbox environment to test all scenarios, including edge cases
+2. **Distribute Transactions**: Avoid concentrating all transactions on a single phone number
+3. **Validate Inputs**: Check and validate all user inputs before submitting them
+4. **Implement Authentication**: Ensure your users are properly authenticated
+5. **Monitor Activities**: Set up your own monitoring to detect suspicious behaviors
+6. **Document Special Cases**: If your business model requires unusual transaction patterns, document them with our team
+7. **Respect Limits**: Adhere to recommended transaction limits
+8. **Update Regularly**: Keep your integration up to date with our latest security recommendations
+
+## What to Do When a Transaction is Blocked
+
+If a transaction is blocked by our fraud detection system:
+
+1. **Check the Details**: Ensure all transaction information is correct
+2. **Consult the Logs**: Check your application logs for any errors
+3. **Contact Support**: If you believe it's a false positive, contact our support team with the transaction ID
+4. **Provide Additional Information**: Be prepared to provide additional information to verify the legitimacy of the transaction
+5. **Adjust Your Integration**: Modify your integration if necessary to avoid similar issues in the future
+
+## Commitment to Continuous Improvement
+
+Our fraud detection system is constantly evolving to address new threats. We are committed to:
+
+- Continuously improving our detection algorithms
+- Reducing false positives while maintaining robust security
+- Providing clear feedback when transactions are blocked
+- Working with developers to optimize their integrations
+
+## Additional Resources
+
+- [Security Guide](/docs/security/guide)
+- [Best Practices for Integrations](/docs/get-started/best-practices)
+- [Regulatory Compliance](/docs/security/compliance)
+- [Contact Support](https://notchpay.co/support)
+
+---
+
+> **Important Note**: Security is a shared responsibility. As a developer integrating Notch Pay, you play a crucial role in maintaining the integrity and security of the payment ecosystem. Always follow best practices and remain vigilant against suspicious activities.
