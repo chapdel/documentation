@@ -1,0 +1,640 @@
+---
+title: Webhooks API
+description: Configure and manage webhook endpoints to receive real-time event notifications
+---
+
+# Webhooks API
+
+<Note>
+  Webhooks allow you to receive real-time notifications about events in your Notch Pay account. Instead of polling the API for updates, webhooks push data to your server when events occur.
+</Note>
+
+## How Webhooks Work
+
+<Steps>
+  <Step title="Create a Webhook Endpoint">
+    First, create an endpoint on your server that can receive HTTP POST requests. This endpoint will process webhook events from Notch Pay.
+  </Step>
+  
+  <Step title="Register the Endpoint">
+    Register your endpoint URL with Notch Pay through the API or dashboard. You can specify which events you want to receive.
+  </Step>
+  
+  <Step title="Receive Events">
+    When an event occurs (like a payment with status "complete"), Notch Pay sends a POST request to your endpoint with event data.
+  </Step>
+  
+  <Step title="Process the Event">
+    Your endpoint processes the event data and takes appropriate action (e.g., fulfilling an order after a payment).
+  </Step>
+  
+  <Step title="Respond with 200 OK">
+    Your endpoint should respond with a 200 OK status code to acknowledge receipt of the webhook.
+  </Step>
+</Steps>
+
+## Webhook Event Object
+
+<CodeGroup>
+```json Webhook Event
+{
+  "id": "evt_123456789",
+  "type": "payment.complete",
+  "created_at": "2023-01-01T12:00:00Z",
+  "data": {
+    "id": "pay_123456789",
+    "reference": "order_123",
+    "amount": 5000,
+    "currency": "XAF",
+    "status": "complete",
+    "customer": "cus_123456789",
+    "created_at": "2023-01-01T12:00:00Z",
+    "completed_at": "2023-01-01T12:05:00Z"
+  }
+}
+```
+</CodeGroup>
+
+### Webhook Event Properties
+
+<ResponseField name="id" type="string">
+  Unique identifier for the event
+</ResponseField>
+
+<ResponseField name="type" type="string">
+  Type of event (e.g., `payment.complete`, `transfer.failed`)
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  Timestamp when the event was created
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  The resource that triggered the event (e.g., a payment or transfer object)
+</ResponseField>
+
+## API Endpoints
+
+<Card title="List Webhooks" icon="list" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /webhooks
+      ```
+
+      Retrieve a list of all webhook endpoints for your account.
+
+      ### Query Parameters
+
+      <ParamField query="limit" type="integer">
+        Number of items per page (default: 30, max: 100)
+      </ParamField>
+
+      <ParamField query="page" type="integer">
+        Page number (default: 1)
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Webhooks retrieved",
+        "data": [
+          {
+            "id": "wh_123456789",
+            "url": "https://example.com/webhooks",
+            "events": ["payment.complete", "payment.failed"],
+            "active": true,
+            "created_at": "2023-01-01T12:00:00Z"
+          },
+          // More webhooks...
+        ]
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="Create a Webhook" icon="plus" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      POST /webhooks
+      ```
+
+      Create a new webhook endpoint.
+
+      ### Request Parameters
+
+      <ParamField body="url" type="string" required>
+        The URL where webhook events will be sent
+      </ParamField>
+
+      <ParamField body="events" type="array" required>
+        Array of event types to subscribe to
+      </ParamField>
+
+      <ParamField body="description" type="string">
+        Description of the webhook
+      </ParamField>
+
+      <ParamField body="active" type="boolean">
+        Whether the webhook is active (default: true)
+      </ParamField>
+
+      ### Example Request
+
+      ```json
+      {
+        "url": "https://example.com/webhooks",
+        "events": ["payment.complete", "payment.failed"],
+        "description": "Payment notifications for my e-commerce site"
+      }
+      ```
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 201,
+        "status": "Created",
+        "message": "Webhook created",
+        "data": {
+          "id": "wh_123456789",
+          "url": "https://example.com/webhooks",
+          "events": ["payment.complete", "payment.failed"],
+          "description": "Payment notifications for my e-commerce site",
+          "active": true,
+          "created_at": "2023-01-01T12:00:00Z"
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="Retrieve a Webhook" icon="magnifying-glass" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /webhooks/{id}
+      ```
+
+      Retrieve details of a specific webhook.
+
+      ### Path Parameters
+
+      <ParamField path="id" type="string" required>
+        ID of the webhook to retrieve
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Webhook retrieved",
+        "data": {
+          "id": "wh_123456789",
+          "url": "https://example.com/webhooks",
+          "events": ["payment.complete", "payment.failed"],
+          "description": "Payment notifications for my e-commerce site",
+          "active": true,
+          "created_at": "2023-01-01T12:00:00Z"
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="Update a Webhook" icon="pen-to-square" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      PUT /webhooks/{id}
+      ```
+
+      Update an existing webhook.
+
+      ### Path Parameters
+
+      <ParamField path="id" type="string" required>
+        ID of the webhook to update
+      </ParamField>
+
+      ### Request Parameters
+
+      <ParamField body="url" type="string">
+        The URL where webhook events will be sent
+      </ParamField>
+
+      <ParamField body="events" type="array">
+        Array of event types to subscribe to
+      </ParamField>
+
+      <ParamField body="description" type="string">
+        Description of the webhook
+      </ParamField>
+
+      <ParamField body="active" type="boolean">
+        Whether the webhook is active
+      </ParamField>
+
+      ### Example Request
+
+      ```json
+      {
+        "events": ["payment.complete", "payment.failed", "transfer.complete"],
+        "active": true
+      }
+      ```
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Webhook updated",
+        "data": {
+          "id": "wh_123456789",
+          "url": "https://example.com/webhooks",
+          "events": ["payment.complete", "payment.failed", "transfer.complete"],
+          "description": "Payment notifications for my e-commerce site",
+          "active": true,
+          "created_at": "2023-01-01T12:00:00Z",
+          "updated_at": "2023-01-02T12:00:00Z"
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="Delete a Webhook" icon="trash" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      DELETE /webhooks/{id}
+      ```
+
+      Delete a webhook endpoint.
+
+      ### Path Parameters
+
+      <ParamField path="id" type="string" required>
+        ID of the webhook to delete
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Webhook deleted"
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+## Event Types
+
+<Accordion title="Available Event Types" defaultOpen>
+  <CardGroup cols={2}>
+    <Card title="Payment Events" icon="credit-card">
+      <ResponseField name="payment.created" type="event">
+        Triggered when a payment is created
+      </ResponseField>
+      <ResponseField name="payment.processing" type="event">
+        Triggered when a payment starts processing
+      </ResponseField>
+      <ResponseField name="payment.complete" type="event">
+        Triggered when a payment status changes to "complete"
+      </ResponseField>
+      <ResponseField name="payment.failed" type="event">
+        Triggered when a payment fails
+      </ResponseField>
+      <ResponseField name="payment.canceled" type="event">
+        Triggered when a payment is canceled
+      </ResponseField>
+      <ResponseField name="payment.expired" type="event">
+        Triggered when a payment expires
+      </ResponseField>
+    </Card>
+    
+    <Card title="Transfer Events" icon="money-bill-transfer">
+      <ResponseField name="transfer.created" type="event">
+        Triggered when a transfer is created
+      </ResponseField>
+      <ResponseField name="transfer.processing" type="event">
+        Triggered when a transfer starts processing
+      </ResponseField>
+      <ResponseField name="transfer.complete" type="event">
+        Triggered when a transfer status changes to "complete"
+      </ResponseField>
+      <ResponseField name="transfer.failed" type="event">
+        Triggered when a transfer fails
+      </ResponseField>
+    </Card>
+    
+    <Card title="Customer Events" icon="users">
+      <ResponseField name="customer.created" type="event">
+        Triggered when a customer is created
+      </ResponseField>
+      <ResponseField name="customer.updated" type="event">
+        Triggered when a customer is updated
+      </ResponseField>
+    </Card>
+    
+    <Card title="Beneficiary Events" icon="user-plus">
+      <ResponseField name="beneficiary.created" type="event">
+        Triggered when a beneficiary is created
+      </ResponseField>
+      <ResponseField name="beneficiary.updated" type="event">
+        Triggered when a beneficiary is updated
+      </ResponseField>
+      <ResponseField name="beneficiary.deleted" type="event">
+        Triggered when a beneficiary is deleted
+      </ResponseField>
+    </Card>
+  </CardGroup>
+</Accordion>
+
+## Webhook Security
+
+<Callout type="warning">
+  Always verify webhook signatures to ensure they're coming from Notch Pay and not from an attacker.
+</Callout>
+
+<Steps>
+  <Step title="Retrieve Your Webhook Secret">
+    Each webhook has a secret that you can find in your dashboard or when creating a webhook via the API.
+  </Step>
+  
+  <Step title="Extract the Signature">
+    When Notch Pay sends a webhook, it includes a `X-Notch-Signature` header with a signature.
+  </Step>
+  
+  <Step title="Verify the Signature">
+    <CodeGroup>
+      ```javascript Node.js
+      const crypto = require('crypto');
+      
+      function verifyWebhookSignature(payload, signature, secret) {
+        const hmac = crypto.createHmac('sha256', secret);
+        const calculatedSignature = hmac.update(payload).digest('hex');
+        return crypto.timingSafeEqual(
+          Buffer.from(calculatedSignature, 'hex'),
+          Buffer.from(signature, 'hex')
+        );
+      }
+      
+      // In your webhook handler
+      app.post('/webhooks', express.raw({type: 'application/json'}), (req, res) => {
+        const signature = req.headers['x-notch-signature'];
+        const payload = req.body.toString();
+        
+        if (!verifyWebhookSignature(payload, signature, 'your_webhook_secret')) {
+          return res.status(400).send('Invalid signature');
+        }
+        
+        const event = JSON.parse(payload);
+        // Process the event
+        
+        res.status(200).send('Webhook received');
+      });
+      ```
+      
+      ```php PHP
+      <?php
+      function verifyWebhookSignature($payload, $signature, $secret) {
+        $calculatedSignature = hash_hmac('sha256', $payload, $secret);
+        return hash_equals($calculatedSignature, $signature);
+      }
+      
+      // In your webhook handler
+      $payload = file_get_contents('php://input');
+      $signature = $_SERVER['HTTP_X_NOTCH_SIGNATURE'];
+      
+      if (!verifyWebhookSignature($payload, $signature, 'your_webhook_secret')) {
+        http_response_code(400);
+        echo 'Invalid signature';
+        exit;
+      }
+      
+      $event = json_decode($payload, true);
+      // Process the event
+      
+      http_response_code(200);
+      echo 'Webhook received';
+      ```
+      
+      ```python Python
+      import hmac
+      import hashlib
+      
+      def verify_webhook_signature(payload, signature, secret):
+          calculated_signature = hmac.new(
+              secret.encode('utf-8'),
+              payload.encode('utf-8'),
+              hashlib.sha256
+          ).hexdigest()
+          return hmac.compare_digest(calculated_signature, signature)
+      
+      # In your webhook handler (using Flask)
+      @app.route('/webhooks', methods=['POST'])
+      def handle_webhook():
+          payload = request.data.decode('utf-8')
+          signature = request.headers.get('X-Notch-Signature')
+          
+          if not verify_webhook_signature(payload, signature, 'your_webhook_secret'):
+              return 'Invalid signature', 400
+          
+          event = json.loads(payload)
+          # Process the event
+          
+          return 'Webhook received', 200
+      ```
+    </CodeGroup>
+  </Step>
+</Steps>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Respond Quickly" icon="bolt" color="#16A34A">
+    Respond to webhooks with a 200 status code as quickly as possible, even before processing the event. This prevents Notch Pay from retrying the webhook.
+    
+    Process the event asynchronously if it requires time-consuming operations.
+  </Card>
+  
+  <Card title="Handle Retries" icon="rotate" color="#16A34A">
+    Notch Pay will retry failed webhook deliveries several times with increasing delays. Make your webhook handler idempotent to avoid processing the same event multiple times.
+    
+    Store the event ID and check if you've already processed it before taking action.
+  </Card>
+  
+  <Card title="Monitor Webhook Health" icon="heart-pulse" color="#16A34A">
+    Regularly check your webhook logs in the Notch Pay dashboard to ensure they're being delivered correctly.
+    
+    Set up monitoring for your webhook endpoint to detect and alert on failures.
+  </Card>
+  
+  <Card title="Use HTTPS" icon="lock" color="#16A34A">
+    Always use HTTPS for your webhook endpoints to ensure the data is encrypted in transit.
+    
+    Use a valid SSL certificate from a trusted certificate authority.
+  </Card>
+</CardGroup>
+
+## Testing Webhooks
+
+<Tabs>
+  <Tab title="Using the Dashboard">
+    <Steps>
+      <Step title="Go to Webhooks Section">
+        Navigate to the Webhooks section in your Notch Pay dashboard.
+      </Step>
+      
+      <Step title="Select a Webhook">
+        Select the webhook you want to test.
+      </Step>
+      
+      <Step title="Click 'Send Test Event'">
+        Click the "Send Test Event" button and select the event type you want to test.
+      </Step>
+      
+      <Step title="Check Your Logs">
+        Check your server logs to confirm that the test event was received and processed correctly.
+      </Step>
+    </Steps>
+  </Tab>
+  
+  <Tab title="Using a Webhook Debugger">
+    <Steps>
+      <Step title="Set Up a Webhook Debugger">
+        Use a service like [webhook.site](https://webhook.site) or [Beeceptor](https://beeceptor.com) to get a temporary URL for testing.
+      </Step>
+      
+      <Step title="Create a Test Webhook">
+        Create a new webhook in your Notch Pay account using the temporary URL.
+      </Step>
+      
+      <Step title="Trigger Events">
+        Trigger events (like creating a test payment) to see the webhook payloads in real-time.
+      </Step>
+      
+      <Step title="Analyze the Payload">
+        Analyze the webhook payload to understand the data structure and implement your handler accordingly.
+      </Step>
+    </Steps>
+    
+    <Callout type="info">
+      Remember to delete test webhooks when you're done to avoid sending sensitive data to third-party services.
+    </Callout>
+  </Tab>
+  
+  <Tab title="Local Development">
+    <Steps>
+      <Step title="Use a Tunnel Service">
+        Use a service like [ngrok](https://ngrok.com) or [Localtunnel](https://localtunnel.github.io/www/) to expose your local server to the internet.
+        
+        ```bash
+        # Example with ngrok
+        ngrok http 3000
+        ```
+      </Step>
+      
+      <Step title="Create a Webhook">
+        Create a webhook in your Notch Pay account using the tunnel URL.
+        
+        ```
+        https://abc123.ngrok.io/webhooks
+        ```
+      </Step>
+      
+      <Step title="Implement Your Handler">
+        Implement your webhook handler in your local development environment.
+      </Step>
+      
+      <Step title="Trigger Events">
+        Trigger events in your Notch Pay test account to test your handler.
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Webhook Not Receiving Events">
+    <Steps>
+      <Step title="Check Webhook Status">
+        Verify that the webhook is active in your Notch Pay dashboard.
+      </Step>
+      
+      <Step title="Check Event Subscriptions">
+        Make sure you're subscribed to the event types you expect to receive.
+      </Step>
+      
+      <Step title="Check Server Logs">
+        Check your server logs for any errors or failed webhook deliveries.
+      </Step>
+      
+      <Step title="Verify Endpoint Accessibility">
+        Ensure your endpoint is publicly accessible and responds with a 200 status code.
+      </Step>
+    </Steps>
+  </Accordion>
+  
+  <Accordion title="Invalid Signature Errors">
+    <Steps>
+      <Step title="Check Secret Key">
+        Verify that you're using the correct webhook secret.
+      </Step>
+      
+      <Step title="Check Raw Payload">
+        Ensure you're verifying the signature against the raw request body, not the parsed JSON.
+      </Step>
+      
+      <Step title="Check for Modifications">
+        Make sure the payload isn't being modified before verification (e.g., by a proxy or middleware).
+      </Step>
+    </Steps>
+  </Accordion>
+  
+  <Accordion title="Duplicate Events">
+    <Steps>
+      <Step title="Implement Idempotency">
+        Store processed event IDs and check for duplicates before processing.
+        
+        ```javascript
+        // Example with a database
+        async function handleWebhook(event) {
+          // Check if we've already processed this event
+          const existingEvent = await db.events.findOne({ id: event.id });
+          if (existingEvent) {
+            console.log(`Event ${event.id} already processed, skipping`);
+            return;
+          }
+          
+          // Process the event
+          await processEvent(event);
+          
+          // Store the event ID to prevent duplicate processing
+          await db.events.insertOne({ id: event.id, processed_at: new Date() });
+        }
+        ```
+      </Step>
+      
+      <Step title="Use Database Constraints">
+        Use unique constraints in your database to prevent duplicate event processing.
+      </Step>
+    </Steps>
+  </Accordion>
+</AccordionGroup>
+
+<Callout type="success">
+  For more help with webhooks, check our [Webhook Integration Guide](/get-started/webhooks/setup) or contact our [support team](mailto:hello@notchpay.co).
+</Callout>

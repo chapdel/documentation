@@ -3,8 +3,6 @@ title: Send Money
 description: Learn how to send money to beneficiaries using Notch Pay
 ---
 
-# Send Money with Notch Pay (Transfers)
-
 <div className="bg-teal-50 p-4 border-l-4 border-teal-500 rounded-md mb-6">
   <p className="text-sm text-teal-700">
     <strong>Terminology Note:</strong> In Notch Pay, the term "Transfers" is the official terminology used to refer to sending money to recipients (payouts, withdrawals, and fund distributions).
@@ -33,17 +31,17 @@ Transfers in Notch Pay refer to the process of distributing funds to recipients,
 
 Notch Pay supports various transfer methods depending on the recipient's location and preferences:
 
-<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
   <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
     <h3 className="text-md font-semibold mb-2">Mobile Money</h3>
     <p className="text-sm">Send money directly to mobile money accounts like MTN Mobile Money, Orange Money, and more.</p>
     <a href="/send-money/transfers#mobile-money-transfers" className="text-teal-600 hover:underline text-sm">Learn more →</a>
   </div>
-  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+  {/*<div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
     <h3 className="text-md font-semibold mb-2">Bank Transfers</h3>
     <p className="text-sm">Transfer funds to bank accounts across multiple countries.</p>
     <a href="/send-money/transfers#bank-transfers" className="text-teal-600 hover:underline text-sm">Learn more →</a>
-  </div>
+  </div>*/}
   <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
     <h3 className="text-md font-semibold mb-2">Bulk Transfers</h3>
     <p className="text-sm">Send money to multiple recipients at once, perfect for payroll and mass disbursements.</p>
@@ -87,7 +85,7 @@ Notch Pay offers two main types of recipients for transfers:
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
   <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-    <h3 className="text-md font-semibold mb-2">Standard Recipients</h3>
+    <h3 className="text-md font-semibold mb-2">Standard Recipients / Beneficiaries</h3>
     <p className="text-sm mb-2">Created via API or dashboard for regular transfers to mobile money accounts and other payment methods.</p>
     <ul className="list-disc pl-5 text-sm">
       <li>Can be created via API or dashboard</li>
@@ -140,7 +138,7 @@ For detailed information about fees and limits, please visit our [pricing page](
 You can send money through Notch Pay using:
 
 - **Dashboard**: Use our web dashboard to manually initiate transfers
-- **API**: Integrate with our [Transfers API](/api/transfers) for programmatic transfers
+- **API**: Integrate with our [Transfers API](/api-reference/transfers) for programmatic transfers
 - **SDKs**: Use our official libraries for various programming languages
 
 ## Next Steps
@@ -150,4 +148,4 @@ Ready to start using Notch Pay Transfers? Explore these resources:
 - [Transfers Guide](/send-money/transfers) - Learn how to send money to individuals and businesses
 - [Recipients Management](/send-money/transfers#creating-transfer-recipients) - Create and manage your recipients
 - [Bulk Transfers](/send-money/bulk-transfers) - Send money to multiple recipients at once
-- [Transfers API](/api/transfers) - API reference for programmatic transfers
+- [Transfers API](/api-reference/transfers) - API reference for programmatic transfers

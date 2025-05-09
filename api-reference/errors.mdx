@@ -1,0 +1,512 @@
+---
+title: API Errors
+description: Understand and troubleshoot common Notch Pay API errors
+---
+
+# API Errors
+
+<Note>
+  This guide helps you understand and troubleshoot common errors you might encounter when using the Notch Pay API.
+</Note>
+
+## Error Response Format
+
+<CodeGroup>
+```json Error Response
+{
+  "code": 400,
+  "status": "Bad Request",
+  "message": "Error message",
+  "errors": {
+    "field_name": ["Error description"]
+  }
+}
+```
+
+```json Validation Error Example
+{
+  "code": 422,
+  "status": "Unprocessable Entity",
+  "message": "Validation failed",
+  "errors": {
+    "amount": ["Amount must be greater than 0"],
+    "currency": ["Currency is required"]
+  }
+}
+```
+</CodeGroup>
+
+## Common Error Codes
+
+<CardGroup cols={2}>
+  <Card title="Authentication Errors" icon="key" color="#dc2626">
+    <AccordionGroup>
+      <Accordion title="401 - Unauthorized">
+        <ResponseField name="API key missing" type="error">
+          ```json
+          {
+            "code": 401,
+            "status": "Unauthorized",
+            "message": "API key is missing"
+          }
+          ```
+          
+          **Solution**: Include your API key in the `Authorization` header of your request.
+        </ResponseField>
+        
+        <ResponseField name="Invalid API key" type="error">
+          ```json
+          {
+            "code": 401,
+            "status": "Unauthorized",
+            "message": "Invalid API key"
+          }
+          ```
+          
+          **Solution**: Check that you're using the correct API key. Make sure you're not mixing test and live keys.
+        </ResponseField>
+      </Accordion>
+      
+      <Accordion title="403 - Forbidden">
+        <ResponseField name="Insufficient permissions" type="error">
+          ```json
+          {
+            "code": 403,
+            "status": "Forbidden",
+            "message": "You don't have permission to access this resource"
+          }
+          ```
+          
+          **Solution**: Verify that your API key has the necessary permissions for the operation you're trying to perform.
+        </ResponseField>
+        
+        <ResponseField name="Missing grant key" type="error">
+          ```json
+          {
+            "code": 403,
+            "status": "Forbidden",
+            "message": "This endpoint requires additional authentication"
+          }
+          ```
+          
+          **Solution**: Include your private key in the `X-Grant` header for sensitive operations.
+        </ResponseField>
+      </Accordion>
+    </AccordionGroup>
+  </Card>
+  
+  <Card title="Resource Errors" icon="circle-exclamation" color="#dc2626">
+    <AccordionGroup>
+      <Accordion title="404 - Not Found">
+        <ResponseField name="Resource not found" type="error">
+          ```json
+          {
+            "code": 404,
+            "status": "Not Found",
+            "message": "Payment not found"
+          }
+          ```
+          
+          **Solution**: Check that the ID or reference you're using exists and belongs to your account.
+        </ResponseField>
+      </Accordion>
+      
+      <Accordion title="409 - Conflict">
+        <ResponseField name="Duplicate resource" type="error">
+          ```json
+          {
+            "code": 409,
+            "status": "Conflict",
+            "message": "A payment with this reference already exists"
+          }
+          ```
+          
+          **Solution**: Use a unique reference for each payment or other resource you create.
+        </ResponseField>
+      </Accordion>
+    </AccordionGroup>
+  </Card>
+</CardGroup>
+
+<CardGroup cols={2}>
+  <Card title="Validation Errors" icon="triangle-exclamation" color="#dc2626">
+    <AccordionGroup>
+      <Accordion title="400 - Bad Request">
+        <ResponseField name="Invalid request" type="error">
+          ```json
+          {
+            "code": 400,
+            "status": "Bad Request",
+            "message": "Invalid request parameters"
+          }
+          ```
+          
+          **Solution**: Check your request parameters and make sure they match the API documentation.
+        </ResponseField>
+        
+        <ResponseField name="Invalid JSON" type="error">
+          ```json
+          {
+            "code": 400,
+            "status": "Bad Request",
+            "message": "Invalid JSON payload"
+          }
+          ```
+          
+          **Solution**: Ensure your request body contains valid JSON.
+        </ResponseField>
+      </Accordion>
+      
+      <Accordion title="422 - Unprocessable Entity">
+        <ResponseField name="Validation failed" type="error">
+          ```json
+          {
+            "code": 422,
+            "status": "Unprocessable Entity",
+            "message": "Validation failed",
+            "errors": {
+              "amount": ["Amount must be greater than 0"],
+              "currency": ["Currency is required"]
+            }
+          }
+          ```
+          
+          **Solution**: Check the `errors` object for specific validation errors and fix them in your request.
+        </ResponseField>
+      </Accordion>
+    </AccordionGroup>
+  </Card>
+  
+  <Card title="Rate Limiting & Server Errors" icon="server" color="#dc2626">
+    <AccordionGroup>
+      <Accordion title="429 - Too Many Requests">
+        <ResponseField name="Rate limit exceeded" type="error">
+          ```json
+          {
+            "code": 429,
+            "status": "Too Many Requests",
+            "message": "Rate limit exceeded. Try again in 30 seconds"
+          }
+          ```
+          
+          **Solution**: Implement exponential backoff and respect the `Retry-After` header in the response.
+        </ResponseField>
+      </Accordion>
+      
+      <Accordion title="500 - Internal Server Error">
+        <ResponseField name="Server error" type="error">
+          ```json
+          {
+            "code": 500,
+            "status": "Internal Server Error",
+            "message": "An unexpected error occurred"
+          }
+          ```
+          
+          **Solution**: This is a server-side error. If it persists, contact Notch Pay support with details about your request.
+        </ResponseField>
+      </Accordion>
+    </AccordionGroup>
+  </Card>
+</CardGroup>
+
+## Payment-Specific Errors
+
+<Tabs>
+  <Tab title="Payment Creation">
+    <AccordionGroup>
+      <Accordion title="Invalid Amount">
+        <ResponseField name="Amount too small" type="error">
+          ```json
+          {
+            "code": 422,
+            "status": "Unprocessable Entity",
+            "message": "Validation failed",
+            "errors": {
+              "amount": ["Amount must be at least 100"]
+            }
+          }
+          ```
+          
+          **Solution**: Ensure the payment amount meets the minimum requirement for the selected currency.
+        </ResponseField>
+        
+        <ResponseField name="Amount too large" type="error">
+          ```json
+          {
+            "code": 422,
+            "status": "Unprocessable Entity",
+            "message": "Validation failed",
+            "errors": {
+              "amount": ["Amount exceeds maximum allowed (10000000)"]
+            }
+          }
+          ```
+          
+          **Solution**: Break down large payments into smaller transactions or contact support to increase your limit.
+        </ResponseField>
+      </Accordion>
+      
+      <Accordion title="Currency Issues">
+        <ResponseField name="Unsupported currency" type="error">
+          ```json
+          {
+            "code": 422,
+            "status": "Unprocessable Entity",
+            "message": "Validation failed",
+            "errors": {
+              "currency": ["Currency is not supported"]
+            }
+          }
+          ```
+          
+          **Solution**: Use one of the [supported currencies](/api-reference/resources#currencies).
+        </ResponseField>
+      </Accordion>
+      
+      <Accordion title="Customer Information">
+        <ResponseField name="Missing customer info" type="error">
+          ```json
+          {
+            "code": 422,
+            "status": "Unprocessable Entity",
+            "message": "Validation failed",
+            "errors": {
+              "customer": ["Customer information is required"]
+            }
+          }
+          ```
+          
+          **Solution**: Provide at least an email or phone number for the customer.
+        </ResponseField>
+        
+        <ResponseField name="Invalid email" type="error">
+          ```json
+          {
+            "code": 422,
+            "status": "Unprocessable Entity",
+            "message": "Validation failed",
+            "errors": {
+              "customer.email": ["Invalid email address"]
+            }
+          }
+          ```
+          
+          **Solution**: Provide a valid email address for the customer.
+        </ResponseField>
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+  
+  <Tab title="Payment Processing">
+    <AccordionGroup>
+      <Accordion title="Invalid Payment Status">
+        <ResponseField name="Already processed" type="error">
+          ```json
+          {
+            "code": 422,
+            "status": "Unprocessable Entity",
+            "message": "Payment has already been processed"
+          }
+          ```
+          
+          **Solution**: Check the payment status before attempting to process it again.
+        </ResponseField>
+        
+        <ResponseField name="Canceled payment" type="error">
+          ```json
+          {
+            "code": 422,
+            "status": "Unprocessable Entity",
+            "message": "Payment has been canceled"
+          }
+          ```
+          
+          **Solution**: Create a new payment instead of trying to process a canceled one.
+        </ResponseField>
+      </Accordion>
+      
+      <Accordion title="Payment Channel Issues">
+        <ResponseField name="Invalid channel" type="error">
+          ```json
+          {
+            "code": 422,
+            "status": "Unprocessable Entity",
+            "message": "Validation failed",
+            "errors": {
+              "channel": ["Invalid payment channel"]
+            }
+          }
+          ```
+          
+          **Solution**: Use one of the [supported payment channels](/api-reference/resources#channels).
+        </ResponseField>
+        
+        <ResponseField name="Missing channel data" type="error">
+          ```json
+          {
+            "code": 422,
+            "status": "Unprocessable Entity",
+            "message": "Validation failed",
+            "errors": {
+              "data.phone": ["Phone number is required for mobile money payments"]
+            }
+          }
+          ```
+          
+          **Solution**: Provide the required data for the selected payment channel.
+        </ResponseField>
+      </Accordion>
+    </AccordionGroup>
+  </Tab>
+</Tabs>
+
+## Transfer-Specific Errors
+
+<AccordionGroup>
+  <Accordion title="Insufficient Balance">
+    <ResponseField name="Insufficient funds" type="error">
+      ```json
+      {
+        "code": 422,
+        "status": "Unprocessable Entity",
+        "message": "Insufficient balance to complete this transfer"
+      }
+      ```
+      
+      **Solution**: Add funds to your Notch Pay account before attempting the transfer.
+    </ResponseField>
+  </Accordion>
+  
+  <Accordion title="Beneficiary Issues">
+    <ResponseField name="Invalid beneficiary" type="error">
+      ```json
+      {
+        "code": 422,
+        "status": "Unprocessable Entity",
+        "message": "Validation failed",
+        "errors": {
+          "beneficiary": ["Beneficiary not found"]
+        }
+      }
+      ```
+      
+      **Solution**: Ensure the beneficiary exists and is correctly specified.
+    </ResponseField>
+    
+    <ResponseField name="Beneficiary account issues" type="error">
+      ```json
+      {
+        "code": 422,
+        "status": "Unprocessable Entity",
+        "message": "Validation failed",
+        "errors": {
+          "account_number": ["Invalid account number for this beneficiary"]
+        }
+      }
+      ```
+      
+      **Solution**: Verify the beneficiary's account information.
+    </ResponseField>
+  </Accordion>
+</AccordionGroup>
+
+## Troubleshooting Tips
+
+<Steps>
+  <Step title="Check Request Format">
+    Ensure your request is properly formatted and includes all required parameters. Use the API reference to verify the correct format.
+  </Step>
+  
+  <Step title="Verify Authentication">
+    Make sure you're using the correct API key and that it's properly included in the `Authorization` header.
+  </Step>
+  
+  <Step title="Inspect Error Messages">
+    Pay attention to the specific error message and the `errors` object in the response, which often contains detailed information about what went wrong.
+  </Step>
+  
+  <Step title="Check Environment">
+    Ensure you're using the right environment (test or live) for your needs. Test API keys won't work in the live environment and vice versa.
+  </Step>
+  
+  <Step title="Review Logs">
+    Check your application logs for any additional information about the request that might help identify the issue.
+  </Step>
+  
+  <Step title="Contact Support">
+    If you're still having trouble, contact Notch Pay support with:
+    - The full error response
+    - Your request details (excluding sensitive information like API keys)
+    - Any steps you've already taken to troubleshoot
+  </Step>
+</Steps>
+
+## Error Handling Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Implement Retry Logic" icon="rotate" color="#16A34A">
+    For transient errors (like network issues or rate limiting), implement retry logic with exponential backoff.
+    
+    ```javascript
+    async function makeRequestWithRetry(url, options, maxRetries = 3) {
+      let retries = 0;
+      
+      while (retries < maxRetries) {
+        try {
+          const response = await fetch(url, options);
+          
+          if (response.status === 429) {
+            // Rate limited, get retry-after header
+            const retryAfter = response.headers.get('Retry-After') || 1;
+            await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+            retries++;
+            continue;
+          }
+          
+          return response;
+        } catch (error) {
+          retries++;
+          if (retries >= maxRetries) throw error;
+          
+          // Exponential backoff
+          await new Promise(resolve => 
+            setTimeout(resolve, Math.pow(2, retries) * 1000)
+          );
+        }
+      }
+    }
+    ```
+  </Card>
+  
+  <Card title="Graceful Error Handling" icon="shield-check" color="#16A34A">
+    Present user-friendly error messages to your customers while logging detailed error information for debugging.
+    
+    ```javascript
+    try {
+      const response = await makePayment(paymentData);
+      // Handle complete payment
+    } catch (error) {
+      // Log detailed error for debugging
+      console.error('Payment error:', error);
+      
+      // Show user-friendly message
+      if (error.code === 422 && error.errors?.amount) {
+        showUserError('Please enter a valid payment amount');
+      } else if (error.code === 401) {
+        showUserError('Authentication error. Please try again later.');
+      } else {
+        showUserError('Unable to process payment. Please try again later.');
+      }
+    }
+    ```
+  </Card>
+</CardGroup>
+
+<Callout type="info">
+  For more detailed information about specific API endpoints and their potential errors, refer to the documentation for each endpoint.
+</Callout>
+
+<Callout type="success">
+  Need more help? Contact our [support team](mailto:hello@notchpay.co) with details about the error you're encountering.
+</Callout>

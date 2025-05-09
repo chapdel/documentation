@@ -5,171 +5,354 @@ description: Learn how to authenticate with the Notch Pay API
 
 # Authentication
 
-All requests to the Notch Pay API must be authenticated. This guide explains the authentication methods available and how to implement them securely.
+<Note>
+  All requests to the Notch Pay API must be authenticated. This guide explains the authentication methods available and how to implement them securely.
+</Note>
 
-## API Keys
+<Card title="API Keys" icon="key" color="#16A34A">
+  Notch Pay uses API keys to authenticate requests. You can find your API keys in your [Notch Pay Business suite](https://business.notchpay.co) under Settings > API Keys.
 
-Notch Pay uses API keys to authenticate requests. You can find your API keys in your [Notch Pay Business suite](https://business.notchpay.co) under Settings > API Keys.
+  <Tabs>
+    <Tab title="Test Keys">
+      **Test API Keys**: Used for development and testing. These keys contain `test_` prefix.
+      
+      All transactions made with test API keys don't affect your live data and are only visible in test mode.
+    </Tab>
+    <Tab title="Live Keys">
+      **Live API Keys**: Used for production environments.
+      
+      Only use these keys when your application is ready for real transactions.
+    </Tab>
+  </Tabs>
+</Card>
 
-There are two types of API keys:
+## Authentication Methods
 
-1. **Test API Keys**: Used for development and testing. These keys start with `test_`.
-2. **Live API Keys**: Used for production. These keys start with `live_`.
+<Tabs>
+  <Tab title="Standard Authentication">
+    For most API requests, you need to include your API key in the `Authorization` header:
 
-Each environment has its own set of API keys, and transactions made with test API keys don't affect your live data.
+    ```
+    Authorization: YOUR_API_KEY
+    ```
 
-## Standard Authentication
+    ### Example Request
 
-For most API requests, you need to include your API key in the `Authorization` header:
+    <CodeGroup>
+      ```bash cURL
+      curl https://api.notchpay.co/payments \
+        -H "Authorization: YOUR_API_KEY" \
+        -H "Content-Type: application/json" \
+        -d '{
+          "amount": 5000,
+          "currency": "XAF",
+          "customer": {
+            "email": "customer@example.com"
+          }
+        }'
+      ```
 
-```
-Authorization: YOUR_API_KEY
-```
+      ```javascript JavaScript
+      fetch('https://api.notchpay.co/payments', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'YOUR_API_KEY',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          amount: 5000,
+          currency: 'XAF',
+          customer: {
+            email: 'customer@example.com'
+          }
+        })
+      })
+      .then(response => response.json())
+      .then(data => console.log(data));
+      ```
 
-### Example Request
+      ```php PHP
+      <?php
+      $curl = curl_init();
 
-```bash
-curl https://api.notchpay.co/payments \
-  -H "Authorization: YOUR_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "amount": 5000,
-    "currency": "XAF",
-    "customer": {
-      "email": "customer@example.com"
-    }
-  }'
-```
+      curl_setopt_array($curl, [
+        CURLOPT_URL => "https://api.notchpay.co/payments",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => [
+          "Authorization: YOUR_API_KEY",
+          "Content-Type: application/json"
+        ],
+        CURLOPT_POSTFIELDS => json_encode([
+          "amount" => 5000,
+          "currency" => "XAF",
+          "customer" => [
+            "email" => "customer@example.com"
+          ]
+        ])
+      ]);
 
-## Advanced Authentication
+      $response = curl_exec($curl);
+      curl_close($curl);
 
-Some endpoints that perform sensitive operations require additional authentication beyond the standard API key. These endpoints are protected by the `GrantedMiddleware` and require a private key to be passed in the `X-Grant` header.
+      echo $response;
+      ```
 
-```
-X-Grant: YOUR_PRIVATE_KEY
-```
+      ```python Python
+      import requests
+      import json
 
-### Endpoints Requiring Advanced Authentication
+      url = "https://api.notchpay.co/payments"
+      headers = {
+          "Authorization": "YOUR_API_KEY",
+          "Content-Type": "application/json"
+      }
+      payload = {
+          "amount": 5000,
+          "currency": "XAF",
+          "customer": {
+              "email": "customer@example.com"
+          }
+      }
 
-The following endpoints require the `X-Grant` header:
+      response = requests.post(url, headers=headers, json=payload)
+      print(response.json())
+      ```
+    </CodeGroup>
+  </Tab>
+  
+  <Tab title="Advanced Authentication">
+    <Callout type="warning">
+      Some endpoints that perform sensitive operations require additional authentication beyond the standard API key. These endpoints are protected by the `GrantedMiddleware` and require a private key.
+    </Callout>
 
-- `/balance` - Check your account balance
-- `/transfers/*` - All transfer-related endpoints
-- `/beneficiaries/*` (or `/recipients/*`) - All beneficiary-related endpoints
-- `/webhooks/*` - All webhook-related endpoints
+    Include your private key in the `X-Grant` header:
 
-### Example Request with Advanced Authentication
+    ```
+    X-Grant: YOUR_PRIVATE_KEY
+    ```
 
-```bash
-curl https://api.notchpay.co/balance \
-  -H "Authorization: YOUR_API_KEY" \
-  -H "X-Grant: YOUR_PRIVATE_KEY"
-```
+    <Accordion title="Endpoints Requiring Advanced Authentication">
+      The following endpoints require the `X-Grant` header:
 
-## Sync Account Authentication
+      - `/balance` - Check your account balance
+      - `/transfers/*` - All transfer-related endpoints
+      - `/beneficiaries/*` (or `/recipients/*`) - All beneficiary-related endpoints
+      - `/webhooks/*` - All webhook-related endpoints
+    </Accordion>
 
-For operations related to synchronized accounts, you need to pass the sync account identifier in the `X-Sync` header:
+    ### Example Request with Advanced Authentication
 
-```
-X-Sync: SYNC_ACCOUNT_ID
-```
+    <CodeGroup>
+      ```bash cURL
+      curl https://api.notchpay.co/balance \
+        -H "Authorization: YOUR_API_KEY" \
+        -H "X-Grant: YOUR_PRIVATE_KEY"
+      ```
 
-This is necessary when you need to perform operations on behalf of a synchronized account, such as:
+      ```javascript JavaScript
+      fetch('https://api.notchpay.co/balance', {
+        method: 'GET',
+        headers: {
+          'Authorization': 'YOUR_API_KEY',
+          'X-Grant': 'YOUR_PRIVATE_KEY'
+        }
+      })
+      .then(response => response.json())
+      .then(data => console.log(data));
+      ```
+    </CodeGroup>
+  </Tab>
+  
+  <Tab title="Sync Account Authentication">
+    For operations related to synchronized accounts, you need to pass the sync account identifier in the `X-Sync` header:
 
-- Creating payments for a sync account
-- Viewing transactions for a sync account
-- Managing resources for a sync account
+    ```
+    X-Sync: SYNC_ACCOUNT_ID
+    ```
 
-### Example Request with Sync Authentication
+    <Accordion title="Operations requiring Sync Authentication">
+      This is necessary when you need to perform operations on behalf of a synchronized account, such as:
 
-```bash
-curl https://api.notchpay.co/payments \
-  -H "Authorization: YOUR_API_KEY" \
-  -H "X-Sync: sync_123456789" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "amount": 5000,
-    "currency": "XAF",
-    "customer": {
-      "email": "customer@example.com"
-    }
-  }'
-```
+      - Creating payments for a sync account
+      - Viewing transactions for a sync account
+      - Managing resources for a sync account
+    </Accordion>
+
+    ### Example Request with Sync Authentication
+
+    <CodeGroup>
+      ```bash cURL
+      curl https://api.notchpay.co/payments \
+        -H "Authorization: YOUR_API_KEY" \
+        -H "X-Sync: sync_123456789" \
+        -H "Content-Type: application/json" \
+        -d '{
+          "amount": 5000,
+          "currency": "XAF",
+          "customer": {
+            "email": "customer@example.com"
+          }
+        }'
+      ```
+
+      ```javascript JavaScript
+      fetch('https://api.notchpay.co/payments', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'YOUR_API_KEY',
+          'X-Sync': 'sync_123456789',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          amount: 5000,
+          currency: 'XAF',
+          customer: {
+            email: 'customer@example.com'
+          }
+        })
+      })
+      .then(response => response.json())
+      .then(data => console.log(data));
+      ```
+    </CodeGroup>
+  </Tab>
+</Tabs>
 
 ## API Key Security
 
-Your API keys carry significant privileges, so it's crucial to keep them secure:
-
-1. **Never share your API keys** in publicly accessible areas such as GitHub, client-side code, or social media.
-2. **Use environment variables** or secure vaults to store API keys in your applications.
-3. **Implement proper access controls** to limit who can access your API keys.
-4. **Rotate your API keys** periodically, especially if you suspect they may have been compromised.
-5. **Use test API keys** for development and testing to avoid accidental charges.
+<Steps>
+  <Step title="Keep API Keys Private">
+    <Callout type="error">
+      **Never share your API keys** in publicly accessible areas such as GitHub, client-side code, or social media.
+    </Callout>
+  </Step>
+  <Step title="Use Environment Variables">
+    **Use environment variables** or secure vaults to store API keys in your applications.
+    
+    ```javascript
+    // Example in Node.js
+    const apiKey = process.env.NOTCHPAY_API_KEY;
+    ```
+  </Step>
+  <Step title="Implement Access Controls">
+    **Implement proper access controls** to limit who can access your API keys.
+    
+    Only give access to team members who absolutely need it.
+  </Step>
+  <Step title="Rotate Keys Regularly">
+    **Rotate your API keys** periodically, especially if you suspect they may have been compromised.
+    
+    You can generate new API keys in your Notch Pay dashboard.
+  </Step>
+  <Step title="Use Test Keys for Development">
+    **Use test API keys** for development and testing to avoid accidental charges.
+    
+    Switch to live keys only when you're ready to process real transactions.
+  </Step>
+</Steps>
 
 ## Error Responses
 
-If authentication fails, the API will return one of the following error responses:
-
-### Missing API Key
-
-```json
-{
-  "code": 401,
-  "status": "Unauthorized",
-  "message": "API key is missing"
-}
-```
-
-### Invalid API Key
-
-```json
-{
-  "code": 401,
-  "status": "Unauthorized",
-  "message": "Invalid API key"
-}
-```
-
-### Missing Grant Key
-
-```json
-{
-  "code": 403,
-  "status": "Forbidden",
-  "message": "This endpoint requires additional authentication"
-}
-```
-
-### Invalid Grant Key
-
-```json
-{
-  "code": 403,
-  "status": "Forbidden",
-  "message": "Invalid grant key"
-}
-```
-
-### Invalid Sync Account
-
-```json
-{
-  "code": 404,
-  "status": "Not Found",
-  "message": "Sync account not found"
-}
-```
+<Accordion title="Authentication Error Responses" defaultOpen>
+  <AccordionGroup>
+    <Accordion title="Missing API Key">
+      ```json
+      {
+        "code": 401,
+        "status": "Unauthorized",
+        "message": "API key is missing"
+      }
+      ```
+      
+      This error occurs when you don't include the `Authorization` header in your request.
+    </Accordion>
+    <Accordion title="Invalid API Key">
+      ```json
+      {
+        "code": 401,
+        "status": "Unauthorized",
+        "message": "Invalid API key"
+      }
+      ```
+      
+      This error occurs when the API key you provided is incorrect or has been revoked.
+    </Accordion>
+    <Accordion title="Missing Grant Key">
+      ```json
+      {
+        "code": 403,
+        "status": "Forbidden",
+        "message": "This endpoint requires additional authentication"
+      }
+      ```
+      
+      This error occurs when you try to access an endpoint that requires the `X-Grant` header without providing it.
+    </Accordion>
+    <Accordion title="Invalid Grant Key">
+      ```json
+      {
+        "code": 403,
+        "status": "Forbidden",
+        "message": "Invalid grant key"
+      }
+      ```
+      
+      This error occurs when the private key you provided in the `X-Grant` header is incorrect.
+    </Accordion>
+    <Accordion title="Invalid Sync Account">
+      ```json
+      {
+        "code": 404,
+        "status": "Not Found",
+        "message": "Sync account not found"
+      }
+      ```
+      
+      This error occurs when the sync account ID you provided in the `X-Sync` header doesn't exist or you don't have access to it.
+    </Accordion>
+  </AccordionGroup>
+</Accordion>
 
 ## Best Practices
 
-1. **Use HTTPS**: Always use HTTPS to encrypt your API requests and prevent man-in-the-middle attacks.
-2. **Implement Proper Error Handling**: Handle authentication errors gracefully in your application.
-3. **Limit API Key Exposure**: Only share API keys with trusted systems and developers.
-4. **Monitor API Usage**: Regularly review your API logs to detect unauthorized access.
-5. **Implement Rate Limiting**: Protect your API endpoints from brute force attacks by implementing rate limiting.
+<CardGroup cols={2}>
+  <Card title="Use HTTPS" icon="lock" color="#16A34A">
+    Always use HTTPS to encrypt your API requests and prevent man-in-the-middle attacks.
+    
+    Never send API requests over unencrypted HTTP connections.
+  </Card>
+  <Card title="Proper Error Handling" icon="bug" color="#16A34A">
+    Handle authentication errors gracefully in your application.
+    
+    Implement retry logic with exponential backoff for transient errors.
+  </Card>
+  <Card title="Limit API Key Exposure" icon="shield" color="#16A34A">
+    Only share API keys with trusted systems and developers.
+    
+    Consider using different API keys for different services or environments.
+  </Card>
+  <Card title="Monitor API Usage" icon="chart-line" color="#16A34A">
+    Regularly review your API logs to detect unauthorized access.
+    
+    Set up alerts for unusual API activity patterns.
+  </Card>
+  <Card title="Implement Rate Limiting" icon="stopwatch" color="#16A34A">
+    Protect your API endpoints from brute force attacks by implementing rate limiting.
+    
+    Consider using a service like Redis to track and limit request rates.
+  </Card>
+</CardGroup>
 
 ## Next Steps
 
-- [API Reference](/api) - Explore the complete API documentation
-- [Errors](/api/errors) - Learn about error handling in the Notch Pay API
-- [Security Best Practices](/security/best-practices) - Discover more ways to secure your integration
+<CardGroup cols={3}>
+  <Card title="API Reference" icon="book" href="/api">
+    Explore the complete API documentation
+  </Card>
+  <Card title="Errors" icon="triangle-exclamation" href="/api/errors">
+    Learn about error handling in the Notch Pay API
+  </Card>
+  <Card title="Security Best Practices" icon="shield-halved" href="/security/best-practices">
+    Discover more ways to secure your integration
+  </Card>
+</CardGroup>

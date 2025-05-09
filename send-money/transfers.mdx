@@ -3,8 +3,6 @@ title: Transfers
 description: Learn how to distribute funds to recipients using Notch Pay Transfers
 ---
 
-# Transfers
-
 <div className="bg-teal-50 p-4 border-l-4 border-teal-500 rounded-md mb-6">
   <p className="text-sm text-teal-700">
     <strong>Terminology Note:</strong> In Notch Pay, the term "Transfers" refers to sending money to recipients (payouts, withdrawals, and fund distributions). This is the official terminology used throughout the platform and API.
@@ -24,7 +22,7 @@ Notch Pay Transfers enables you to effortlessly send money to your recipients. T
 - Making payouts to marketplace sellers
 - Withdrawing funds to your own accounts
 
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+<div className="grid grid-cols-1 md:grid-cols-1 gap-4 mt-6">
   <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
     <h3 className="text-lg font-semibold mb-2">Key Benefits</h3>
     <ul className="list-disc pl-5">
@@ -35,15 +33,7 @@ Notch Pay Transfers enables you to effortlessly send money to your recipients. T
       <li>Receive webhook notifications for transfers</li>
     </ul>
   </div>
-  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-    <h3 className="text-lg font-semibold mb-2">Supported Channels</h3>
-    <ul className="list-disc pl-5">
-      <li>MTN Mobile Money (Cameroon)</li>
-      <li>Orange Money (Cameroon)</li>
-      <li>Generic Mobile Money (Cameroon)</li>
-      <li>More channels coming soon</li>
-    </ul>
-  </div>
+
 </div>
 
 ## How Transfers Work
@@ -75,7 +65,7 @@ Mobile money transfers allow you to send funds directly to mobile money accounts
 fetch('https://api.notchpay.co/recipients', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',,
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -92,7 +82,8 @@ fetch('https://api.notchpay.co/recipients', {
   return fetch('https://api.notchpay.co/transfers', {
     method: 'POST',
     headers: {
-      'Authorization': 'YOUR_API_KEY',
+      'Authorization': 'YOUR_PUBLIC_KEY',
+      'X-Grant': 'YOUR_PRIVATE_KEY',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -156,7 +147,8 @@ To create a standard transfer recipient, make a POST request to the Recipient AP
 fetch('https://api.notchpay.co/recipients', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
+    'X-Grant': 'YOUR_PRIVATE_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -185,7 +177,7 @@ You can retrieve, update, or delete standard recipients as needed:
 / Retrieve a recipient
 fetch('https://api.notchpay.co/recipients/rcp_123456789', {
   headers: {
-    'Authorization': 'YOUR_API_KEY'
+    'Authorization': 'YOUR_PUBLIC_KEY',
   }
 })
 .then(response => response.json())
@@ -197,7 +189,8 @@ fetch('https://api.notchpay.co/recipients/rcp_123456789', {
 fetch('https://api.notchpay.co/recipients/rcp_123456789', {
   method: 'PUT',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
+    'X-Grant': 'YOUR_PRIVATE_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -214,7 +207,7 @@ fetch('https://api.notchpay.co/recipients/rcp_123456789', {
 fetch('https://api.notchpay.co/recipients/rcp_123456789', {
   method: 'DELETE',
   headers: {
-    'Authorization': 'YOUR_API_KEY'
+    'Authorization': 'YOUR_PUBLIC_KEY',
   }
 })
 .then(response => response.json())
@@ -285,7 +278,8 @@ To initiate a transfer, make a POST request to the Transfers API. This works for
 fetch('https://api.notchpay.co/transfers', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
+    'X-Grant': 'YOUR_PRIVATE_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -353,7 +347,7 @@ Transfers can have the following statuses:
 | `pending` | The transfer has been initiated but not yet processed |
 | `sent` | The transfer has been sent to the payment processor |
 | `processing` | The transfer is being processed by the payment network |
-| `successful` | The transfer has been successfully completed |
+| `complete` | The transfer has been completely completed |
 | `failed` | The transfer has failed |
 | `reversed` | The transfer has been reversed |
 
@@ -365,29 +359,12 @@ You can check the status of a transfer at any time:
 / Check transfer status
 fetch('https://api.notchpay.co/transfers/po.rKI4eJBYkebUAKj5stAHeCCnLyV8NZy9', {
   headers: {
-    'Authorization': 'YOUR_API_KEY'
+    'Authorization': 'YOUR_PUBLIC_KEY',
   }
 })
 .then(response => response.json())
 .then(data => {
   console.log('Transfer status:', data.transfer.status);
-})
-```
-
-### Verifying Transfers
-
-To verify a transfer (especially important for reconciliation):
-
-```javascript
-/ Verify a transfer
-fetch('https://api.notchpay.co/transfers/po.rKI4eJBYkebUAKj5stAHeCCnLyV8NZy9/verify', {
-  headers: {
-    'Authorization': 'YOUR_API_KEY'
-  }
-})
-.then(response => response.json())
-.then(data => {
-  console.log('Transfer verification:', data);
 })
 ```
 
@@ -397,21 +374,21 @@ To receive real-time updates about transfers, set up webhooks for the following 
 
 - `transfer.pending`: A transfer has been initiated
 - `transfer.processing`: A transfer is being processed
-- `transfer.successful`: A transfer has been successfully completed
+- `transfer.complete`: A transfer has been completely completed
 - `transfer.failed`: A transfer has failed
 - `transfer.reversed`: A transfer has been reversed
 
-Example webhook payload for a successful transfer:
+Example webhook payload for a complete transfer:
 
 ```json
 {
-  "event": "transfer.successful",
+  "event": "transfer.complete",
   "data": {
     "reference": "po.rKI4eJBYkebUAKj5stAHeCCnLyV8NZy9",
     "amount": 5000,
     "fee": 100,
     "currency": "XAF",
-    "status": "successful",
+    "status": "complete",
     "beneficiary": "rcp_123456789",
     "description": "Salary payment for June 2023",
     "created_at": "2023-06-17T21:35:51.000000Z",

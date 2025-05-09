@@ -5,69 +5,90 @@ description: Complete reference documentation for the Notch Pay API
 
 # API Reference
 
-Welcome to the Notch Pay API reference. This documentation provides detailed information about the endpoints, request parameters, and response formats for the Notch Pay API.
+<Note>
+  Welcome to the Notch Pay API reference. This documentation provides detailed information about the endpoints, request parameters, and response formats for the Notch Pay API.
+</Note>
 
-## Base URL
+## Getting Started
 
-All API requests should be made to the following base URL:
-
-```
-https://api.notchpay.co
-```
-
-## Authentication
-
-All requests to the Notch Pay API must be authenticated using your API key. Include your API key in the `Authorization` header of each request:
-
-```
-Authorization: YOUR_API_KEY
-```
-
-You can find your API keys in your [Notch Pay Business suite](https://business.notchpay.co) under Settings > API Keys.
+<CardGroup cols={2}>
+  <Card title="Base URL" icon="globe" color="#16A34A">
+    All API requests should be made to:
+    
+    ```bash
+    https://api.notchpay.co
+    ```
+  </Card>
+  
+  <Card title="Authentication" icon="key" color="#16A34A">
+    Include your API key in the `Authorization` header:
+    
+    ```bash
+    Authorization: YOUR_API_KEY
+    ```
+    
+    <a href="/api-reference/authentication" className="text-blue-500 hover:underline">Learn more about authentication →</a>
+  </Card>
+</CardGroup>
 
 ## API Environments
 
-Notch Pay provides two environments:
-
-1. **Test Environment**: Use this environment for development and testing. Test API keys start with `test_`.
-2. **Live Environment**: Use this environment for production. Live API keys start with `live_`.
-
-Both environments use the same base URL, but the behavior differs based on the API key you use.
+<Tabs>
+  <Tab title="Test Environment">
+    <div className="flex items-start">
+      <div className="mt-1 mr-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-amber-500">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <div>
+        <h3 className="text-lg font-semibold">Development & Testing</h3>
+        <p className="mt-1">Use test API keys that start with <code>test_</code></p>
+        <p className="mt-2">Test transactions don't affect real money and are only visible in test mode.</p>
+        <Callout type="info" className="mt-3">
+          Test cards and accounts are available in the <a href="/testing" className="text-blue-500 hover:underline">Testing Guide</a>.
+        </Callout>
+      </div>
+    </div>
+  </Tab>
+  
+  <Tab title="Live Environment">
+    <div className="flex items-start">
+      <div className="mt-1 mr-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-green-500">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div>
+        <h3 className="text-lg font-semibold">Production</h3>
+        <p className="mt-1">Use live API keys that start with <code>live_</code></p>
+        <p className="mt-2">Live transactions involve real money and appear in your Notch Pay dashboard.</p>
+        <Callout type="warning" className="mt-3">
+          Only use live keys when your integration is thoroughly tested and ready for production.
+        </Callout>
+      </div>
+    </div>
+  </Tab>
+</Tabs>
 
 ## Response Format
 
-All API responses are returned in JSON format and follow a consistent structure:
-
-```json
+<CodeGroup>
+```json Success Response
 {
   "code": 200,
   "status": "OK",
   "message": "Descriptive message",
-  "data": { ... }
+  "data": {
+    "id": "pay_123456789",
+    "amount": 5000,
+    "currency": "XAF",
+    "status": "complete"
+  }
 }
 ```
 
-## HTTP Status Codes
-
-The API uses standard HTTP status codes to indicate the success or failure of a request:
-
-| Code | Description |
-|------|-------------|
-| 200 | Success |
-| 201 | Resource created |
-| 202 | Accepted |
-| 400 | Bad request |
-| 401 | Unauthorized |
-| 403 | Forbidden |
-| 404 | Not found |
-| 422 | Unprocessable entity |
-| 500 | Server error |
-
-## Error Handling
-
-When an error occurs, the API returns an appropriate HTTP status code and an error message:
-
-```json
+```json Error Response
 {
   "code": 400,
   "status": "Bad Request",
@@ -77,82 +98,166 @@ When an error occurs, the API returns an appropriate HTTP status code and an err
   }
 }
 ```
+</CodeGroup>
+
+## HTTP Status Codes
+
+<AccordionGroup>
+  <Accordion title="Success Codes (2xx)" defaultOpen>
+    <ResponseField name="200" type="OK">
+      The request was completed
+    </ResponseField>
+    <ResponseField name="201" type="Created">
+      A new resource was successfully created
+    </ResponseField>
+    <ResponseField name="202" type="Accepted">
+      The request has been accepted for processing
+    </ResponseField>
+  </Accordion>
+  
+  <Accordion title="Client Error Codes (4xx)">
+    <ResponseField name="400" type="Bad Request">
+      The request was invalid or cannot be served
+    </ResponseField>
+    <ResponseField name="401" type="Unauthorized">
+      Authentication credentials are missing or invalid
+    </ResponseField>
+    <ResponseField name="403" type="Forbidden">
+      The authenticated user doesn't have permission
+    </ResponseField>
+    <ResponseField name="404" type="Not Found">
+      The requested resource doesn't exist
+    </ResponseField>
+    <ResponseField name="422" type="Unprocessable Entity">
+      The request was well-formed but contains semantic errors
+    </ResponseField>
+    <ResponseField name="429" type="Too Many Requests">
+      Rate limit exceeded
+    </ResponseField>
+  </Accordion>
+  
+  <Accordion title="Server Error Codes (5xx)">
+    <ResponseField name="500" type="Internal Server Error">
+      An error occurred on the server
+    </ResponseField>
+    <ResponseField name="503" type="Service Unavailable">
+      The server is temporarily unavailable
+    </ResponseField>
+  </Accordion>
+</AccordionGroup>
 
 ## Rate Limiting
 
-The Notch Pay API implements rate limiting to protect against abuse. If you exceed the rate limit, you'll receive a `429 Too Many Requests` response.
+<Callout type="warning">
+  The Notch Pay API implements rate limiting to protect against abuse. If you exceed the rate limit, you'll receive a `429 Too Many Requests` response.
+</Callout>
+
+<Steps>
+  <Step title="Rate Limit Headers">
+    Each response includes headers that provide information about your current rate limit status:
+    
+    ```
+    X-RateLimit-Limit: 100
+    X-RateLimit-Remaining: 98
+    X-RateLimit-Reset: 1620000000
+    ```
+  </Step>
+  
+  <Step title="Handling Rate Limits">
+    When you receive a `429` response, the `Retry-After` header indicates how many seconds to wait before making another request.
+    
+    ```
+    Retry-After: 30
+    ```
+    
+    Implement exponential backoff in your code to handle rate limiting gracefully.
+  </Step>
+</Steps>
 
 ## API Resources
 
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-    <h3 className="text-lg font-semibold mb-2">Payments</h3>
-    <p className="mb-4">Create, retrieve, and manage payments.</p>
-    <a href="/api/payments" className="text-teal-600 hover:underline">View Payments API →</a>
-  </div>
-  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-    <h3 className="text-lg font-semibold mb-2">Transfers</h3>
-    <p className="mb-4">Send money to beneficiaries.</p>
-    <a href="/api/transfers" className="text-teal-600 hover:underline">View Transfers API →</a>
-  </div>
-</div>
-
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-    <h3 className="text-lg font-semibold mb-2">Customers</h3>
-    <p className="mb-4">Create and manage customer information.</p>
-    <a href="/api/customers" className="text-teal-600 hover:underline">View Customers API →</a>
-  </div>
-  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-    <h3 className="text-lg font-semibold mb-2">Beneficiaries</h3>
-    <p className="mb-4">Manage recipients for money transfers.</p>
-    <a href="/api/beneficiaries" className="text-teal-600 hover:underline">View Beneficiaries API →</a>
-  </div>
-</div>
-
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-    <h3 className="text-lg font-semibold mb-2">Webhooks</h3>
-    <p className="mb-4">Configure and manage webhook endpoints.</p>
-    <a href="/api/webhooks" className="text-teal-600 hover:underline">View Webhooks API →</a>
-  </div>
-  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-    <h3 className="text-lg font-semibold mb-2">Balance</h3>
-    <p className="mb-4">Check your account balance.</p>
-    <a href="/api/balance" className="text-teal-600 hover:underline">View Balance API →</a>
-  </div>
-</div>
-
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-    <h3 className="text-lg font-semibold mb-2">Resources</h3>
-    <p className="mb-4">Get information about payment channels, countries, and currencies.</p>
-    <a href="/api/resources" className="text-teal-600 hover:underline">View Resources API →</a>
-  </div>
-  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-    <h3 className="text-lg font-semibold mb-2">Authentication</h3>
-    <p className="mb-4">Learn about authentication methods and security.</p>
-    <a href="/api/authentication" className="text-teal-600 hover:underline">View Authentication Docs →</a>
-  </div>
-</div>
+<CardGroup cols={3}>
+  <Card title="Payments" icon="credit-card" href="/api-reference/payments" color="#16A34A">
+    Create, retrieve, and manage payments
+  </Card>
+  <Card title="Transfers" icon="money-bill-transfer" href="/api-reference/transfers" color="#16A34A">
+    Send money to beneficiaries
+  </Card>
+  <Card title="Customers" icon="users" href="/api-reference/customers" color="#16A34A">
+    Create and manage customer information
+  </Card>
+  <Card title="Beneficiaries" icon="user-plus" href="/api-reference/beneficiaries" color="#16A34A">
+    Manage recipients for money transfers
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/api-reference/webhooks" color="#16A34A">
+    Configure and manage webhook endpoints
+  </Card>
+  <Card title="Balance" icon="wallet" href="/api-reference/balance" color="#16A34A">
+    Check your account balance
+  </Card>
+  <Card title="Resources" icon="database" href="/api-reference/resources" color="#16A34A">
+    Get information about payment channels, countries, and currencies
+  </Card>
+  <Card title="Authentication" icon="shield-halved" href="/api-reference/authentication" color="#16A34A">
+    Learn about authentication methods and security
+  </Card>
+</CardGroup>
 
 ## API Versioning
 
-The current version of the API does not require a version specifier in the URL. Future versions may be accessed by including a version number in the URL or headers.
+<Callout type="info">
+  The current version of the API does not require a version specifier in the URL. Future versions may be accessed by including a version number in the URL or headers.
+</Callout>
 
 ## SDKs and Libraries
 
-To simplify integration, Notch Pay provides official libraries for various programming languages:
-
-- [JavaScript/Node.js](/sdks/javascript)
-- [PHP](/sdks/php)
-- [Python](/sdks/python)
-- [Mobile SDKs](/sdks/mobile)
+<Tabs>
+  <Tab title="Official SDKs">
+    <CardGroup cols={4}>
+      <Card title="JavaScript" icon="js" href="/sdks/javascript">
+        Node.js and browser SDK
+      </Card>
+      <Card title="PHP" icon="php" href="/sdks/php">
+        PHP SDK for server-side integration
+      </Card>
+      <Card title="Python" icon="python" href="/sdks/python">
+        Python SDK for server-side integration
+      </Card>
+      <Card title="Mobile" icon="mobile-screen" href="/sdks/mobile">
+        iOS and Android SDKs
+      </Card>
+    </CardGroup>
+  </Tab>
+  
+  <Tab title="Community Libraries">
+    <CardGroup cols={3}>
+      <Card title="Laravel" icon="laravel" href="/sdks/laravel">
+        Laravel package for Notch Pay
+      </Card>
+      <Card title="WordPress" icon="wordpress" href="/sdks/wordpress">
+        WordPress plugin for Notch Pay
+      </Card>
+      <Card title="WooCommerce" icon="shopping-cart" href="/sdks/woocommerce">
+        WooCommerce payment gateway
+      </Card>
+    </CardGroup>
+  </Tab>
+</Tabs>
 
 ## Need Help?
 
-If you have any questions or need assistance with the API:
+<CardGroup cols={3}>
+  <Card title="API Errors" icon="triangle-exclamation" href="/api-reference/errors">
+    Troubleshoot common API errors
+  </Card>
+  <Card title="Support Team" icon="headset" href="mailto:hello@notchpay.co">
+    Contact our technical support team
+  </Card>
+  <Card title="Developer Community" icon="users" href="https://community.notchpay.co">
+    Connect with other developers
+  </Card>
+</CardGroup>
 
-- Check our [API Errors documentation](/api/errors) for troubleshooting
-- Contact our [support team](mailto:hello@notchpay.co) for technical assistance
-- Join our [developer community](https://community.notchpay.co) to connect with other developers
+<Callout type="success">
+  Ready to start building? Check out our [Quickstart Guide](/get-started/quickstart) to make your first API request.
+</Callout>
