@@ -3,8 +3,6 @@ title: Disputes
 description: Handle payment disputes and chargebacks with Notch Pay
 ---
 
-# Disputes
-
 Payment disputes (also known as chargebacks) occur when a customer questions a transaction with their payment provider. This guide explains how to handle disputes, respond to them, and implement best practices to minimize disputes.
 
 ## Overview
@@ -71,7 +69,7 @@ You can also manage disputes programmatically using the API:
 / List all disputes
 fetch('https://api.notchpay.co/disputes', {
   headers: {
-    'Authorization': 'YOUR_API_KEY'
+    'Authorization': 'YOUR_PUBLIC_KEY'
   }
 })
 .then(response => response.json())
@@ -82,7 +80,7 @@ fetch('https://api.notchpay.co/disputes', {
 / Retrieve a specific dispute
 fetch('https://api.notchpay.co/disputes/dp_123456789', {
   headers: {
-    'Authorization': 'YOUR_API_KEY'
+    'Authorization': 'YOUR_PUBLIC_KEY'
   }
 })
 .then(response => response.json())
@@ -91,36 +89,70 @@ fetch('https://api.notchpay.co/disputes/dp_123456789', {
 })
 ```
 
-#### Submitting Evidence
+[//]: # ()
+[//]: # (#### Submitting Evidence)
 
-```javascript
-/ Submit evidence for a dispute
-fetch('https://api.notchpay.co/disputes/dp_123456789/evidence', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'YOUR_API_KEY',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    customer_name: 'John Doe',
-    customer_email: 'john@example.com',
-    billing_address: '123 Main St, City, Country',
-    shipping_address: '123 Main St, City, Country',
-    shipping_date: '2023-01-15',
-    shipping_tracking_number: 'TRK123456789',
-    product_description: 'Premium Package - 1 Year Access',
-    customer_signature: 'https://example.com/signature.png',
-    receipt: 'https://example.com/receipt.pdf',
-    service_date: '2023-01-20',
-    evidence_details: 'Customer confirmed receipt of the product via email on January 20, 2023. Email confirmation attached.',
-    uncategorized_file: 'https://example.com/email_confirmation.pdf'
-  })
-})
-.then(response => response.json())
-.then(data => {
-  console.log(data.dispute.status);
-})
-```
+[//]: # ()
+[//]: # (```javascript)
+
+[//]: # (/ Submit evidence for a dispute)
+
+[//]: # (fetch&#40;'https://api.notchpay.co/disputes/dp_123456789/evidence', {)
+
+[//]: # (  method: 'POST',)
+
+[//]: # (  headers: {)
+
+[//]: # (    'Authorization': 'YOUR_PUBLIC_KEY',)
+
+[//]: # (    'Content-Type': 'application/json')
+
+[//]: # (  },)
+
+[//]: # (  body: JSON.stringify&#40;{)
+
+[//]: # (    customer: {)
+
+[//]: # (        nane: 'John Doe',)
+
+[//]: # (        email: 'john@example.com',)
+
+[//]: # (    },)
+
+[//]: # ()
+[//]: # (    billing_address: '123 Main St, City, Country',)
+
+[//]: # (    shipping_address: '123 Main St, City, Country',)
+
+[//]: # (    shipping_date: '2023-01-15',)
+
+[//]: # (    shipping_tracking_number: 'TRK123456789',)
+
+[//]: # (    product_description: 'Premium Package - 1 Year Access',)
+
+[//]: # (    customer_signature: 'https://example.com/signature.png',)
+
+[//]: # (    receipt: 'https://example.com/receipt.pdf',)
+
+[//]: # (    service_date: '2023-01-20',)
+
+[//]: # (    evidence_details: 'Customer confirmed receipt of the product via email on January 20, 2023. Email confirmation attached.',)
+
+[//]: # (    uncategorized_file: 'https://example.com/email_confirmation.pdf')
+
+[//]: # (  }&#41;)
+
+[//]: # (}&#41;)
+
+[//]: # (.then&#40;response => response.json&#40;&#41;&#41;)
+
+[//]: # (.then&#40;data => {)
+
+[//]: # (  console.log&#40;data.dispute.status&#41;;)
+
+[//]: # (}&#41;)
+
+[//]: # (```)
 
 ## Dispute Statuses
 
@@ -146,10 +178,9 @@ Example webhook payload for a dispute event:
 
 ```json
 {
-  "type": "dispute.created",
+  "event": "dispute.created",
   "data": {
     "id": "dp_123456789",
-    "object": "dispute",
     "amount": 5000,
     "currency": "XAF",
     "payment": "pay_123456789",
@@ -217,13 +248,5 @@ These fees vary depending on the payment method and country. Check the [Pricing 
 
 If you encounter issues with disputes:
 
-- Check the [API Reference](/api/disputes) for detailed parameter documentation
+- Check the [API Reference](/api-reference/disputes) for detailed parameter documentation
 - Contact our [support team](mailto:hello@notchpay.co) for assistance
-- Join our [developer community](https://community.notchpay.co) to connect with other users
-
-## Next Steps
-
-- [Refunds](/accept-payments/refunds) - Learn how to process refunds
-- [Webhooks](/webhooks) - Set up webhooks for payment and dispute notifications
-- [API Integration](/accept-payments/api-integration) - Build a custom payment experience
-- [Best Practices](/guides/best-practices) - Implement best practices for payment processing

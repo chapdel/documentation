@@ -3,8 +3,6 @@ title: Refunds
 description: Process refunds for payments made through Notch Pay
 ---
 
-# Refunds
-
 Notch Pay allows you to process refunds for payments that have been completed. This guide explains how to issue full or partial refunds, track refund status, and handle refund-related events.
 
 ## Overview
@@ -46,7 +44,7 @@ With Notch Pay's refund functionality, you can:
 The easiest way to process a refund is through your Notch Pay dashboard:
 
 1. Log in to your [Notch Pay Business suite](https://business.notchpay.co)
-2. Go to **Payments** > **Transactions**
+2. Go to **Payments** > **Refunds**
 3. Find the payment you want to refund
 4. Click the **Refund** button
 5. Enter the refund amount (for partial refunds) or select **Full Refund**
@@ -62,7 +60,7 @@ You can also process refunds programmatically using the API:
 fetch('https://api.notchpay.co/refunds', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -93,7 +91,7 @@ A full refund returns the entire payment amount to the customer:
 fetch('https://api.notchpay.co/refunds', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -111,7 +109,7 @@ A partial refund returns only a portion of the payment:
 fetch('https://api.notchpay.co/refunds', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -130,7 +128,7 @@ Refunds can have the following statuses:
 |--------|-------------|
 | pending | The refund has been initiated but not yet processed |
 | processing | The refund is being processed by the payment provider |
-| succeeded | The refund has been successfully processed |
+| complete | The refund has been successfully processed |
 | failed | The refund could not be processed |
 
 ## Retrieving Refunds
@@ -142,7 +140,7 @@ To retrieve information about a specific refund:
 ```javascript
 fetch('https://api.notchpay.co/refunds/ref_123456789', {
   headers: {
-    'Authorization': 'YOUR_API_KEY'
+    'Authorization': 'YOUR_PUBLIC_KEY'
   }
 })
 .then(response => response.json())
@@ -158,7 +156,7 @@ To retrieve all refunds for a specific payment:
 ```javascript
 fetch('https://api.notchpay.co/payments/pay_123456789/refunds', {
   headers: {
-    'Authorization': 'YOUR_API_KEY'
+    'Authorization': 'YOUR_PUBLIC_KEY'
   }
 })
 .then(response => response.json())
@@ -174,7 +172,7 @@ To retrieve all refunds for your account:
 ```javascript
 fetch('https://api.notchpay.co/refunds', {
   headers: {
-    'Authorization': 'YOUR_API_KEY'
+    'Authorization': 'YOUR_PUBLIC_KEY'
   }
 })
 .then(response => response.json())
@@ -188,7 +186,7 @@ fetch('https://api.notchpay.co/refunds', {
 To receive notifications about refund events, set up webhooks for the following events:
 
 - `refund.created`: A refund has been created
-- `refund.succeeded`: A refund has been successfully processed
+- `refund.complete`: A refund has been successfully processed
 - `refund.failed`: A refund has failed
 
 Example webhook payload for a refund event:
@@ -198,7 +196,6 @@ Example webhook payload for a refund event:
   "type": "refund.succeeded",
   "data": {
     "id": "ref_123456789",
-    "object": "refund",
     "amount": 5000,
     "currency": "XAF",
     "payment": "pay_123456789",
@@ -244,13 +241,5 @@ When processing refunds, be aware of the following limitations:
 
 If you encounter issues with refunds:
 
-- Check the [API Reference](/api/refunds) for detailed parameter documentation
+- Check the [API Reference](/api-reference/refunds) for detailed parameter documentation
 - Contact our [support team](mailto:hello@notchpay.co) for assistance
-- Join our [developer community](https://community.notchpay.co) to connect with other users
-
-## Next Steps
-
-- [Disputes](/accept-payments/disputes) - Learn how to handle payment disputes
-- [Webhooks](/webhooks) - Set up webhooks for payment and refund notifications
-- [API Integration](/accept-payments/api-integration) - Build a custom payment experience
-- [Testing](/testing) - Test your refund implementation in the sandbox environment

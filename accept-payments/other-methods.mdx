@@ -194,54 +194,6 @@ fetch('https://api.notchpay.co/payments', {
 })
 ```
 
-## Cryptocurrency Payments
-
-Notch Pay also supports cryptocurrency payments, allowing customers to pay with digital currencies like Bitcoin, Ethereum, and others.
-
-### How Cryptocurrency Payments Work
-
-1. **Initialize Payment**: Create a payment with customer and transaction details
-2. **Wallet Address Generation**: Notch Pay generates a unique wallet address for the payment
-3. **Customer Transfer**: The customer transfers the cryptocurrency to the provided wallet address
-4. **Confirmation**: Notch Pay confirms the payment status and notifies your application
-
-### Supported Cryptocurrencies
-
-Notch Pay supports various cryptocurrencies:
-
-- Bitcoin (BTC)
-- Ethereum (ETH)
-- USDT
-- Other cryptocurrencies depending on availability
-
-### Integration Example
-
-```javascript
-/ Create a payment
-fetch('https://api.notchpay.co/payments', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'YOUR_API_KEY',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    amount: 5000,
-    currency: 'XAF',
-    customer: {
-      name: 'John Doe',
-      email: 'john@example.com'
-    },
-    description: 'Payment for Order #123',
-    reference: 'order_123'
-  })
-})
-.then(response => response.json())
-.then(data => {
-  / Redirect to checkout where cryptocurrency will be an option
-  window.location.href = data.authorization_url;
-})
-```
-
 ## Best Practices
 
 1. **Offer Multiple Payment Methods**: Provide customers with various payment options to increase conversion rates

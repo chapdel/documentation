@@ -3,8 +3,6 @@ title: Sync Integration
 description: Learn how to integrate Notch Pay Sync into your platform or marketplace
 ---
 
-# Sync Integration Guide
-
 This guide will walk you through the process of integrating Notch Pay Sync into your platform or marketplace. Sync allows you to facilitate payments between your users, manage connected accounts, and automate payment splitting.
 
 ## Overview
@@ -14,7 +12,7 @@ Integrating Notch Pay Sync involves several key steps:
 1. Setting up your platform account
 2. Creating and managing connected accounts
 3. Processing payments and handling fees
-4. Managing payouts to connected accounts
+4. Managing transfers to connected accounts
 5. Implementing webhooks for real-time updates
 
 ## Prerequisites
@@ -34,7 +32,7 @@ All API requests to Notch Pay Sync require authentication using your platform's 
 
 ```javascript
 const headers = {
-  'Authorization': 'YOUR_PLATFORM_API_KEY',
+  'Authorization': 'YOUR_PUBLIC_KEY',
   'Content-Type': 'application/json'
 };
 ```
@@ -45,7 +43,7 @@ To create a connected account for a seller or service provider on your platform:
 
 ```javascript
 / Create a connected account
-fetch('https://api.notchpay.co/sync/accounts', {
+fetch('https://api.notchpay.co/accounts', {
   method: 'POST',
   headers: headers,
   body: JSON.stringify({
@@ -77,12 +75,11 @@ After creating a connected account, you need to onboard the account holder to co
 
 ```javascript
 / Generate an onboarding link
-fetch(`https://api.notchpay.co/sync/accounts/${accountId}/onboarding`, {
+fetch(`https://api.notchpay.co/accounts/${accountId}/onboarding`, {
   method: 'POST',
   headers: headers,
   body: JSON.stringify({
-    redirect_url: 'https://your-platform.com/onboarding/complete',
-    refresh_url: 'https://your-platform.com/onboarding/refresh'
+    callback: 'https://your-platform.com/onboarding',
   })
 })
 .then(response => response.json())
@@ -127,67 +124,9 @@ fetch('https://api.notchpay.co/payments', {
 .catch(error => console.error('Error creating payment:', error));
 ```
 
-### Creating Direct Charges
-
-For direct charges where the payment is made directly to a connected account:
-
-```javascript
-/ Create a direct charge
-fetch('https://api.notchpay.co/sync/charges', {
-  method: 'POST',
-  headers: headers,
-  body: JSON.stringify({
-    amount: 10000,
-    currency: 'XAF',
-    customer: {
-      name: 'John Doe',
-      email: 'john@example.com'
-    },
-    description: 'Payment for Service #456',
-    reference: 'service_456',
-    account: accountId, / The connected account ID
-    application_fee_percent: 10 / Your platform fee (10%)
-  })
-})
-.then(response => response.json())
-.then(data => {
-  / Redirect the customer to the payment page
-  window.location.href = data.authorization_url;
-})
-.catch(error => console.error('Error creating direct charge:', error));
-```
-
-### Managing Payouts
-
-To create a payout to a connected account:
-
-```javascript
-/ Create a payout
-fetch('https://api.notchpay.co/sync/payouts', {
-  method: 'POST',
-  headers: headers,
-  body: JSON.stringify({
-    amount: 50000,
-    currency: 'XAF',
-    destination: accountId, / The connected account ID
-    description: 'Weekly payout',
-    metadata: {
-      payout_period: 'week_23',
-      payout_type: 'regular'
-    }
-  })
-})
-.then(response => response.json())
-.then(data => {
-  const payoutId = data.payout.id;
-  / Store the payout ID for future reference
-})
-.catch(error => console.error('Error creating payout:', error));
-```
-
 ## Webhook Integration
 
-Webhooks allow you to receive real-time notifications about events related to your connected accounts, payments, and payouts.
+Webhooks allow you to receive real-time notifications about events related to your connected accounts, payments, and transfers.
 
 ### Setting Up Webhooks
 
@@ -234,7 +173,7 @@ app.post('/webhook', (req, res) => {
     case 'payment.succeeded':
       handlePaymentSucceeded(payload.data);
       break;
-    case 'payout.created':
+    case 'transfer.created':
       handlePayoutCreated(payload.data);
       break;
     / Handle other event types
@@ -271,9 +210,9 @@ Here are some important webhook events to monitor:
 - `account.application.deauthorized`: A connected account has been deauthorized
 - `payment.succeeded`: A payment has been successfully processed
 - `payment.failed`: A payment has failed
-- `payout.created`: A new payout has been created
-- `payout.paid`: A payout has been paid
-- `payout.failed`: A payout has failed
+- `transfer.created`: A new transfer has been created
+- `transfer.complete`: A transfer has been paid
+- `transfer.failed`: A transfer has failed
 
 ## Fee Management
 
@@ -330,7 +269,7 @@ Before going live, test your Sync integration thoroughly in the sandbox environm
 2. Create test connected accounts
 3. Process test payments with various payment methods
 4. Test different fee structures
-5. Create test payouts
+5. Create test transfers
 6. Verify webhook delivery and handling
 
 ## Going Live
@@ -352,11 +291,11 @@ One of the key benefits of Notch Pay Sync is that each connected account gets ac
 When your sellers have access to their own Notch Pay dashboard, they can:
 
 1. **Self-Service Account Management**: Update their business information, banking details, and notification preferences without contacting your support team
-2. **Transaction Visibility**: View detailed transaction history, including payments, fees, and payouts
+2. **Transaction Visibility**: View detailed transaction history, including payments, fees, and transfers
 3. **Financial Reporting**: Access financial reports and analytics to track their business performance
 4. **Dispute Management**: View and respond to payment disputes directly
 5. **Verification Status**: Monitor their verification status and complete any outstanding requirements
-6. **Payment Settings**: Configure their payment preferences and payout schedules
+6. **Payment Settings**: Configure their payment preferences and transfer schedules
 
 ### Benefits for Your Platform
 
@@ -377,7 +316,7 @@ To provide a seller with access to their dashboard:
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}/dashboard`, {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_PLATFORM_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -405,7 +344,7 @@ fetch(`https://api.notchpay.co/sync/accounts/${accountId}/dashboard`, {
 
 1. **Streamlined Onboarding**: Make the onboarding process as simple as possible for your users
 2. **Clear Fee Communication**: Clearly communicate your fee structure to your users
-3. **Transparent Payouts**: Provide clear information about payout schedules and amounts
+3. **Transparent Payouts**: Provide clear information about transfer schedules and amounts
 4. **Responsive Support**: Be prepared to assist users with onboarding and payment issues
 5. **Dashboard Integration**: Integrate dashboard access into your platform for a seamless experience
 
@@ -429,13 +368,5 @@ fetch(`https://api.notchpay.co/sync/accounts/${accountId}/dashboard`, {
 
 If you encounter issues with your Sync integration:
 
-- Check the [API Reference](/api/sync) for detailed parameter documentation
+- Check the [API Reference](/api-reference/sync) for detailed parameter documentation
 - Contact our [support team](mailto:hello@notchpay.co) for assistance
-- Join our [developer community](https://community.notchpay.co) to connect with other platform owners
-
-## Next Steps
-
-- [Account Management](/sync/account-management) - Learn how to manage connected accounts
-- [Sync API Reference](/api/sync) - Detailed API documentation for Sync
-- [Webhooks](/webhooks) - Set up webhooks for real-time notifications
-- [Testing](/testing) - Test your Sync integration in the sandbox environment
