@@ -164,14 +164,19 @@ Notch Pay can send webhooks for various events. When registering your webhook, y
 
 | Event | Description |
 |-------|-------------|
+| `payment.created` | Triggered when a payment is created |
 | `payment.complete` | Triggered when a payment is successfully completed |
 | `payment.failed` | Triggered when a payment fails |
-| `payment.pending` | Triggered when a payment is pending |
 | `payment.canceled` | Triggered when a payment is canceled |
+| `payment.expired` | Triggered when a payment expires |
+| `transfer.created` | Triggered when a transfer is created |
 | `transfer.complete` | Triggered when a transfer is successfully completed |
 | `transfer.failed` | Triggered when a transfer fails |
-| `refund.complete` | Triggered when a refund is successfully completed |
-| `refund.failed` | Triggered when a refund fails |
+| `customer.created` | Triggered when a customer is created |
+| `customer.updated` | Triggered when a customer is updated |
+| `customer.deleted` | Triggered when a customer is deleted |
+| `customer.blocked` | Triggered when a customer is blocked |
+| `customer.unblocked` | Triggered when a customer is unblocked |
 
 ## Testing Your Webhook
 
@@ -244,5 +249,4 @@ If you're not receiving webhook notifications:
 ## Next Steps
 
 - [Verifying Webhooks](/get-started/webhooks/verify) - Learn how to verify webhook signatures
-- [Webhook Events](/webhooks/events) - Learn about the different webhook events and their payloads
-- [Webhooks API](/api-reference/webhooks) - Use the API to manage your webhook endpoints
+- [Webhooks API](/api-reference/webhooks) - Learn about webhook events and how to manage your webhook endpoints

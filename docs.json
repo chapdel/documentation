@@ -40,6 +40,13 @@
               "security/compliance",
               "security/best-practices"
             ]
+          },
+          {
+            "group": "Dashboard",
+            "pages": [
+              "dashboard/index",
+              "dashboard/overview"
+            ]
           }
         ]
       },
@@ -55,9 +62,15 @@
               "accept-payments/charge",
               "accept-payments/invoices",
               "accept-payments/mobile-money",
-              "accept-payments/order-methods",
+              "accept-payments/other-methods",
               "accept-payments/refunds",
               "accept-payments/disputes"
+            ]
+          },
+          {
+            "group": "Customer Management",
+            "pages": [
+              "customers/index"
             ]
           },
           {
@@ -79,6 +92,42 @@
               "send-money/index",
               "send-money/transfers"
             ]
+          },
+          {
+            "group": "Beneficiaries",
+            "pages": [
+              "send-money/beneficiaries/index",
+              "send-money/beneficiaries/manage"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "SDKs & Libraries",
+        "groups": [
+          {
+            "group": "SDKs",
+            "pages": [
+              "sdks/index",
+              "sdks/javascript",
+              "sdks/php",
+              "sdks/python",
+              "sdks/mobile"
+            ]
+          },
+          {
+            "group": "Plugins",
+            "pages": [
+              "sdks/laravel",
+              "sdks/wordpress",
+              "sdks/woocommerce"
+            ]
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "integrations/index"
+            ]
           }
         ]
       },
@@ -88,11 +137,30 @@
           {
             "group": "Introduction",
             "pages": [
-              "api-reference/index"
+              "api-reference/index",
+              "api-reference/authentication",
+              "api-reference/errors"
             ]
           },
           {
-            "group": "Learn more",
+            "group": "Core Resources",
+            "pages": [
+              "api-reference/payments",
+              "api-reference/transfers",
+              "api-reference/customers",
+              "api-reference/beneficiaries"
+            ]
+          },
+          {
+            "group": "Additional Resources",
+            "pages": [
+              "api-reference/webhooks",
+              "api-reference/balance",
+              "api-reference/resources"
+            ]
+          },
+          {
+            "group": "API Specification",
             "openapi": {
               "source": "openapi.yaml",
               "directory": "api-reference"
