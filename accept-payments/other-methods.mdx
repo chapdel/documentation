@@ -5,7 +5,7 @@ description: Accept payments through bank transfers and alternative payment meth
 
 # Other Payment Methods
 
-In addition to [Mobile Money](/docs/accept-payments/mobile-money), Notch Pay supports various other payment methods to help you reach more customers across Africa.
+In addition to [Mobile Money](/accept-payments/mobile-money), Notch Pay supports various other payment methods to help you reach more customers across Africa.
 
 ## Digital Wallets
 
@@ -48,7 +48,7 @@ Notch Pay supports payments from various digital wallets across Africa:
 ### Integration Example
 
 ```javascript
-// Create a payment
+/ Create a payment
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
@@ -68,7 +68,7 @@ fetch('https://api.notchpay.co/payments', {
 })
 .then(response => response.json())
 .then(data => {
-  // Redirect to checkout where digital wallets will be an option
+  / Redirect to checkout where digital wallets will be an option
   window.location.href = data.authorization_url;
 })
 ```
@@ -96,7 +96,7 @@ Notch Pay supports USSD payments through various mobile operators:
 ### Integration Example
 
 ```javascript
-// Create a payment
+/ Create a payment
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
@@ -116,7 +116,7 @@ fetch('https://api.notchpay.co/payments', {
 })
 .then(response => response.json())
 .then(data => {
-  // Process with USSD
+  / Process with USSD
   fetch(`https://api.notchpay.co/payments/${data.transaction.reference}`, {
     method: 'POST',
     headers: {
@@ -132,7 +132,7 @@ fetch('https://api.notchpay.co/payments', {
   })
   .then(response => response.json())
   .then(ussdData => {
-    // Display USSD code to customer
+    / Display USSD code to customer
     console.log(`Dial ${ussdData.ussd_code} to complete payment`);
   })
 })
@@ -160,7 +160,7 @@ Notch Pay supports various QR code payment standards depending on the region:
 ### Integration Example
 
 ```javascript
-// Create a payment
+/ Create a payment
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
@@ -180,7 +180,7 @@ fetch('https://api.notchpay.co/payments', {
 })
 .then(response => response.json())
 .then(data => {
-  // Process with QR Code
+  / Process with QR Code
   fetch(`https://api.notchpay.co/payments/${data.transaction.reference}/qrcode`, {
     headers: {
       'Authorization': 'YOUR_API_KEY'
@@ -188,7 +188,7 @@ fetch('https://api.notchpay.co/payments', {
   })
   .then(response => response.json())
   .then(qrData => {
-    // Display QR code to customer
+    / Display QR code to customer
     document.getElementById('qrcode-container').innerHTML = `<img src="${qrData.qr_code_url}" alt="Scan to pay">`;
   })
 })
@@ -217,7 +217,7 @@ Notch Pay supports various cryptocurrencies:
 ### Integration Example
 
 ```javascript
-// Create a payment
+/ Create a payment
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
@@ -237,7 +237,7 @@ fetch('https://api.notchpay.co/payments', {
 })
 .then(response => response.json())
 .then(data => {
-  // Redirect to checkout where cryptocurrency will be an option
+  / Redirect to checkout where cryptocurrency will be an option
   window.location.href = data.authorization_url;
 })
 ```
@@ -263,13 +263,5 @@ fetch('https://api.notchpay.co/payments', {
 
 If you encounter issues with any payment method:
 
-- Check the [API Reference](/api/payments) for detailed parameter documentation
+- Check the [API Reference](/api-reference/payments) for detailed parameter documentation
 - Contact our [support team](mailto:hello@notchpay.co) for assistance
-- Join our [developer community](https://community.notchpay.co) to connect with other developers
-
-## Next Steps
-
-- [Collect](/docs/accept-payments/collect) - Use our hosted payment page for a quick integration
-- [Mobile Money](/docs/accept-payments/mobile-money) - Accept mobile money payments
-- [Invoices](/docs/accept-payments/invoices) - Create and manage professional invoices
-- [API Integration](/docs/accept-payments/api-integration) - Build a custom payment experience

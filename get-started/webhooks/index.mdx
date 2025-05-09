@@ -26,20 +26,6 @@ Before setting up webhooks, you should have:
 - A server that can receive HTTP POST requests
 - Basic understanding of HTTP and JSON
 
-## Understanding Notch Pay API Keys
-
-Notch Pay provides three types of API keys, each with a specific purpose:
-
-1. **Public Key**: Used for most API interactions like creating payments
-2. **Private Key**: Used for higher-level operations like transfers, balance inquiries, and webhook management
-3. **Hash**: Used specifically for encrypting and decrypting webhook signatures
-
-Each of these keys exists in both sandbox (test) and production environments:
-
-- **Sandbox Keys**: Used for development and testing, prefixed with `test_`
-- **Production Keys**: Used for live transactions, prefixed with `live_`
-
-For webhook setup and management, you'll need to use your Private Key. The Hash key will be used later for verifying webhook signatures. Always make sure to use the correct set of keys for your environment (sandbox for testing, production for live).
 
 ## Setting Up Your Webhook Endpoint
 
@@ -65,7 +51,7 @@ app.post('/webhooks/notchpay', (req, res) => {
   // Return a 200 response immediately
   res.status(200).send('Webhook received');
   
-  // Process the webhook asynchronously
+  / Process the webhook asynchronously
   const event = req.body;
   processWebhook(event);
 });
@@ -96,21 +82,21 @@ app.listen(3000, () => {
 
 ```php
 <?php
-// Get the request body
-$input = file_get_contents('php://input');
+/ Get the request body
+$input = file_get_contents('php:/input');
 $event = json_decode($input, true);
 
-// Return a 200 response immediately
+/ Return a 200 response immediately
 http_response_code(200);
 header('Content-Type: application/json');
 echo json_encode(['status' => 'received']);
 
-// Process the webhook asynchronously
+/ Process the webhook asynchronously
 if (function_exists('fastcgi_finish_request')) {
     fastcgi_finish_request();
 }
 
-// Process the webhook
+/ Process the webhook
 $eventType = $event['type'];
 $eventData = $event['data'];
 
@@ -235,7 +221,7 @@ After the fifth retry, if your endpoint still doesn't return a 2xx status code, 
 You can manage your webhook endpoints through:
 
 - **Dashboard**: Add, edit, or delete webhook endpoints in your Notch Pay dashboard
-- **API**: Use the [Webhooks API](/api/webhooks) to programmatically manage webhook endpoints
+- **API**: Use the [Webhooks API](/api-reference/webhooks) to programmatically manage webhook endpoints
 
 ## Troubleshooting
 
@@ -257,6 +243,6 @@ If you're not receiving webhook notifications:
 
 ## Next Steps
 
-- [Verifying Webhooks](/docs/get-started/webhooks/verify) - Learn how to verify webhook signatures
-- [Webhook Events](/docs/webhooks/events) - Learn about the different webhook events and their payloads
-- [Webhooks API](/api/webhooks) - Use the API to manage your webhook endpoints
+- [Verifying Webhooks](/get-started/webhooks/verify) - Learn how to verify webhook signatures
+- [Webhook Events](/webhooks/events) - Learn about the different webhook events and their payloads
+- [Webhooks API](/api-reference/webhooks) - Use the API to manage your webhook endpoints

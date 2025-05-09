@@ -3,8 +3,6 @@ title: Collect
 description: Accept payments with Notch Pay's hosted payment page
 ---
 
-# Notch Pay Collect
-
 Notch Pay Collect is a hosted payment page that provides a simple and secure way to accept payments. With minimal integration effort, you can offer your customers a seamless payment experience with support for multiple payment methods.
 
 ## Overview
@@ -19,27 +17,21 @@ Notch Pay Collect handles the entire payment process, including:
 
 ## Benefits of Using Collect
 
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-    <h3 className="text-lg font-semibold mb-2">Quick Integration</h3>
-    <p>Implement payments with minimal code. No need to build your own payment form or handle payment processing logic.</p>
-  </div>
-  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-    <h3 className="text-lg font-semibold mb-2">Security</h3>
-    <p>Payment information is collected on Notch Pay's secure servers, reducing your PCI compliance burden.</p>
-  </div>
-</div>
+<CardGroup cols={2}>
+    <Card title="Fastest Integration">
+        Implement payments with minimal code. No need to build your own payment form or handle payment processing logic.
+    </Card>
+    <Card title="Security">
+        Payment information is collected on Notch Pay's secure servers, reducing your PCI compliance burden.
+    </Card>
+    <Card title="Multiple Payment Methods">
+        Support for various payment methods including Mobile Money and digital wallets like Assoh.
+    </Card>
+    <Card title="Responsive Design">
+        Works seamlessly on desktop and mobile devices with a responsive, user-friendly interface.
+    </Card>
+</CardGroup>
 
-<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-    <h3 className="text-lg font-semibold mb-2">Multiple Payment Methods</h3>
-    <p>Support for various payment methods including Mobile Money and digital wallets like Assoh.</p>
-  </div>
-  <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
-    <h3 className="text-lg font-semibold mb-2">Responsive Design</h3>
-    <p>Works seamlessly on desktop and mobile devices with a responsive, user-friendly interface.</p>
-  </div>
-</div>
 
 ## Integration Steps
 
@@ -48,11 +40,11 @@ Notch Pay Collect handles the entire payment process, including:
 To use Notch Pay Collect, first create a payment using the API:
 
 ```javascript
-// Using fetch in JavaScript
+/ Using fetch in JavaScript
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -90,7 +82,7 @@ window.location.href = data.authorization_url;
 When the payment is completed (or fails), Notch Pay will redirect the customer back to your `callback` URL with the payment reference:
 
 ```
-https://your-website.com/callback?reference=order_123
+https://your-website.com/callback?reference=trx.dhhdjjsj&status=complete&trxref=order_123
 ```
 
 You should verify the payment status by calling the API:
@@ -98,7 +90,7 @@ You should verify the payment status by calling the API:
 ```javascript
 fetch(`https://api.notchpay.co/payments/${reference}`, {
   headers: {
-    'Authorization': 'YOUR_API_KEY'
+    'Authorization': 'YOUR_PUBLIC_KEY'
   }
 })
 .then(response => response.json())
@@ -122,15 +114,13 @@ When creating a payment, you can specify:
 
 - `title`: Custom title for the collect page
 - `description`: Detailed description of what the customer is paying for
-- `logo`: URL of your logo to display on the collect page
 - `callback`: URL to redirect after payment completion
-- `cancel_url`: URL to redirect if the customer cancels the payment
 
 ```javascript
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -142,9 +132,7 @@ fetch('https://api.notchpay.co/payments', {
     },
     title: 'Premium Package',
     description: 'Access to Premium Features',
-    logo: 'https://your-website.com/logo.png',
     callback: 'https://your-website.com/success',
-    cancel_url: 'https://your-website.com/cancel'
   })
 })
 ```
@@ -161,7 +149,7 @@ You can restrict the available payment methods:
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -192,7 +180,7 @@ Then, when creating a payment, specify the template ID:
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -202,7 +190,9 @@ fetch('https://api.notchpay.co/payments', {
       name: 'John Doe',
       email: 'john@example.com'
     },
-    checkout_template: 'template_123456789'
+    theming: {
+        "primary-color": "#F12d7a"
+    }
   })
 })
 ```
@@ -266,16 +256,6 @@ To test the collect flow:
 
 If you encounter issues with Notch Pay Collect:
 
-- Check the [API Reference](/api/payments) for detailed parameter documentation
+- Check the [API Reference](/api-reference/payments) for detailed parameter documentation
 - Contact our [support team](mailto:hello@notchpay.co) for assistance
 - Join our [developer community](https://community.notchpay.co) to connect with other developers
-
-## Next Steps
-
-- [Payment Links](/docs/accept-payments/payment-links) - Create shareable payment links without coding
-- [API Integration](/docs/accept-payments/api-integration) - Build a custom payment experience
-- [Mobile Money](/docs/accept-payments/mobile-money) - Learn more about mobile money payments
-- [Invoices](/docs/accept-payments/invoices) - Create and manage invoices
-- [Refunds](/docs/accept-payments/refunds) - Process refunds for completed payments
-- [Disputes](/docs/accept-payments/disputes) - Handle payment disputes and chargebacks
-- [Webhooks](/docs/webhooks) - Set up webhooks for payment notifications

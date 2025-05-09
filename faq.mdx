@@ -3,246 +3,186 @@ title: Frequently Asked Questions
 description: Find answers to common questions about Notch Pay
 ---
 
-# Frequently Asked Questions
-
-Find answers to the most common questions about Notch Pay and its services.
-
 ## General Questions
 
-<details>
-  <summary>What is Notch Pay?</summary>
-  <div className="mt-3">
-    Notch Pay is a payment platform designed for Africa, enabling businesses to accept payments through various channels including Mobile Money, bank cards, and other local payment methods. Our platform also allows you to send money to beneficiaries across multiple countries.
-  </div>
-</details>
+<AccordionGroup>
+    <Accordion title="What is Notch Pay?">
+        Notch Pay is a payment platform designed for Africa, enabling businesses to accept payments through various channels including Mobile Money, bank cards, and other local payment methods. Our platform also allows you to send money to beneficiaries across multiple countries.
+    </Accordion>
 
-<details>
-  <summary>Which countries does Notch Pay support?</summary>
-  <div className="mt-3">
-    Notch Pay currently supports payments in several African countries, including Cameroon, Côte d'Ivoire, Senegal, and more. We're continuously expanding our coverage to include more countries. Check our [Countries API](/api/resources#list-countries) for the most up-to-date list.
-  </div>
-</details>
+    <Accordion title="Which countries does Notch Pay support?">
+        Notch Pay currently supports payments in several African countries, including Cameroon, Côte d'Ivoire, Senegal, and more. We're continuously expanding our coverage to include more countries. Check our [Countries API](/api/resources#list-countries) for the most up-to-date list.
+    </Accordion>
 
-<details>
-  <summary>What payment methods does Notch Pay support?</summary>
-  <div className="mt-3">
-    Notch Pay supports a wide range of payment methods, including:
-    
-    - Mobile Money (MTN Mobile Money, Orange Money, etc.)
-    - Credit and debit cards (Visa, Mastercard)
-    - Bank transfers
-    - And more
-    
-    The available payment methods vary by country. Check our [Channels API](/api/resources#list-payment-channels) for the complete list.
-  </div>
-</details>
+    <Accordion title="What payment methods does Notch Pay support?">
+        Notch Pay supports a wide range of payment methods, including:
 
-<details>
-  <summary>How much does Notch Pay cost?</summary>
-  <div className="mt-3">
-    Notch Pay charges a small fee per transaction, which varies depending on the payment method and volume. There are no setup fees or monthly charges. Visit our [pricing page](https://notchpay.co/pricing) for detailed information.
-  </div>
-</details>
+        - Mobile Money (MTN Mobile Money, Orange Money, etc.)
+        - Digital Wallets
+        - Bank transfers
+        - And more
+
+        The available payment methods vary by country. Check our [Channels API](/api/resources#list-payment-channels) for the complete list.
+    </Accordion>
+    <Accordion title="How much does Notch Pay cost?">
+        Notch Pay charges a small fee per transaction, which varies depending on the payment method and volume. There are no setup fees or monthly charges. Visit our [pricing page](https://notchpay.co/pricing) for detailed information.
+    </Accordion>
+</AccordionGroup>
 
 ## Account & Dashboard
 
-<details>
-  <summary>How do I create a Notch Pay account?</summary>
-  <div className="mt-3">
-    You can create a Notch Pay account by visiting [business.notchpay.co/register](https://business.notchpay.co/register) and following the registration process. You'll need to provide some basic information about your business and complete the verification process.
-  </div>
-</details>
+<AccordionGroup>
+    <Accordion title="How do I create a Notch Pay account?">
+        You can create a Notch Pay account by visiting [business.notchpay.co/register](https://business.notchpay.co/register) and following the registration process. You'll need to provide some basic information about your business and complete the verification process.
+    </Accordion>
 
-<details>
-  <summary>How long does account verification take?</summary>
-  <div className="mt-3">
-    Account verification typically takes 1-2 business days, but it can take longer depending on the completeness and accuracy of the information provided. You'll receive an email notification once your account is verified.
-  </div>
-</details>
+    <Accordion title="How long does account verification take?">
+        Account verification typically takes 1-2 business days, but it can take longer depending on the completeness and accuracy of the information provided. You'll receive an email notification once your account is verified.
+    </Accordion>
 
-<details>
-  <summary>How do I find my API keys?</summary>
-  <div className="mt-3">
-    You can find your API keys in your Notch Pay Business suite under Settings > API Keys. You'll see both test and live API keys. Make sure to keep your API keys secure and never share them publicly.
-  </div>
-</details>
-
-<details>
-  <summary>How do I switch between test and live modes?</summary>
-  <div className="mt-3">
-    You can switch between test and live modes in your Notch Pay Business suite by clicking on the environment selector in the top navigation bar. In test mode, you can use test credentials to simulate payments without processing real transactions.
-  </div>
-</details>
+    <Accordion title="How do I find my API keys?">
+        You can find your API keys in your Notch Pay Business suite under Settings > API Keys. You'll see both test and live API keys. Make sure to keep your API keys secure and never share them publicly.
+    </Accordion>
+    <Accordion title="Create new scratch file from selection">
+        You can switch between test and live modes in your Notch Pay Business suite by clicking on the environment selector in the top navigation bar. In test mode, you can use test credentials to simulate payments without processing real transactions.
+    </Accordion>
+</AccordionGroup>
 
 ## Payments
 
-<details>
-  <summary>How do I accept my first payment?</summary>
-  <div className="mt-3">
-    To accept your first payment:
-    
-    1. Log in to your Notch Pay Business suite
-    2. Go to Payments > Create Payment
-    3. Enter the payment details and customer information
-    4. Click "Create Payment" to generate a payment link
-    5. Share the payment link with your customer
-    
-    Alternatively, you can integrate Notch Pay into your website or application using our [API](/api/payments) or [SDKs](/docs/sdks).
-  </div>
-</details>
+<AccordionGroup>
+    <Accordion title="How do I accept my first payment?">
+        To accept your first payment:
 
-<details>
-  <summary>How long does it take for payments to be processed?</summary>
-  <div className="mt-3">
-    Most payments are processed instantly or within a few minutes. However, the exact processing time depends on the payment method and the customer's bank or mobile money provider. You'll receive real-time notifications via webhooks when payments are completed.
-  </div>
-</details>
+        1. Log in to your Notch Pay Business suite
+        2. Go to Payments > Create Payment
+        3. Enter the payment details and customer information
+        4. Click "Create Payment" to generate a payment link
+        5. Share the payment link with your customer
 
-<details>
-  <summary>What happens if a payment fails?</summary>
-  <div className="mt-3">
-    If a payment fails, the customer will see an error message explaining the reason for the failure. You'll also receive a notification via webhook if you've set up webhooks for the `payment.failed` event. The customer can try again with the same or a different payment method.
-  </div>
-</details>
+        Alternatively, you can integrate Notch Pay into your website or application using our [API](/accept-payments) or [SDKs](/sdks).
+    </Accordion>
 
-<details>
-  <summary>Can I refund a payment?</summary>
-  <div className="mt-3">
-    Yes, you can refund a payment from your Notch Pay Business suite. Go to Payments, find the payment you want to refund, and click the "Refund" button. You can refund the full amount or a partial amount. Refunds are typically processed within 5-7 business days, depending on the payment method.
-  </div>
-</details>
+    <Accordion title="How long does it take for payments to be processed?">
+        Most payments are processed instantly or within a few minutes. However, the exact processing time depends on the payment method and the customer's bank or mobile money provider. You'll receive real-time notifications via webhooks when payments are completed.
+    </Accordion>
+
+    <Accordion title="What happens if a payment fails?">
+        If a payment fails, the customer will see an error message explaining the reason for the failure. You'll also receive a notification via webhook if you've set up webhooks for the `payment.failed` event. The customer can try again with the same or a different payment method.
+    </Accordion>
+    <Accordion title="Can I refund a payment?">
+        Yes, you can refund a payment from your Notch Pay Business suite. Go to Payments, find the payment you want to refund, and click the "Refund" button. You can refund the full amount or a partial amount. Refunds are typically processed within 5-7 business days, depending on the payment method.
+    </Accordion>
+</AccordionGroup>
 
 ## Transfers
 
-<details>
-  <summary>How do I send money to a beneficiary?</summary>
-  <div className="mt-3">
-    To send money to a beneficiary:
-    
-    1. Log in to your Notch Pay Business suite
-    2. Go to Transfers > Create Transfer
-    3. Enter the transfer details and beneficiary information
-    4. Click "Create Transfer" to initiate the transfer
-    
-    You can also use our [API](/api/transfers) to programmatically send money to beneficiaries.
-  </div>
-</details>
+<AccordionGroup>
+    <Accordion title="How do I send money to a beneficiary?">
+        To send money to a beneficiary:
 
-<details>
-  <summary>How long do transfers take?</summary>
-  <div className="mt-3">
-    Most transfers are processed within minutes, especially for mobile money accounts. However, bank transfers may take 1-3 business days, depending on the recipient's bank. You'll receive notifications via webhooks when transfers are completed.
-  </div>
-</details>
+        1. Log in to your Notch Pay Business suite
+        2. Go to Transfers > Create Transfer
+        3. Enter the transfer details and beneficiary information
+        4. Click "Create Transfer" to initiate the transfer
 
-<details>
-  <summary>What are the transfer limits?</summary>
-  <div className="mt-3">
-    Transfer limits vary by country, currency, and payment method. You can check the specific limits for each payment channel using our [Channels API](/api/resources#list-payment-channels). If you need higher limits, please contact our support team.
-  </div>
-</details>
+        You can also use our [API](/api-reference/transfers) to programmatically send money to beneficiaries.
+    </Accordion>
+
+    <Accordion title="How long do transfers take?">
+        Most transfers are processed within minutes, especially for mobile money accounts. However, bank transfers may take 1-3 business days, depending on the recipient's bank. You'll receive notifications via webhooks when transfers are completed.
+    </Accordion>
+
+    <Accordion title="What are the transfer limits?">
+        Transfer limits vary by country, currency, and payment method. You can check the specific limits for each payment channel using our [Channels API](/api/resources#list-payment-channels). If you need higher limits, please contact our support team.
+    </Accordion>
+</AccordionGroup>
+
 
 ## Integration
 
-<details>
-  <summary>How do I integrate Notch Pay into my website?</summary>
-  <div className="mt-3">
-    You can integrate Notch Pay into your website in several ways:
-    
-    1. **Checkout**: Use our hosted checkout page for a quick and easy integration
-    2. **Payment Links**: Create shareable payment links without any coding
-    3. **API Integration**: Integrate directly using our RESTful API
-    4. **SDKs**: Use our official libraries for various programming languages
-    
-    Check our [Accept Payments](/docs/accept-payments) documentation for detailed integration guides.
-  </div>
-</details>
+<AccordionGroup>
+    <Accordion title="How do I integrate Notch Pay into my website?">
+        You can integrate Notch Pay into your website in several ways:
 
-<details>
-  <summary>Do you have SDKs for different programming languages?</summary>
-  <div className="mt-3">
-    Yes, Notch Pay provides official SDKs for:
-    
-    - JavaScript/Node.js
-    - PHP
-    - Python
-    - Mobile (iOS and Android)
-    
-    Visit our [SDKs & Libraries](/docs/sdks) documentation for installation instructions and usage examples.
-  </div>
-</details>
+        1. **Collect**: Use our hosted checkout page for a quick and easy integration
+        2. **Quick (Payment Links)**: Create shareable payment links without any coding
+        3. **API Integration**: Integrate directly using our RESTful API
+        4. **SDKs**: Use our official libraries for various programming languages
 
-<details>
-  <summary>How do I set up webhooks?</summary>
-  <div className="mt-3">
-    To set up webhooks:
-    
-    1. Go to your Notch Pay Business suite
-    2. Navigate to Settings > Webhooks
-    3. Click "Add Endpoint"
-    4. Enter your endpoint URL and select the events you want to receive
-    5. Click "Save" to create the webhook
-    
-    Check our [Webhooks](/docs/webhooks) documentation for more information.
-  </div>
-</details>
+        Check our [Accept Payments](/accept-payments) documentation for detailed integration guides.
+    </Accordion>
 
-<details>
-  <summary>How do I test my integration?</summary>
-  <div className="mt-3">
-    You can test your integration using our sandbox environment:
-    
-    1. Switch to Test Mode in your dashboard
-    2. Use test credentials and accounts
-    3. Simulate payments and transfers
-    
-    Check our [Testing](/docs/testing) documentation for detailed testing instructions.
-  </div>
-</details>
+    <Accordion title="Do you have SDKs for different programming languages?">
+        Yes, Notch Pay provides official SDKs for:
+
+        - JavaScript/Node.js
+        - PHP
+        - Python
+        - Mobile (iOS and Android)
+
+        Visit our [SDKs & Libraries](/sdks) documentation for installation instructions and usage examples.
+    </Accordion>
+
+    <Accordion title="How do I set up webhooks?">
+        To set up webhooks:
+
+        1. Go to your Notch Pay Business suite
+        2. Navigate to Settings > Webhooks
+        3. Click "Add Endpoint"
+        4. Enter your endpoint URL and select the events you want to receive
+        5. Click "Save" to create the webhook
+
+        Check our [Webhooks](/webhooks) documentation for more information.
+    </Accordion>
+
+    <Accordion title="How do I test my integration?">
+        You can test your integration using our sandbox environment:
+
+        1. Switch to Test Mode in your dashboard
+        2. Use test credentials and accounts
+        3. Simulate payments and transfers
+
+        Check our [Testing](/testing) documentation for detailed testing instructions.
+    </Accordion>
+</AccordionGroup>
+
 
 ## Security
 
-<details>
-  <summary>Is Notch Pay secure?</summary>
-  <div className="mt-3">
-    Yes, Notch Pay takes security very seriously. We use industry-standard encryption and security practices to protect your data and transactions. All communication with our API is encrypted using TLS, and we regularly undergo security audits and penetration testing.
-  </div>
-</details>
+<AccordionGroup>
+    <Accordion title="Is Notch Pay secure?">
+        Yes, Notch Pay takes security very seriously. We use industry-standard encryption and security practices to protect your data and transactions. All communication with our API is encrypted using TLS, and we regularly undergo security audits and penetration testing.
+    </Accordion>
 
-<details>
-  <summary>How do I keep my integration secure?</summary>
-  <div className="mt-3">
-    To keep your integration secure:
-    
-    1. Never expose your API keys in client-side code
-    2. Always use HTTPS for all payment-related pages
-    3. Validate and sanitize all user inputs
-    4. Verify webhook signatures
-    5. Implement proper error handling
-    
-    Check our [Security](/docs/security/best-practices) documentation for more security best practices.
-  </div>
-</details>
+    <Accordion title="How do I keep my integration secure?">
+        To keep your integration secure:
+
+        1. Never expose your API keys in client-side code
+        2. Always use HTTPS for all payment-related pages
+        3. Validate and sanitize all user inputs
+        4. Verify webhook signatures
+        5. Implement proper error handling
+
+        Check our [Security](/security/best-practices) documentation for more security best practices.
+    </Accordion>
+</AccordionGroup>
 
 ## Support
 
-<details>
-  <summary>How do I get help if I have a problem?</summary>
-  <div className="mt-3">
-    If you need assistance, you can:
-    
-    1. Check our [documentation](/docs) for answers to common questions
-    2. Contact our [support team](mailto:hello@notchpay.co) for personalized assistance
-    3. Join our [developer community](https://community.notchpay.co) to connect with other users
-  </div>
-</details>
+<AccordionGroup>
+    <Accordion title="How do I get help if I have a problem?">
+        If you need assistance, you can:
 
-<details>
-  <summary>What are your support hours?</summary>
-  <div className="mt-3">
-    Our support team is available Monday to Friday, 9:00 AM to 6:00 PM (UTC+1). For urgent issues outside these hours, please email [urgent@notchpay.co](mailto:urgent@notchpay.co).
-  </div>
-</details>
+        1. Check our [documentation](/) for answers to common questions
+        2. Contact our [support team](mailto:hello@notchpay.co) for personalized assistance
+        3. Join our [developer community](https://community.notchpay.co) to connect with other users
+    </Accordion>
+
+    <Accordion title="What are your support hours?">
+        Our support team is available Monday to Friday, 9:00 AM to 6:00 PM (UTC+1). For urgent issues outside these hours, please email [urgent@notchpay.co](mailto:urgent@notchpay.co).
+    </Accordion>
+</AccordionGroup>
 
 ## Still Have Questions?
 

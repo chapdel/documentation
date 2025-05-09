@@ -58,7 +58,7 @@ The easiest way to process a refund is through your Notch Pay dashboard:
 You can also process refunds programmatically using the API:
 
 ```javascript
-// Process a refund
+/ Process a refund
 fetch('https://api.notchpay.co/refunds', {
   method: 'POST',
   headers: {
@@ -66,11 +66,11 @@ fetch('https://api.notchpay.co/refunds', {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    payment: 'pay_123456789', // Payment ID or reference
-    amount: 5000, // For partial refunds (in the smallest currency unit)
-    // Omit amount for full refunds
+    payment: 'pay_123456789', / Payment ID or reference
+    amount: 5000, / For partial refunds (in the smallest currency unit)
+    / Omit amount for full refunds
     reason: 'Customer requested cancellation',
-    metadata: { // Optional
+    metadata: { / Optional
       order_id: '12345',
       customer_service_rep: 'jane_doe'
     }
@@ -78,8 +78,8 @@ fetch('https://api.notchpay.co/refunds', {
 })
 .then(response => response.json())
 .then(data => {
-  console.log(data.refund.id); // The refund ID
-  console.log(data.refund.status); // The refund status
+  console.log(data.refund.id); / The refund ID
+  console.log(data.refund.status); / The refund status
 })
 ```
 
@@ -116,7 +116,7 @@ fetch('https://api.notchpay.co/refunds', {
   },
   body: JSON.stringify({
     payment: 'pay_123456789',
-    amount: 2500, // Refund half of a 5000 payment
+    amount: 2500, / Refund half of a 5000 payment
     reason: 'Partial order cancellation'
   })
 })
@@ -250,7 +250,7 @@ If you encounter issues with refunds:
 
 ## Next Steps
 
-- [Disputes](/docs/accept-payments/disputes) - Learn how to handle payment disputes
-- [Webhooks](/docs/webhooks) - Set up webhooks for payment and refund notifications
-- [API Integration](/docs/accept-payments/api-integration) - Build a custom payment experience
-- [Testing](/docs/testing) - Test your refund implementation in the sandbox environment
+- [Disputes](/accept-payments/disputes) - Learn how to handle payment disputes
+- [Webhooks](/webhooks) - Set up webhooks for payment and refund notifications
+- [API Integration](/accept-payments/api-integration) - Build a custom payment experience
+- [Testing](/testing) - Test your refund implementation in the sandbox environment

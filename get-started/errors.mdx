@@ -151,7 +151,7 @@ In addition to HTTP status codes, some error responses include specific error co
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -176,7 +176,7 @@ fetch('https://api.notchpay.co/payments', {
 .catch(error => {
   console.error('Error:', error);
   
-  // Handle specific error types
+  / Handle specific error types
   if (error.code === 401) {
     console.error('Authentication failed. Check your API key.');
   } else if (error.code === 422) {
@@ -205,7 +205,7 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
 ]));
 
 $headers = [
-    'Authorization: YOUR_API_KEY',
+    'Authorization: YOUR_PUBLIC_KEY',
     'Content-Type: application/json'
 ];
 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -219,7 +219,7 @@ $data = json_decode($response, true);
 if ($httpCode >= 400) {
     echo "Error: " . $data['message'] . "\n";
     
-    // Handle specific error types
+    / Handle specific error types
     if ($httpCode === 401) {
         echo "Authentication failed. Check your API key.\n";
     } elseif ($httpCode === 422 && isset($data['errors'])) {
@@ -250,7 +250,7 @@ payload = {
     }
 }
 headers = {
-    "Authorization": "YOUR_API_KEY",
+    "Authorization": "YOUR_PUBLIC_KEY",
     "Content-Type": "application/json"
 }
 
@@ -285,7 +285,7 @@ except requests.exceptions.RequestException as e:
 3. **Retry with Backoff**: For transient errors (like rate limiting or temporary server issues), implement retry logic with exponential backoff.
 
 ```javascript
-// Example of retry with exponential backoff in JavaScript
+/ Example of retry with exponential backoff in JavaScript
 async function makeRequestWithRetry(url, options, maxRetries = 3) {
   let retries = 0;
   
@@ -313,7 +313,7 @@ async function makeRequestWithRetry(url, options, maxRetries = 3) {
         throw error;
       }
       
-      // Only retry on certain errors
+      / Only retry on certain errors
       if (error.code >= 500) {
         const delay = Math.pow(2, retries);
         console.log(`Request failed. Retrying in ${delay} seconds...`);
@@ -348,5 +348,5 @@ If you retry a request with the same idempotency key, Notch Pay will return the 
 ## Next Steps
 
 - [API Reference](/api) - Explore the complete API documentation
-- [Authentication](/docs/get-started/authentication) - Learn about authentication methods
-- [API Response Format](/docs/get-started/responses) - Understand the structure of API responses
+- [Authentication](/get-started/authentication) - Learn about authentication methods
+- [API Response Format](/get-started/responses) - Understand the structure of API responses

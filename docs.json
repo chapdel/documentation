@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "almond",
   "name": "Notch Pay",
   "colors": {
     "primary": "#16A34A",
@@ -36,9 +36,9 @@
             "group": "Security",
             "pages": [
               "security/index",
-              "security/best-practices",
+              "security/fraud-detection",
               "security/compliance",
-              "security/fraud-detection"
+              "security/best-practices"
             ]
           }
         ]
@@ -88,12 +88,11 @@
           {
             "group": "Introduction",
             "pages": [
-              "api-reference/index",
-              "api-reference/authentication"
+              "api-reference/index"
             ]
           },
           {
-            "group": "Endpoints",
+            "group": "Learn more",
             "openapi": {
               "source": "openapi.yaml",
               "directory": "api-reference"

@@ -68,7 +68,7 @@ You can also manage disputes programmatically using the API:
 #### Retrieving Disputes
 
 ```javascript
-// List all disputes
+/ List all disputes
 fetch('https://api.notchpay.co/disputes', {
   headers: {
     'Authorization': 'YOUR_API_KEY'
@@ -79,7 +79,7 @@ fetch('https://api.notchpay.co/disputes', {
   console.log(data.disputes);
 })
 
-// Retrieve a specific dispute
+/ Retrieve a specific dispute
 fetch('https://api.notchpay.co/disputes/dp_123456789', {
   headers: {
     'Authorization': 'YOUR_API_KEY'
@@ -94,7 +94,7 @@ fetch('https://api.notchpay.co/disputes/dp_123456789', {
 #### Submitting Evidence
 
 ```javascript
-// Submit evidence for a dispute
+/ Submit evidence for a dispute
 fetch('https://api.notchpay.co/disputes/dp_123456789/evidence', {
   method: 'POST',
   headers: {
@@ -223,7 +223,7 @@ If you encounter issues with disputes:
 
 ## Next Steps
 
-- [Refunds](/docs/accept-payments/refunds) - Learn how to process refunds
-- [Webhooks](/docs/webhooks) - Set up webhooks for payment and dispute notifications
-- [API Integration](/docs/accept-payments/api-integration) - Build a custom payment experience
-- [Best Practices](/docs/guides/best-practices) - Implement best practices for payment processing
+- [Refunds](/accept-payments/refunds) - Learn how to process refunds
+- [Webhooks](/webhooks) - Set up webhooks for payment and dispute notifications
+- [API Integration](/accept-payments/api-integration) - Build a custom payment experience
+- [Best Practices](/guides/best-practices) - Implement best practices for payment processing

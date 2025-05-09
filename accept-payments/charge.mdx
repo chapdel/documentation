@@ -3,9 +3,7 @@ title: Direct Charge
 description: Integrate Notch Pay directly into your application using our RESTful API
 ---
 
-# API Integration
-
-Notch Pay's API allows you to build a custom payment experience directly into your application. With our RESTful API, you have complete control over the payment flow while still benefiting from Notch Pay's secure payment processing.
+Notch Pay's Directe Charge allows you to build a custom payment experience directly into your application. With our RESTful API, you have complete control over the payment flow while still benefiting from Notch Pay's secure payment processing.
 
 ## Overview
 
@@ -30,9 +28,9 @@ The API integration gives you:
   <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
     <h3 className="text-lg font-semibold mb-2">Alternatives</h3>
     <ul className="list-disc pl-5">
-      <li><a href="/docs/accept-payments/collect" className="text-blue-600 hover:underline">Collect</a>: For a quick integration with minimal coding</li>
-      <li><a href="/docs/accept-payments/payment-links" className="text-blue-600 hover:underline">Payment Links</a>: For sharing payment links without coding</li>
-      <li><a href="/docs/accept-payments/invoices" className="text-blue-600 hover:underline">Invoices</a>: For creating and managing invoices</li>
+      <li><a href="/accept-payments/collect" className="text-teal-600 hover:underline">Collect</a>: For a quick integration with minimal coding</li>
+      <li><a href="/accept-payments/payment-links" className="text-teal-600 hover:underline">Payment Links</a>: For sharing payment links without coding</li>
+      <li><a href="/accept-payments/invoices" className="text-teal-600 hover:underline">Invoices</a>: For creating and managing invoices</li>
     </ul>
   </div>
 </div>
@@ -42,7 +40,7 @@ The API integration gives you:
 All API requests must include your API key in the `Authorization` header:
 
 ```
-Authorization: YOUR_API_KEY
+Authorization: YOUR_PUBLIC_KEY
 ```
 
 You can find your API keys in your Notch Pay Business suite under Settings > API Keys. Make sure to use your test API key for development and your live API key for production.
@@ -64,7 +62,7 @@ To initialize a payment, make a POST request to the `/payments` endpoint:
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -97,7 +95,8 @@ fetch('https://api.notchpay.co/payments', {
   "code": 201,
   "transaction": {
     "id": "pay_123456789",
-    "reference": "order_123",
+    "reference": "trx.123456789abcdefghj",
+    "trxref": "order_123",
     "amount": 5000,
     "currency": "XAF",
     "status": "pending",
@@ -127,11 +126,11 @@ This will take the customer to the Notch Pay Checkout page where they can select
 Process the payment directly through the API with the customer's chosen payment method:
 
 ```javascript
-// Example for MTN Mobile Money
+/ Example for MTN Mobile Money
 fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -157,8 +156,8 @@ fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
   "message": "Payment processing initiated",
   "code": 202,
   "transaction": {
-    "id": "pay_123456789",
-    "reference": "order_123",
+    "reference": "trx.123456789abcdefghj",
+    "trxref": "order_123",
     "status": "processing"
   }
 }
@@ -171,7 +170,7 @@ After processing the payment, you should verify its status:
 ```javascript
 fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
   headers: {
-    'Authorization': 'YOUR_API_KEY'
+    'Authorization': 'YOUR_PUBLIC_KEY'
   }
 })
 .then(response => response.json())
@@ -195,8 +194,8 @@ fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
   "message": "Transaction retrieved",
   "code": 202,
   "transaction": {
-    "id": "pay_123456789",
-    "reference": "order_123",
+    "reference": "trx.123456789abcdefghj",
+    "trxref": "order_123",
     "amount": 5000,
     "currency": "XAF",
     "status": "complete",
@@ -220,7 +219,7 @@ For Mobile Money payments, you need to specify the channel and phone number:
 {
   "channel": "cm.mtn", // or "cm.orange", etc.
   "data": {
-    "phone": "+237680000000"
+    "account_number": "+237680000000"
   }
 }
 ```
@@ -233,9 +232,9 @@ For digital wallet payments, you need to specify the wallet provider:
 
 ```javascript
 {
-  "channel": "wallet.assoh", // or other wallet providers
+  "channel": "assoh", // or other wallet providers
   "data": {
-    "phone": "+237680000000" // Customer's wallet phone number
+    "account_number": "+237680000000" // Customer's wallet phone number
   }
 }
 ```
@@ -245,7 +244,7 @@ For digital wallet payments, you need to specify the wallet provider:
 When a customer completes a payment, they will be redirected to your callback URL with the payment reference:
 
 ```
-https://your-website.com/callback?reference=order_123
+https://your-website.com/callback?reference=trx.123456789abcdefghj&trxref=order_123&status=canceled
 ```
 
 Your callback handler should:
@@ -279,7 +278,7 @@ app.get('/callback', async (req, res) => {
       // Show error page
       res.redirect('/failed');
     } else {
-      // Payment still processing
+     // Payment still processing
       // Show pending page
       res.redirect('/pending');
     }
@@ -304,12 +303,12 @@ app.post('/webhooks/notchpay', express.json(), (req, res) => {
   const event = req.body;
   
   // Verify webhook signature (recommended)
-  const signature = req.headers['x-notchpay-signature'];
+  const signature = req.headers['x-notch-signature'];
   if (!verifySignature(event, signature)) {
     return res.status(400).send('Invalid signature');
   }
   
-  // Handle different event types
+  / Handle different event types
   switch (event.type) {
     case 'payment.complete':
       // Payment was successful
@@ -324,7 +323,7 @@ app.post('/webhooks/notchpay', express.json(), (req, res) => {
       console.log(`Unhandled event type: ${event.type}`);
   }
   
-  // Acknowledge receipt of the webhook
+  / Acknowledge receipt of the webhook
   res.status(200).send('Webhook received');
 });
 
@@ -367,7 +366,7 @@ Implement proper error handling in your integration:
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -396,7 +395,7 @@ fetch('https://api.notchpay.co/payments', {
 Before going live, thoroughly test your integration in the sandbox environment:
 
 1. Use your test API key
-2. Use [test payment methods](/docs/testing/test-cards) to simulate different scenarios
+2. Use [test payment methods](/testing) to simulate different scenarios
 3. Verify that your callback handling and webhook processing work correctly
 4. Test error scenarios to ensure your application handles them gracefully
 
@@ -421,7 +420,7 @@ When creating a payment, you can include a `metadata` object with any key-value 
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -451,7 +450,7 @@ When you retrieve a payment, the metadata will be included in the response:
 ```javascript
 fetch('https://api.notchpay.co/payments/order_123', {
   headers: {
-    'Authorization': 'YOUR_API_KEY'
+    'Authorization': 'YOUR_PUBLIC_KEY'
   }
 })
 .then(response => response.json())
@@ -473,23 +472,12 @@ fetch('https://api.notchpay.co/payments/order_123', {
 ## Best Practices
 
 1. **Secure Your API Key**: Never expose your API key in client-side code
-2. **Implement Idempotency**: Use unique references for each payment to prevent duplicate charges
-3. **Validate Input**: Validate all input parameters before sending them to the API
-4. **Handle Errors Gracefully**: Implement proper error handling for a better user experience
-5. **Use Webhooks**: Set up webhooks for reliable payment notifications
-6. **Log Transactions**: Keep detailed logs of all transactions for troubleshooting
-7. **Implement Retry Logic**: Add retry logic for API calls that may fail due to network issues
-8. **Utilize Metadata**: Use metadata to link payments to your internal systems
+2. **Validate Input**: Validate all input parameters before sending them to the API
+3. **Handle Errors Gracefully**: Implement proper error handling for a better user experience
+4. **Use Webhooks**: Set up webhooks for reliable payment notifications
+5. **Log Transactions**: Keep detailed logs of all transactions for troubleshooting
+6. **Utilize Metadata**: Use metadata to link payments to your internal systems
 
 ## API Reference
 
-For detailed API documentation, see the [Payments API Reference](/api/payments).
-
-## Next Steps
-
-- [Collect](/docs/accept-payments/collect) - Use our hosted payment page for a quick integration
-- [Mobile Money](/docs/accept-payments/mobile-money) - Learn more about mobile money payments
-- [Invoices](/docs/accept-payments/invoices) - Create and manage professional invoices
-- [Refunds](/docs/accept-payments/refunds) - Process refunds for completed payments
-- [Disputes](/docs/accept-payments/disputes) - Handle payment disputes and chargebacks
-- [Webhooks](/docs/webhooks) - Set up webhooks for payment notifications
+For detailed API documentation, see the [Payments API Reference](/api-reference/payments).

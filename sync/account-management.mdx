@@ -73,7 +73,7 @@ To create a connected account through the Notch Pay dashboard:
 To create a connected account programmatically:
 
 ```javascript
-// Create a connected account
+/ Create a connected account
 fetch('https://api.notchpay.co/sync/accounts', {
   method: 'POST',
   headers: {
@@ -81,7 +81,7 @@ fetch('https://api.notchpay.co/sync/accounts', {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    type: 'standard', // or 'express', 'custom'
+    type: 'standard', / or 'express', 'custom'
     business_profile: {
       name: 'Seller Store',
       url: 'https://sellerstore.com',
@@ -97,7 +97,7 @@ fetch('https://api.notchpay.co/sync/accounts', {
 })
 .then(response => response.json())
 .then(data => {
-  console.log(data.account.id); // The connected account ID
+  console.log(data.account.id); / The connected account ID
 })
 ```
 
@@ -137,7 +137,7 @@ The typical onboarding flow works as follows:
 To generate an onboarding link for a connected account:
 
 ```javascript
-// Generate an onboarding link
+/ Generate an onboarding link
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}/onboarding`, {
   method: 'POST',
   headers: {
@@ -151,7 +151,7 @@ fetch(`https://api.notchpay.co/sync/accounts/${accountId}/onboarding`, {
 })
 .then(response => response.json())
 .then(data => {
-  // Redirect the account holder to the onboarding URL
+  / Redirect the account holder to the onboarding URL
   const onboardingUrl = data.url;
   console.log(onboardingUrl);
 })
@@ -162,7 +162,7 @@ fetch(`https://api.notchpay.co/sync/accounts/${accountId}/onboarding`, {
 You can customize the onboarding flow to match your platform's branding and collect specific information:
 
 ```javascript
-// Generate a customized onboarding link
+/ Generate a customized onboarding link
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}/onboarding`, {
   method: 'POST',
   headers: {
@@ -220,7 +220,7 @@ During the onboarding process, sellers will need to provide the following for KY
 You can track the onboarding and KYC progress of a connected account:
 
 ```javascript
-// Retrieve account information
+/ Retrieve account information
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
   headers: {
     'Authorization': 'YOUR_PLATFORM_API_KEY'
@@ -246,7 +246,7 @@ fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
 If a seller doesn't complete the onboarding process in one session, they can resume it later:
 
 ```javascript
-// Generate a new onboarding link for an incomplete account
+/ Generate a new onboarding link for an incomplete account
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}/onboarding`, {
   method: 'POST',
   headers: {
@@ -260,7 +260,7 @@ fetch(`https://api.notchpay.co/sync/accounts/${accountId}/onboarding`, {
 })
 .then(response => response.json())
 .then(data => {
-  // Send the new onboarding URL to the seller
+  / Send the new onboarding URL to the seller
   const onboardingUrl = data.url;
   console.log(onboardingUrl);
 })
@@ -285,7 +285,7 @@ Verification requirements may include:
 To check the verification status of a connected account:
 
 ```javascript
-// Retrieve account information
+/ Retrieve account information
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
   headers: {
     'Authorization': 'YOUR_PLATFORM_API_KEY'
@@ -329,7 +329,7 @@ Connected accounts have various capabilities that determine what they can do on 
 To check the capabilities of a connected account:
 
 ```javascript
-// Retrieve account information
+/ Retrieve account information
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
   headers: {
     'Authorization': 'YOUR_PLATFORM_API_KEY'
@@ -350,7 +350,7 @@ fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
 To update the capabilities of a connected account:
 
 ```javascript
-// Update account capabilities
+/ Update account capabilities
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}/capabilities`, {
   method: 'POST',
   headers: {
@@ -378,7 +378,7 @@ You can update various aspects of a connected account as needed.
 To update the business information of a connected account:
 
 ```javascript
-// Update business information
+/ Update business information
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
   method: 'POST',
   headers: {
@@ -404,7 +404,7 @@ fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
 To update the contact information of a connected account:
 
 ```javascript
-// Update contact information
+/ Update contact information
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
   method: 'POST',
   headers: {
@@ -428,7 +428,7 @@ fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
 To update the metadata of a connected account:
 
 ```javascript
-// Update metadata
+/ Update metadata
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}`, {
   method: 'POST',
   headers: {
@@ -458,7 +458,7 @@ When a seller or service provider leaves your platform, you may need to deactiva
 To deactivate a connected account:
 
 ```javascript
-// Deactivate account
+/ Deactivate account
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}/deactivate`, {
   method: 'POST',
   headers: {
@@ -477,7 +477,7 @@ fetch(`https://api.notchpay.co/sync/accounts/${accountId}/deactivate`, {
 To reactivate a previously deactivated account:
 
 ```javascript
-// Reactivate account
+/ Reactivate account
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}/reactivate`, {
   method: 'POST',
   headers: {
@@ -540,7 +540,7 @@ Custom accounts typically don't have direct dashboard access, as these are fully
 To generate a link for a connected account to access their dashboard:
 
 ```javascript
-// Generate dashboard link
+/ Generate dashboard link
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}/dashboard`, {
   method: 'POST',
   headers: {
@@ -553,7 +553,7 @@ fetch(`https://api.notchpay.co/sync/accounts/${accountId}/dashboard`, {
 })
 .then(response => response.json())
 .then(data => {
-  // Redirect the account holder to the dashboard URL
+  / Redirect the account holder to the dashboard URL
   const dashboardUrl = data.url;
   console.log(dashboardUrl);
 })
@@ -564,7 +564,7 @@ fetch(`https://api.notchpay.co/sync/accounts/${accountId}/dashboard`, {
 For a more integrated experience, you can embed certain dashboard features directly into your platform:
 
 ```javascript
-// Generate an embedded dashboard component
+/ Generate an embedded dashboard component
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}/embedded-dashboard`, {
   method: 'POST',
   headers: {
@@ -572,8 +572,8 @@ fetch(`https://api.notchpay.co/sync/accounts/${accountId}/embedded-dashboard`, {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    component: 'transactions', // or 'payouts', 'settings', etc.
-    time_range: '30d', // Last 30 days
+    component: 'transactions', / or 'payouts', 'settings', etc.
+    time_range: '30d', / Last 30 days
     branding: {
       colors: {
         primary: '#4F46E5',
@@ -585,7 +585,7 @@ fetch(`https://api.notchpay.co/sync/accounts/${accountId}/embedded-dashboard`, {
 })
 .then(response => response.json())
 .then(data => {
-  // Use the embed URL or code in your platform
+  / Use the embed URL or code in your platform
   const embedUrl = data.url;
   console.log(embedUrl);
 })
@@ -636,7 +636,7 @@ If you encounter issues with account management:
 
 ## Next Steps
 
-- [Sync Integration Guide](/docs/sync/integration) - Learn how to integrate Sync into your platform
+- [Sync Integration Guide](/sync/integration) - Learn how to integrate Sync into your platform
 - [Sync API Reference](/api/sync) - Detailed API documentation for Sync
-- [Webhooks](/docs/webhooks) - Set up webhooks for real-time notifications
-- [Testing](/docs/testing) - Test your account management in the sandbox environment
+- [Webhooks](/webhooks) - Set up webhooks for real-time notifications
+- [Testing](/testing) - Test your account management in the sandbox environment

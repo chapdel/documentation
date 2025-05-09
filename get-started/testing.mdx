@@ -3,8 +3,6 @@ title: Testing Your Integration
 description: Learn how to test your NotchPay integration with Mobile Money test accounts
 ---
 
-# Testing Your Integration
-
 Before going into production, it's essential to thoroughly test your NotchPay integration. This page provides all the information you need to perform comprehensive testing, particularly for Mobile Money payments which are at the heart of financial services in Africa.
 
 ## Notch Pay's Commitment to Security
@@ -22,15 +20,15 @@ NotchPay offers two distinct environments:
 
 To switch between modes:
 
-1. Log in to your [NotchPay Dashboard](https://business.notchpay.co)
+1. Log in to your [Notch Pay Business Suite](https://business.notchpay.co)
 2. Click on the environment selector in the top navigation bar
-3. Select "Test Mode" or "Production Mode"
+3. Select "Sandbox" or "Production Mode"
 
 In test mode, the dashboard will display a "TEST MODE" indicator to remind you that you're not in the production environment.
 
 ## Test API Keys
 
-In test mode, you'll use test API keys that start with `test_`. These keys are different from your production API keys and can only be used in the test environment.
+In test mode, you'll use test API keys that start with `pk_test_`. These keys are different from your production API keys and can only be used in the test environment.
 
 To find your test API keys:
 
@@ -39,7 +37,7 @@ To find your test API keys:
 3. Copy your test API key
 
 ```
-test_sk_123456789
+pk_test_123456789
 ```
 
 ## Phone Numbers for Mobile Money Testing
@@ -61,7 +59,7 @@ Replace "XXX" with the appropriate prefix for each operator.
 |----------|--------|---------------------|---------|
 | MTN | +23767 | +237670000000 | cm.mtn |
 | Orange | +23769 | +237690000000 | cm.orange |
-| EU Mobile | +23768 | +237680000000 | cm.eu |
+| EU Mobile | +23768 | +237680000000 | eumm |
 | Yoomee | +23766 | +237660000000 | cm.yoomee |
 
 ### Ivory Coast (CI)
@@ -93,7 +91,7 @@ Replace "XXX" with the appropriate prefix for each operator.
 | Operator | Prefix | Example for success | Channel |
 |----------|--------|---------------------|---------|
 | Airtel | +2410 | +24100000000 | ga.airtel |
-| Express Union | +2411 | +24110000000 | ga.eu |
+| Express Union | +2411 | +24110000000 | eumm |
 
 ### Benin (BJ)
 
@@ -131,7 +129,7 @@ Replace "XXX" with the appropriate prefix for each operator.
 | Airtel | +24399 | +243990000000 | cd.airtel |
 | Orange | +24389 | +243890000000 | cd.orange |
 | Vodacom | +24381 | +243810000000 | cd.vodacom |
-| Express Union | +24382 | +243820000000 | cd.eu |
+| Express Union | +24382 | +243820000000 | eumm |
 
 ### Tanzania (TZ)
 
@@ -165,32 +163,32 @@ Replace "XXX" with the appropriate prefix for each operator.
 
 | Operator | Prefix | Example for success | Channel |
 |----------|--------|---------------------|---------|
-| Express Union | +23566 | +235660000000 | td.eu |
+| Express Union | +23566 | +235660000000 | eumm |
 
 ### Central African Republic (CF)
 
 | Operator | Prefix | Example for success | Channel |
 |----------|--------|---------------------|---------|
-| Express Union | +23670 | +236700000000 | cf.eu |
+| Express Union | +23670 | +236700000000 | eumm |
 
 ### Congo Brazzaville (CG)
 
 | Operator | Prefix | Example for success | Channel |
 |----------|--------|---------------------|---------|
-| Express Union | +24205 | +242050000000 | cg.eu |
+| Express Union | +24205 | +242050000000 | eumm |
 
 ## Testing Webhooks
 
 Webhooks are an essential part of your integration as they allow your application to receive real-time notifications about payment events. When testing your Mobile Money integration, you should also test your webhook implementation.
 
 For detailed information on webhooks, please refer to our guides:
-- [Webhook Setup](/docs/get-started/webhooks/setup) - Learn how to set up webhook endpoints
-- [Verifying Webhooks](/docs/get-started/webhooks/verify) - Learn how to verify webhook signatures
+- [Webhook Setup](/get-started/webhooks) - Learn how to set up webhook endpoints
+- [Verifying Webhooks](/get-started/webhooks/verify) - Learn how to verify webhook signatures
 
 When testing webhooks with Mobile Money payments:
 
-1. Make sure to use your sandbox webhook hash (prefixed with `test_`) for signature verification
-2. Check that your code is reading the signature from the `X-Notch-Signature` header
+1. Make sure to use your sandbox webhook hash key (prefixed with `hsk_test_`) for signature verification
+2. Check that your code is reading the signature from the `x-notch-signature` header
 3. Use your sandbox private key for webhook management operations
 4. Test all relevant Mobile Money event types (payment.complete, payment.failed, etc.)
 5. Verify that your application correctly processes each event type
@@ -259,18 +257,18 @@ To test money transfers to Mobile Money accounts:
 ### Example of Creating a Mobile Money Transfer
 
 ```javascript
-// Example with JavaScript
+/ Example with JavaScript
 fetch('https://api.notchpay.co/transfers', {
   method: 'POST',
   headers: {
-    'Authorization': 'test_sk_123456789',
+    'Authorization': 'pk_test_123456789',
     'X-Grant': 'your_private_key',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
     amount: 5000,
     currency: 'XAF',
-    beneficiary_data: {
+    beneficiary: {
       name: 'John Doe',
       phone: '+237670000000', // Test number for a successful transfer
       email: 'john@example.com'
@@ -288,7 +286,7 @@ fetch('https://api.notchpay.co/transfers', {
 
 Notch Pay implements a sophisticated fraud detection system to protect both merchants and customers. This system is active in both test and production environments, though with different sensitivity levels.
 
-> **Important**: For a complete understanding of our fraud detection system, please refer to our [Complete Guide to Fraud Detection System](/docs/security/fraud-detection).
+> **Important**: For a complete understanding of our fraud detection system, please refer to our [Complete Guide to Fraud Detection System](/security/fraud-detection).
 
 ### Key Points to Remember During Testing
 
@@ -342,7 +340,7 @@ Before going to production, make sure to:
 4. Perform a final test with a small real payment
 5. Ensure your application distributes transactions across different phone numbers
 6. Review and comply with our security best practices
-7. Understand our [fraud detection system](/docs/security/fraud-detection) and its implications
+7. Understand our [fraud detection system](/security/fraud-detection) and its implications
 8. Prepare your team to handle potentially blocked transactions
 
 > **Critical Production Warning**: In production, your application must avoid sending all transactions to the same phone number. Notch Pay's fraud detection system will flag and may block accounts that consistently process transactions with the same phone number. This is a security measure to prevent fraud and money laundering. Design your application to naturally distribute transactions across different recipients or implement safeguards if your business model requires repeated transactions to the same recipients.
@@ -447,7 +445,6 @@ Here's the complete list of Mobile Money channels available for testing, organiz
 
 ## Additional Resources
 
-- [Test Mode](/docs/testing/test-mode) - Learn more about the test environment
-- [Mobile Money](/docs/accept-payments/mobile-money) - Comprehensive guide on integrating Mobile Money payments
-- [Mobile Money API](/api/mobile-money) - API documentation for Mobile Money payments
-- [Production Checklist](/docs/testing/test-mode#production-checklist) - Make sure you're ready for production
+- [Test Mode](/testing/test-mode) - Learn more about the test environment
+- [Mobile Money](/accept-payments/mobile-money) - Comprehensive guide on integrating Mobile Money payments
+- [Production Checklist](/testing/test-mode#production-checklist) - Make sure you're ready for production

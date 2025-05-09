@@ -30,7 +30,7 @@ YOUR_API_KEY
 Let's create a basic payment using the Notch Pay API:
 
 ```javascript
-// Using fetch in JavaScript
+/ Using fetch in JavaScript
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
@@ -52,7 +52,7 @@ fetch('https://api.notchpay.co/payments', {
 })
 .then(response => response.json())
 .then(data => {
-  // Redirect the customer to the payment page
+  / Redirect the customer to the payment page
   window.location.href = data.authorization_url;
 })
 .catch(error => console.error('Error:', error));
@@ -64,7 +64,7 @@ After creating a payment, you'll receive a response with an `authorization_url`.
 
 ```javascript
 window.location.href = data.authorization_url;
-// Example: https://pay.notchpay.co/pay_123456789
+/ Example: https://pay.notchpay.co/pay_123456789
 ```
 
 ## Step 4: Handle the Callback
@@ -72,11 +72,11 @@ window.location.href = data.authorization_url;
 When the payment is completed (or fails), Notch Pay will redirect the customer back to your `callback` URL with the payment status:
 
 ```javascript
-// Example callback handler in Express.js
+/ Example callback handler in Express.js
 app.get('/callback', (req, res) => {
   const reference = req.query.reference;
   
-  // Verify the payment status
+  / Verify the payment status
   fetch(`https://api.notchpay.co/payments/${reference}`, {
     headers: {
       'Authorization': 'YOUR_API_KEY'
@@ -85,10 +85,10 @@ app.get('/callback', (req, res) => {
   .then(response => response.json())
   .then(data => {
     if (data.transaction.status === 'complete') {
-      // Payment successful, update your database and show success page
+      / Payment successful, update your database and show success page
       res.send('Payment successful!');
     } else {
-      // Payment failed or is still pending
+      / Payment failed or is still pending
       res.send('Payment not completed.');
     }
   })
@@ -108,25 +108,25 @@ For more reliable payment notifications, set up webhooks to receive real-time up
 3. Select the events you want to receive (e.g., `payment.complete`, `payment.failed`)
 
 ```javascript
-// Example webhook handler in Express.js
+/ Example webhook handler in Express.js
 app.post('/webhooks', express.json(), (req, res) => {
   const event = req.body;
   
-  // Verify webhook signature (recommended for security)
-  // ...
+  / Verify webhook signature (recommended for security)
+  / ...
   
-  // Handle different event types
+  / Handle different event types
   switch (event.type) {
     case 'payment.complete':
-      // Update order status to paid
+      / Update order status to paid
       break;
     case 'payment.failed':
-      // Handle failed payment
+      / Handle failed payment
       break;
-    // Handle other event types
+    / Handle other event types
   }
   
-  // Acknowledge receipt of the webhook
+  / Acknowledge receipt of the webhook
   res.status(200).send('Webhook received');
 });
 ```
@@ -135,10 +135,10 @@ app.post('/webhooks', express.json(), (req, res) => {
 
 Congratulations! You've successfully integrated Notch Pay for basic payment processing. Here are some next steps to enhance your integration:
 
-- [Explore different payment methods](/docs/accept-payments) to offer more options to your customers
-- [Implement customer management](/docs/customers) to save customer information for future payments
-- [Set up webhooks properly](/docs/webhooks/setup) for reliable payment notifications
-- [Test your integration thoroughly](/docs/testing) before going live
+- [Explore different payment methods](/accept-payments) to offer more options to your customers
+- [Implement customer management](/customers) to save customer information for future payments
+- [Set up webhooks properly](/webhooks/setup) for reliable payment notifications
+- [Test your integration thoroughly](/testing) before going live
 
 ## Sample Applications
 

@@ -17,7 +17,7 @@ All Notch Pay API responses follow a consistent JSON format:
   "status": "OK",
   "message": "Descriptive message about the response",
   "data": {
-    // Response data specific to the endpoint
+    / Response data specific to the endpoint
   }
 }
 ```
@@ -75,7 +75,7 @@ When retrieving a collection of resources (like a list of payments), the respons
       "currency": "XAF",
       "status": "complete"
     },
-    // More items...
+    / More items...
   ]
 }
 ```
@@ -157,7 +157,7 @@ When an error occurs, the response includes information about what went wrong:
 }
 ```
 
-For more information about error responses, see the [Error Handling](/docs/get-started/errors) guide.
+For more information about error responses, see the [Error Handling](/get-started/errors) guide.
 
 ## Response Formats for Specific Endpoints
 
@@ -290,12 +290,12 @@ fetch('https://api.notchpay.co/payments', {
 .then(response => response.json())
 .then(data => {
   if (data.code >= 200 && data.code < 300) {
-    // Success
+    / Success
     console.log('Success:', data.message);
     console.log('Payment ID:', data.data.id);
     console.log('Authorization URL:', data.data.authorization_url);
   } else {
-    // Error
+    / Error
     console.error('Error:', data.message);
     if (data.errors) {
       console.error('Validation errors:', data.errors);
@@ -336,12 +336,12 @@ curl_close($ch);
 $data = json_decode($response, true);
 
 if ($data['code'] >= 200 && $data['code'] < 300) {
-    // Success
+    / Success
     echo "Success: " . $data['message'] . "\n";
     echo "Payment ID: " . $data['data']['id'] . "\n";
     echo "Authorization URL: " . $data['data']['authorization_url'] . "\n";
 } else {
-    // Error
+    / Error
     echo "Error: " . $data['message'] . "\n";
     if (isset($data['errors'])) {
         echo "Validation errors:\n";
@@ -395,7 +395,7 @@ else:
 2. **Handle Pagination**: When working with collection endpoints, implement pagination to retrieve all results.
 
 ```javascript
-// Example of handling pagination in JavaScript
+/ Example of handling pagination in JavaScript
 async function getAllPayments() {
   let page = 1;
   let allPayments = [];
@@ -454,5 +454,5 @@ console.log(`Payment ${id}: ${amount} ${currency} (${status})`);
 ## Next Steps
 
 - [API Reference](/api) - Explore the complete API documentation
-- [Authentication](/docs/get-started/authentication) - Learn about authentication methods
-- [Error Handling](/docs/get-started/errors) - Understand how to handle API errors
+- [Authentication](/get-started/authentication) - Learn about authentication methods
+- [Error Handling](/get-started/errors) - Understand how to handle API errors

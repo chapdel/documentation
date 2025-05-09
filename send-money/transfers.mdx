@@ -5,8 +5,8 @@ description: Learn how to distribute funds to recipients using Notch Pay Transfe
 
 # Transfers
 
-<div className="bg-blue-50 p-4 border-l-4 border-blue-500 rounded-md mb-6">
-  <p className="text-sm text-blue-700">
+<div className="bg-teal-50 p-4 border-l-4 border-teal-500 rounded-md mb-6">
+  <p className="text-sm text-teal-700">
     <strong>Terminology Note:</strong> In Notch Pay, the term "Transfers" refers to sending money to recipients (payouts, withdrawals, and fund distributions). This is the official terminology used throughout the platform and API.
   </p>
 </div>
@@ -71,7 +71,7 @@ Mobile money transfers allow you to send funds directly to mobile money accounts
 #### Mobile Money Transfer Example
 
 ```javascript
-// Create a mobile money recipient
+/ Create a mobile money recipient
 fetch('https://api.notchpay.co/recipients', {
   method: 'POST',
   headers: {
@@ -79,7 +79,7 @@ fetch('https://api.notchpay.co/recipients', {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    type: 'cm.mtn', // MTN Cameroon
+    type: 'cm.mtn', / MTN Cameroon
     name: 'John Doe',
     phone: '+237600000000'
   })
@@ -88,7 +88,7 @@ fetch('https://api.notchpay.co/recipients', {
 .then(data => {
   const recipientId = data.recipient.id;
   
-  // Initiate transfer to the recipient
+  / Initiate transfer to the recipient
   return fetch('https://api.notchpay.co/transfers', {
     method: 'POST',
     headers: {
@@ -119,8 +119,8 @@ Bank transfers allow you to send money directly to bank accounts. This method is
 
 Before initiating a transfer, you need to create a recipient (also known as a beneficiary) who will receive the funds. This step collects and validates the recipient's information.
 
-<div className="bg-blue-50 p-4 border-l-4 border-blue-500 rounded-md mb-6">
-  <p className="text-sm text-blue-700">
+<div className="bg-teal-50 p-4 border-l-4 border-teal-500 rounded-md mb-6">
+  <p className="text-sm text-teal-700">
     <strong>Terminology Note:</strong> In Notch Pay, the terms "recipient" and "beneficiary" are used interchangeably to refer to the person or entity receiving funds through a transfer.
   </p>
 </div>
@@ -152,7 +152,7 @@ For standard recipients, Notch Pay currently supports the following types:
 To create a standard transfer recipient, make a POST request to the Recipient API:
 
 ```javascript
-// Create a transfer recipient
+/ Create a transfer recipient
 fetch('https://api.notchpay.co/recipients', {
   method: 'POST',
   headers: {
@@ -160,11 +160,11 @@ fetch('https://api.notchpay.co/recipients', {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    type: 'cm.mtn', // or 'cm.orange', 'cm.mobile'
+    type: 'cm.mtn', / or 'cm.orange', 'cm.mobile'
     name: 'John Doe',
-    email: 'john@example.com', // Optional
+    email: 'john@example.com', / Optional
     phone: '+237600000000',
-    metadata: { // Optional
+    metadata: { / Optional
       customer_id: '12345',
       department: 'sales'
     }
@@ -182,7 +182,7 @@ fetch('https://api.notchpay.co/recipients', {
 You can retrieve, update, or delete standard recipients as needed:
 
 ```javascript
-// Retrieve a recipient
+/ Retrieve a recipient
 fetch('https://api.notchpay.co/recipients/rcp_123456789', {
   headers: {
     'Authorization': 'YOUR_API_KEY'
@@ -193,7 +193,7 @@ fetch('https://api.notchpay.co/recipients/rcp_123456789', {
   console.log(data.recipient);
 })
 
-// Update a recipient
+/ Update a recipient
 fetch('https://api.notchpay.co/recipients/rcp_123456789', {
   method: 'PUT',
   headers: {
@@ -210,7 +210,7 @@ fetch('https://api.notchpay.co/recipients/rcp_123456789', {
   console.log('Recipient updated:', data.recipient);
 })
 
-// Delete a recipient
+/ Delete a recipient
 fetch('https://api.notchpay.co/recipients/rcp_123456789', {
   method: 'DELETE',
   headers: {
@@ -281,7 +281,7 @@ Once you have created a recipient (either a standard recipient via API or a Payo
 To initiate a transfer, make a POST request to the Transfers API. This works for both standard recipients and Payout Accounts:
 
 ```javascript
-// Initiate a transfer
+/ Initiate a transfer
 fetch('https://api.notchpay.co/transfers', {
   method: 'POST',
   headers: {
@@ -289,11 +289,11 @@ fetch('https://api.notchpay.co/transfers', {
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    recipient: 'rcp_123456789', // Recipient ID
-    amount: 5000, // Amount in the smallest currency unit (e.g., 5000 = 5000 XAF)
+    recipient: 'rcp_123456789', / Recipient ID
+    amount: 5000, / Amount in the smallest currency unit (e.g., 5000 = 5000 XAF)
     currency: 'XAF',
-    description: 'Salary payment for June 2023', // Optional
-    metadata: { // Optional
+    description: 'Salary payment for June 2023', / Optional
+    metadata: { / Optional
       invoice_id: 'INV-123',
       payment_type: 'salary'
     }
@@ -327,16 +327,16 @@ The API response includes details about the transfer:
   "code": 201,
   "transfer": {
     "amount": 5000,
-    "amount_total": 5100, // Amount including fees
+    "amount_total": 5100, / Amount including fees
     "sandbox": false,
-    "fee": 100, // Transfer fee
+    "fee": 100, / Transfer fee
     "converted_amount": 5000,
     "beneficiary": "rcp_123456789",
     "description": "Salary payment for June 2023",
-    "reference": "po.rKI4eJBYkebUAKj5stAHeCCnLyV8NZy9", // Transfer ID
+    "reference": "po.rKI4eJBYkebUAKj5stAHeCCnLyV8NZy9", / Transfer ID
     "trxref": null,
     "statement": null,
-    "status": "sent", // Current status
+    "status": "sent", / Current status
     "currency": "XAF",
     "geo": "127.0.0.1",
     "created_at": "2023-06-17T21:35:51.000000Z"
@@ -362,7 +362,7 @@ Transfers can have the following statuses:
 You can check the status of a transfer at any time:
 
 ```javascript
-// Check transfer status
+/ Check transfer status
 fetch('https://api.notchpay.co/transfers/po.rKI4eJBYkebUAKj5stAHeCCnLyV8NZy9', {
   headers: {
     'Authorization': 'YOUR_API_KEY'
@@ -379,7 +379,7 @@ fetch('https://api.notchpay.co/transfers/po.rKI4eJBYkebUAKj5stAHeCCnLyV8NZy9', {
 To verify a transfer (especially important for reconciliation):
 
 ```javascript
-// Verify a transfer
+/ Verify a transfer
 fetch('https://api.notchpay.co/transfers/po.rKI4eJBYkebUAKj5stAHeCCnLyV8NZy9/verify', {
   headers: {
     'Authorization': 'YOUR_API_KEY'
@@ -471,7 +471,7 @@ If you encounter issues with transfers:
 
 ## Next Steps
 
-- [Bulk Transfers](/docs/send-money/bulk-transfers) - Send money to multiple recipients at once
-- [Beneficiaries Management](/docs/send-money/beneficiaries) - Create and manage your recipients
-- [Webhooks](/docs/webhooks) - Set up webhooks for transfer notifications
+- [Bulk Transfers](/send-money/bulk-transfers) - Send money to multiple recipients at once
+- [Beneficiaries Management](/send-money/beneficiaries) - Create and manage your recipients
+- [Webhooks](/webhooks) - Set up webhooks for transfer notifications
 - [API Reference](/api/transfers) - Detailed API documentation for transfers

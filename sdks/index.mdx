@@ -19,7 +19,7 @@ Notch Pay provides official client libraries for various programming languages t
       <li>Browser and Node.js compatibility</li>
       <li>Comprehensive error handling</li>
     </ul>
-    <a href="/docs/sdks/javascript" className="text-blue-600 hover:underline">View JavaScript SDK →</a>
+    <a href="/sdks/javascript" className="text-teal-600 hover:underline">View JavaScript SDK →</a>
   </div>
   <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
     <h3 className="text-lg font-semibold mb-2">PHP</h3>
@@ -30,7 +30,7 @@ Notch Pay provides official client libraries for various programming languages t
       <li>Laravel integration</li>
       <li>Comprehensive error handling</li>
     </ul>
-    <a href="/docs/sdks/php" className="text-blue-600 hover:underline">View PHP SDK →</a>
+    <a href="/sdks/php" className="text-teal-600 hover:underline">View PHP SDK →</a>
   </div>
 </div>
 
@@ -44,7 +44,7 @@ Notch Pay provides official client libraries for various programming languages t
       <li>Django integration</li>
       <li>Comprehensive error handling</li>
     </ul>
-    <a href="/docs/sdks/python" className="text-blue-600 hover:underline">View Python SDK →</a>
+    <a href="/sdks/python" className="text-teal-600 hover:underline">View Python SDK →</a>
   </div>
   <div className="border rounded-lg p-6 hover:shadow-md transition-shadow">
     <h3 className="text-lg font-semibold mb-2">Mobile SDKs</h3>
@@ -55,7 +55,7 @@ Notch Pay provides official client libraries for various programming languages t
       <li>React Native support</li>
       <li>Flutter support</li>
     </ul>
-    <a href="/docs/sdks/mobile" className="text-blue-600 hover:underline">View Mobile SDKs →</a>
+    <a href="/sdks/mobile" className="text-teal-600 hover:underline">View Mobile SDKs →</a>
   </div>
 </div>
 
@@ -106,7 +106,7 @@ notchpay.payments.create({
   callback: 'https://example.com/callback'
 })
 .then(response => {
-  // Redirect to payment page
+  / Redirect to payment page
   window.location.href = response.authorization_url;
 })
 .catch(error => {
@@ -134,7 +134,7 @@ try {
         'callback' => 'https://example.com/callback'
     ]);
     
-    // Redirect to payment page
+    / Redirect to payment page
     header('Location: ' . $payment->authorization_url);
     exit;
 } catch (\Notch Pay\Exception\ApiException $e) {
@@ -192,7 +192,7 @@ If you encounter any issues with our SDKs or have questions about integration:
 
 Choose your preferred SDK to get started:
 
-- [JavaScript SDK](/docs/sdks/javascript)
-- [PHP SDK](/docs/sdks/php)
-- [Python SDK](/docs/sdks/python)
-- [Mobile SDKs](/docs/sdks/mobile)
+- [JavaScript SDK](/sdks/javascript)
+- [PHP SDK](/sdks/php)
+- [Python SDK](/sdks/python)
+- [Mobile SDKs](/sdks/mobile)

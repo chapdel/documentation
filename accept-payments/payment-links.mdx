@@ -3,9 +3,7 @@ title: Payment Links
 description: Create and share payment links without any coding required
 ---
 
-# Payment Links
-
-Notch Pay Payment Links allow you to create shareable payment links without any coding required. This is an ideal solution for businesses that want to accept payments quickly without implementing a full integration.
+Notch Pay Quick allow you to create shareable payment links without any coding required. This is an ideal solution for businesses that want to accept payments quickly without implementing a full integration.
 
 ## Overview
 
@@ -13,7 +11,6 @@ Payment Links are perfect for:
 
 - One-time payments
 - Donations
-- Invoice payments
 - Event registrations
 - Product sales
 - Service payments
@@ -48,7 +45,7 @@ Payment Links are perfect for:
 The easiest way to create a Payment Link is through your Notch Pay dashboard:
 
 1. Log in to your [Notch Pay Business suite](https://business.notchpay.co)
-2. Go to **Payments** > **Payment Links**
+2. Go to **Quicks**
 3. Click **Create Payment Link**
 4. Fill in the payment details:
    - **Title**: Name of the product or service
@@ -60,38 +57,67 @@ The easiest way to create a Payment Link is through your Notch Pay dashboard:
 5. Click **Create Link**
 6. Share the generated link with your customers
 
-### Using the API
+[//]: # (### Using the API)
 
-You can also create Payment Links programmatically using the API:
+[//]: # ()
+[//]: # (You can also create Payment Links programmatically using the API:)
 
-```javascript
-fetch('https://api.notchpay.co/payment-links', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'YOUR_API_KEY',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    title: 'Premium Package',
-    amount: 10000,
-    currency: 'XAF',
-    description: 'Access to Premium Features',
-    redirect_url: 'https://your-website.com/thank-you',
-    expires_at: '2023-12-31T23:59:59Z', // Optional
-    payment_methods: ['cm.mtn', 'cm.orange', 'wallet.assoh'], // Optional
-    metadata: { // Optional
-      product_id: '12345',
-      customer_type: 'premium'
-    }
-  })
-})
-.then(response => response.json())
-.then(data => {
-  // The payment link URL
-  const paymentLinkUrl = data.payment_link.url;
-  console.log(paymentLinkUrl);
-})
-```
+[//]: # ()
+[//]: # (```javascript)
+
+[//]: # (fetch&#40;'https://api.notchpay.co/quick', {)
+
+[//]: # (  method: 'POST',)
+
+[//]: # (  headers: {)
+
+[//]: # (    'Authorization': 'YOUR_API_KEY',)
+
+[//]: # (    'Content-Type': 'application/json')
+
+[//]: # (  },)
+
+[//]: # (  body: JSON.stringify&#40;{)
+
+[//]: # (    title: 'Premium Package',)
+
+[//]: # (    amount: 10000,)
+
+[//]: # (    currency: 'XAF',)
+
+[//]: # (    description: 'Access to Premium Features',)
+
+[//]: # (    redirect_url: 'https://your-website.com/thank-you',)
+
+[//]: # (    expires_at: '2023-12-31T23:59:59Z', / Optional)
+
+[//]: # (    payment_methods: ['cm.mtn', 'cm.orange', 'assoh'], / Optional)
+
+[//]: # (    metadata: { / Optional)
+
+[//]: # (      product_id: '12345',)
+
+[//]: # (      customer_type: 'premium')
+
+[//]: # (    })
+
+[//]: # (  }&#41;)
+
+[//]: # (}&#41;)
+
+[//]: # (.then&#40;response => response.json&#40;&#41;&#41;)
+
+[//]: # (.then&#40;data => {)
+
+[//]: # (  / The payment link URL)
+
+[//]: # (  const paymentLinkUrl = data.payment_link.url;)
+
+[//]: # (  console.log&#40;paymentLinkUrl&#41;;)
+
+[//]: # (}&#41;)
+
+[//]: # (```)
 
 ## Customizing Payment Links
 
@@ -110,7 +136,7 @@ When creating a Payment Link, you can customize:
 
 For more advanced customization:
 
-1. Go to **Settings** > **Checkout** in your dashboard
+1. Go to **Settings** > **Collect** in your dashboard
 2. Click **Create Custom Checkout**
 3. Customize colors, fonts, and layout
 4. Save your custom checkout template
@@ -130,7 +156,7 @@ To view all your Payment Links:
 
 To edit an existing Payment Link:
 
-1. Go to **Payments** > **Payment Links**
+1. Go to **Quick**
 2. Find the Payment Link you want to edit
 3. Click the **Edit** button
 4. Make your changes
@@ -142,7 +168,7 @@ Note that some properties cannot be changed after creation, such as the currency
 
 To deactivate a Payment Link:
 
-1. Go to **Payments** > **Payment Links**
+1. Go to **Quick**
 2. Find the Payment Link you want to deactivate
 3. Click the **Deactivate** button
 
@@ -154,7 +180,7 @@ Deactivated links will no longer accept payments, but existing payments will sti
 
 You can track payments made through your Payment Links in your dashboard:
 
-1. Go to **Payments** > **Payment Links**
+1. Go to **Quick**
 2. Click on a specific Payment Link
 3. View the payment history, including:
    - Total amount collected
@@ -188,7 +214,7 @@ Payment Links can be shared in various ways:
 
 To generate a QR code for your Payment Link:
 
-1. Go to **Payments** > **Payment Links**
+1. Go to **Quicks**
 2. Find the Payment Link you want to share
 3. Click the **QR Code** button
 4. Download the QR code image
@@ -215,13 +241,6 @@ To generate a QR code for your Payment Link:
 
 If you encounter issues with Payment Links:
 
-- Check the [API Reference](/api/payment-links) for detailed parameter documentation
+- Check the [API Reference](/api-reference/payment-links) for detailed parameter documentation
 - Contact our [support team](mailto:hello@notchpay.co) for assistance
-- Join our [developer community](https://community.notchpay.co) to connect with other users
-
-## Next Steps
-
-- [Collect](/docs/accept-payments/collect) - Use our hosted payment page for a quick integration
-- [Mobile Money](/docs/accept-payments/mobile-money) - Accept mobile money payments
-- [Invoices](/docs/accept-payments/invoices) - Create and manage professional invoices
-- [API Integration](/docs/accept-payments/api-integration) - Build a custom payment experience
+ payment experience

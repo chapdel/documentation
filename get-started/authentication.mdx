@@ -11,8 +11,8 @@ Proper authentication is essential for securing your Notch Pay integration. This
 
 Notch Pay uses API keys to authenticate requests to our API. When you create a Notch Pay account, you'll receive two sets of API keys:
 
-1. **Test API Keys**: Used for development and testing. These keys start with `test_`.
-2. **Live API Keys**: Used for production. These keys start with `live_`.
+1. **Test API Keys**: Used for development and testing. These keys contains `test_`.
+2. **Live API Keys**: Used for production.
 
 You can find your API keys in your [Notch Pay Business suite](https://business.notchpay.co) under Settings > API Keys.
 
@@ -29,9 +29,9 @@ Example of a public key:
 pk_test_123456789abcdef
 ```
 
-### Secret Keys
+### Private Keys
 
-Secret keys (starting with `sk_`) are used for server-side operations that require access to sensitive data. These keys should never be exposed in your frontend code or public repositories.
+Private keys (starting with `sk_`) are used for server-side operations that require access to sensitive data. These keys should never be exposed in your frontend code or public repositories.
 
 Example of a secret key:
 ```
@@ -45,14 +45,14 @@ sk_test_123456789abcdef
 For most API requests, you need to include your API key in the `Authorization` header:
 
 ```
-Authorization: YOUR_SECRET_KEY
+Authorization: YOUR_PUBLIC_KEY
 ```
 
 Example request using cURL:
 
 ```bash
 curl https://api.notchpay.co/payments \
-  -H "Authorization: sk_test_123456789abcdef" \
+  -H "Authorization: pk_test_123456789abcdef" \
   -H "Content-Type: application/json" \
   -d '{
     "amount": 5000,
@@ -68,8 +68,8 @@ curl https://api.notchpay.co/payments \
 For client-side operations, you can use your public key:
 
 ```javascript
-// JavaScript example
-const notchpay = new Notch Pay('pk_test_123456789abcdef');
+/ JavaScript example
+const notchpay = new NotchPay('pk_test_123456789abcdef');
 
 notchpay.createPayment({
   amount: 5000,
@@ -101,7 +101,7 @@ Example request with advanced authentication:
 
 ```bash
 curl https://api.notchpay.co/balance \
-  -H "Authorization: sk_test_123456789abcdef" \
+  -H "Authorization: pk_test_123456789abcdef" \
   -H "X-Grant: your_private_key"
 ```
 
@@ -117,7 +117,7 @@ Example request for a sync account:
 
 ```bash
 curl https://api.notchpay.co/payments \
-  -H "Authorization: sk_test_123456789abcdef" \
+  -H "Authorization: pk_test_123456789abcdef" \
   -H "X-Sync: sync_123456789" \
   -H "Content-Type: application/json" \
   -d '{
@@ -149,7 +149,7 @@ curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
 ]));
 
 $headers = [
-    'Authorization: sk_test_123456789abcdef',
+    'Authorization: pk_test_123456789abcdef',
     'Content-Type: application/json'
 ];
 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -173,7 +173,7 @@ payload = {
     }
 }
 headers = {
-    "Authorization": "sk_test_123456789abcdef",
+    "Authorization": "pk_test_123456789abcdef",
     "Content-Type": "application/json"
 }
 
@@ -194,7 +194,7 @@ axios.post('https://api.notchpay.co/payments', {
   }
 }, {
   headers: {
-    'Authorization': 'sk_test_123456789abcdef',
+    'Authorization': 'pk_test_123456789abcdef',
     'Content-Type': 'application/json'
   }
 })
@@ -210,7 +210,7 @@ axios.post('https://api.notchpay.co/payments', {
 
 Your API keys carry significant privileges, so it's crucial to keep them secure:
 
-1. **Never share your secret keys** in publicly accessible areas such as GitHub, client-side code, or social media.
+1. **Never share your Private keys** in publicly accessible areas such as GitHub, client-side code, or social media.
 2. **Use environment variables** or secure vaults to store API keys in your applications.
 3. **Implement proper access controls** to limit who can access your API keys.
 4. **Rotate your API keys** periodically, especially if you suspect they may have been compromised.
@@ -280,6 +280,6 @@ If authentication fails, the API will return one of the following error response
 
 ## Next Steps
 
-- [API Reference](/api) - Explore the complete API documentation
-- [Error Handling](/docs/get-started/errors) - Learn about error handling in the Notch Pay API
-- [Security Best Practices](/docs/security/best-practices) - Discover more ways to secure your integration
+- [API Reference](/api-reference) - Explore the complete API documentation
+- [Error Handling](/get-started/errors) - Learn about error handling in the Notch Pay API
+- [Security Best Practices](/security/best-practices) - Discover more ways to secure your integration
