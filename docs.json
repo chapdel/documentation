@@ -84,7 +84,22 @@
       },
       {
         "tab": "API Reference",
-        "openapi": "https://notch.sfo3.cdn.digitaloceanspaces.com/openapi.yaml"
+        "groups": [
+          {
+            "group": "Introduction",
+            "pages": [
+              "api-reference/index",
+              "api-reference/authentication"
+            ]
+          },
+          {
+            "group": "Endpoints",
+            "openapi": {
+              "source": "openapi.yaml",
+              "directory": "api-reference"
+            }
+          }
+        ]
       }
     ],
     "global": {

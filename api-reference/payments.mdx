@@ -1,0 +1,307 @@
+---
+title: Payments API
+description: Create, retrieve, and manage payments with the Notch Pay API
+---
+
+# Payments API
+
+The Payments API allows you to initialize, retrieve, and manage payment transactions. Use these endpoints to accept payments from your customers through various payment methods.
+
+## The Payment Object
+
+```json
+{
+  "id": "pay_123456789",
+  "reference": "order_123",
+  "amount": 5000,
+  "currency": "XAF",
+  "status": "complete",
+  "customer": "cus_123456789",
+  "payment_method": "pm.ndzAfIh555VCPML1",
+  "description": "Payment for Order #123",
+  "metadata": {},
+  "created_at": "2023-01-01T12:00:00Z",
+  "completed_at": "2023-01-01T12:05:00Z"
+}
+```
+
+### Payment Object Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `id` | string | Unique identifier for the payment |
+| `reference` | string | Your custom reference for the payment |
+| `amount` | number | Amount of the payment in the smallest currency unit |
+| `currency` | string | Three-letter ISO currency code |
+| `status` | string | Status of the payment: `pending`, `processing`, `complete`, `failed`, `canceled`, `expired` |
+| `customer` | string | ID of the customer making the payment |
+| `payment_method` | string | ID of the payment method used |
+| `description` | string | Description of the payment |
+| `metadata` | object | Additional data attached to the payment |
+| `created_at` | string | Timestamp when the payment was created |
+| `completed_at` | string | Timestamp when the payment was completed (if applicable) |
+
+## List All Payments
+
+```
+GET /payments
+```
+
+Retrieve a list of payments with pagination.
+
+### Query Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `limit` | integer | No | Number of items per page (default: 30, max: 100) |
+| `page` | integer | No | Page number (default: 1) |
+| `search` | string | No | Search by reference |
+| `status` | string | No | Filter by status |
+| `channels` | string | No | Filter by payment channels (comma-separated) |
+| `date_start` | string | No | Start date filter (format: YYYY-MM-DD) |
+| `date_end` | string | No | End date filter (format: YYYY-MM-DD) |
+
+### Response
+
+```json
+{
+  "code": 200,
+  "status": "OK",
+  "message": "Payments retrieved",
+  "totals": 50,
+  "last_page": 2,
+  "current_page": 1,
+  "selected": 30,
+  "items": [
+    {
+      "id": "pay_123456789",
+      "reference": "order_123",
+      "amount": 5000,
+      "currency": "XAF",
+      "status": "complete",
+      "customer": "cus_123456789",
+      "created_at": "2023-01-01T12:00:00Z"
+    },
+    // More payments...
+  ]
+}
+```
+
+## Create a Payment
+
+```
+POST /payments
+POST /payments/initialize (Legacy)
+```
+
+Initialize a new payment. Both endpoints are equivalent and can be used interchangeably.
+
+### Request Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `amount` | number | Yes | Amount to charge in the smallest currency unit |
+| `currency` | string | Yes | Three-letter ISO currency code (e.g., XAF) |
+| `email` | string | Conditional | Customer's email address (required if `phone` and `customer` are not provided) |
+| `phone` | string | Conditional | Customer's phone number (required if `email` and `customer` are not provided) |
+| `customer` | string or object | Conditional | Customer ID or object (required if `email` and `phone` are not provided) |
+| `description` | string | No | Description of the payment |
+| `reference` | string | No | Unique reference for the payment |
+| `callback` | string | No | URL to redirect after payment completion |
+| `locked_currency` | string | No | Restrict to a specific currency |
+| `locked_channel` | string | No | Restrict to a specific payment channel |
+| `locked_country` | string | No | Restrict to a specific country |
+| `items` | array | No | Array of items being purchased |
+| `shipping` | object | No | Shipping information |
+| `address` | object | No | Customer's address |
+| `customer_meta` | object | No | Additional customer metadata |
+
+### Example Request
+
+```json
+{
+  "amount": 5000,
+  "currency": "XAF",
+  "customer": {
+    "name": "John Doe",
+    "email": "john@example.com",
+    "phone": "+237600000000"
+  },
+  "description": "Payment for Order #123",
+  "callback": "https://example.com/callback",
+  "reference": "order_123"
+}
+```
+
+### Response
+
+```json
+{
+  "status": "Accepted",
+  "message": "Payment initialized",
+  "code": 201,
+  "transaction": {
+    "id": "pay_123456789",
+    "reference": "order_123",
+    "amount": 5000,
+    "currency": "XAF",
+    "status": "pending",
+    "customer": "cus_123456789",
+    "created_at": "2023-01-01T12:00:00Z"
+  },
+  "authorization_url": "https://pay.notchpay.co/pay_123456789"
+}
+```
+
+## Retrieve a Payment
+
+```
+GET /payments/{reference}
+```
+
+Retrieve details of a specific payment using its reference.
+
+### Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `reference` | string | Yes | Reference of the payment to retrieve |
+
+### Response
+
+```json
+{
+  "status": "Accepted",
+  "message": "Transaction retrieved",
+  "code": 202,
+  "transaction": {
+    "id": "pay_123456789",
+    "reference": "order_123",
+    "amount": 5000,
+    "currency": "XAF",
+    "status": "complete",
+    "customer": "cus_123456789",
+    "payment_method": "pm.ndzAfIh555VCPML1",
+    "created_at": "2023-01-01T12:00:00Z",
+    "completed_at": "2023-01-01T12:05:00Z"
+  }
+}
+```
+
+## Cancel a Payment
+
+```
+DELETE /payments/{reference}
+```
+
+Cancel a pending payment.
+
+### Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `reference` | string | Yes | Reference of the payment to cancel |
+
+### Response
+
+```json
+{
+  "code": 202,
+  "status": "Accepted",
+  "message": "Your payment has been canceled"
+}
+```
+
+## Process a Payment
+
+```
+POST /payments/{reference}
+PUT /payments/{reference}
+```
+
+Process a pending payment with a specific payment method. Both HTTP methods are equivalent.
+
+### Path Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `reference` | string | Yes | Reference of the payment to process |
+
+### Request Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `channel` | string | Yes | Payment channel (e.g., cm.mtn, cm.orange) |
+| `data` | object | Varies | Channel-specific data |
+| `client_ip` | string | No | Client's IP address |
+
+For Mobile Money payments, the `data` object should include:
+- `phone` or `account_number`: The mobile money account number
+
+### Example Request for MTN Mobile Money
+
+```json
+{
+  "channel": "cm.mtn",
+  "data": {
+    "phone": "+237680000000"
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "status": "Accepted",
+  "message": "Payment processing initiated",
+  "code": 202,
+  "transaction": {
+    "id": "pay_123456789",
+    "reference": "order_123",
+    "status": "processing"
+  }
+}
+```
+
+## Payment Statuses
+
+| Status | Description |
+|--------|-------------|
+| `pending` | Payment has been initialized but not yet processed |
+| `processing` | Payment is being processed by the payment provider |
+| `complete` | Payment has been successfully completed |
+| `failed` | Payment attempt failed |
+| `canceled` | Payment was canceled by the merchant or customer |
+| `expired` | Payment expired before completion |
+
+## Handling Callbacks
+
+When a payment is completed, Notch Pay will redirect the customer to the `callback` URL you provided when creating the payment. The URL will include the payment reference as a query parameter:
+
+```
+https://example.com/callback?reference=order_123
+```
+
+You should verify the payment status by calling the Retrieve a Payment endpoint before fulfilling the order.
+
+## Webhooks
+
+For more reliable payment notifications, we recommend setting up webhooks to receive real-time updates about payment status changes. See the [Webhooks API](/api/webhooks) documentation for more information.
+
+## Error Handling
+
+| Error Code | Description |
+|------------|-------------|
+| 400 | Invalid request parameters |
+| 401 | Invalid API key |
+| 404 | Payment not found |
+| 422 | Payment cannot be processed (e.g., already completed or canceled) |
+
+## Best Practices
+
+1. Always store the payment ID and reference in your database
+2. Verify the payment status using the API before fulfilling orders
+3. Set up webhooks for reliable payment notifications
+4. Use idempotent references to prevent duplicate payments
+5. Implement proper error handling for failed payments

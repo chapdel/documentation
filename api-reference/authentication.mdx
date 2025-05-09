@@ -1,0 +1,175 @@
+---
+title: Authentication
+description: Learn how to authenticate with the Notch Pay API
+---
+
+# Authentication
+
+All requests to the Notch Pay API must be authenticated. This guide explains the authentication methods available and how to implement them securely.
+
+## API Keys
+
+Notch Pay uses API keys to authenticate requests. You can find your API keys in your [Notch Pay Business suite](https://business.notchpay.co) under Settings > API Keys.
+
+There are two types of API keys:
+
+1. **Test API Keys**: Used for development and testing. These keys start with `test_`.
+2. **Live API Keys**: Used for production. These keys start with `live_`.
+
+Each environment has its own set of API keys, and transactions made with test API keys don't affect your live data.
+
+## Standard Authentication
+
+For most API requests, you need to include your API key in the `Authorization` header:
+
+```
+Authorization: YOUR_API_KEY
+```
+
+### Example Request
+
+```bash
+curl https://api.notchpay.co/payments \
+  -H "Authorization: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 5000,
+    "currency": "XAF",
+    "customer": {
+      "email": "customer@example.com"
+    }
+  }'
+```
+
+## Advanced Authentication
+
+Some endpoints that perform sensitive operations require additional authentication beyond the standard API key. These endpoints are protected by the `GrantedMiddleware` and require a private key to be passed in the `X-Grant` header.
+
+```
+X-Grant: YOUR_PRIVATE_KEY
+```
+
+### Endpoints Requiring Advanced Authentication
+
+The following endpoints require the `X-Grant` header:
+
+- `/balance` - Check your account balance
+- `/transfers/*` - All transfer-related endpoints
+- `/beneficiaries/*` (or `/recipients/*`) - All beneficiary-related endpoints
+- `/webhooks/*` - All webhook-related endpoints
+
+### Example Request with Advanced Authentication
+
+```bash
+curl https://api.notchpay.co/balance \
+  -H "Authorization: YOUR_API_KEY" \
+  -H "X-Grant: YOUR_PRIVATE_KEY"
+```
+
+## Sync Account Authentication
+
+For operations related to synchronized accounts, you need to pass the sync account identifier in the `X-Sync` header:
+
+```
+X-Sync: SYNC_ACCOUNT_ID
+```
+
+This is necessary when you need to perform operations on behalf of a synchronized account, such as:
+
+- Creating payments for a sync account
+- Viewing transactions for a sync account
+- Managing resources for a sync account
+
+### Example Request with Sync Authentication
+
+```bash
+curl https://api.notchpay.co/payments \
+  -H "Authorization: YOUR_API_KEY" \
+  -H "X-Sync: sync_123456789" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 5000,
+    "currency": "XAF",
+    "customer": {
+      "email": "customer@example.com"
+    }
+  }'
+```
+
+## API Key Security
+
+Your API keys carry significant privileges, so it's crucial to keep them secure:
+
+1. **Never share your API keys** in publicly accessible areas such as GitHub, client-side code, or social media.
+2. **Use environment variables** or secure vaults to store API keys in your applications.
+3. **Implement proper access controls** to limit who can access your API keys.
+4. **Rotate your API keys** periodically, especially if you suspect they may have been compromised.
+5. **Use test API keys** for development and testing to avoid accidental charges.
+
+## Error Responses
+
+If authentication fails, the API will return one of the following error responses:
+
+### Missing API Key
+
+```json
+{
+  "code": 401,
+  "status": "Unauthorized",
+  "message": "API key is missing"
+}
+```
+
+### Invalid API Key
+
+```json
+{
+  "code": 401,
+  "status": "Unauthorized",
+  "message": "Invalid API key"
+}
+```
+
+### Missing Grant Key
+
+```json
+{
+  "code": 403,
+  "status": "Forbidden",
+  "message": "This endpoint requires additional authentication"
+}
+```
+
+### Invalid Grant Key
+
+```json
+{
+  "code": 403,
+  "status": "Forbidden",
+  "message": "Invalid grant key"
+}
+```
+
+### Invalid Sync Account
+
+```json
+{
+  "code": 404,
+  "status": "Not Found",
+  "message": "Sync account not found"
+}
+```
+
+## Best Practices
+
+1. **Use HTTPS**: Always use HTTPS to encrypt your API requests and prevent man-in-the-middle attacks.
+2. **Implement Proper Error Handling**: Handle authentication errors gracefully in your application.
+3. **Limit API Key Exposure**: Only share API keys with trusted systems and developers.
+4. **Monitor API Usage**: Regularly review your API logs to detect unauthorized access.
+5. **Implement Rate Limiting**: Protect your API endpoints from brute force attacks by implementing rate limiting.
+
+## Next Steps
+
+- [API Reference](/api) - Explore the complete API documentation
+- [Errors](/api/errors) - Learn about error handling in the Notch Pay API
+- [Security Best Practices](/docs/security/best-practices) - Discover more ways to secure your integration
