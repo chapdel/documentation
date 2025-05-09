@@ -1,0 +1,430 @@
+---
+title: Customers API
+description: Create, retrieve, and manage customer information with the Notch Pay API
+---
+
+# Customers API
+
+<Note>
+  The Customers API allows you to create and manage customer information. Storing customer data makes it easier to process payments and track customer activity.
+</Note>
+
+## The Customer Object
+
+<CodeGroup>
+```json Customer Object
+{
+  "id": "cus_123456789",
+  "name": "John Doe",
+  "email": "john@example.com",
+  "phone": "+237600000000",
+  "metadata": {},
+  "created_at": "2023-01-01T12:00:00Z",
+  "updated_at": "2023-01-01T12:00:00Z"
+}
+```
+</CodeGroup>
+
+### Customer Object Properties
+
+<ResponseField name="id" type="string">
+  Unique identifier for the customer
+</ResponseField>
+
+<ResponseField name="name" type="string">
+  Customer's full name
+</ResponseField>
+
+<ResponseField name="email" type="string">
+  Customer's email address
+</ResponseField>
+
+<ResponseField name="phone" type="string">
+  Customer's phone number
+</ResponseField>
+
+<ResponseField name="metadata" type="object">
+  Additional data attached to the customer
+</ResponseField>
+
+<ResponseField name="created_at" type="string">
+  Timestamp when the customer was created
+</ResponseField>
+
+<ResponseField name="updated_at" type="string">
+  Timestamp when the customer was last updated
+</ResponseField>
+
+## API Endpoints
+
+<Card title="List All Customers" icon="list" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /customers
+      ```
+
+      Retrieve a list of customers with pagination.
+
+      ### Query Parameters
+
+      <ParamField query="limit" type="integer">
+        Number of items per page (default: 30, max: 100)
+      </ParamField>
+
+      <ParamField query="page" type="integer">
+        Page number (default: 1)
+      </ParamField>
+
+      <ParamField query="search" type="string">
+        Search by name, email, or phone
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Customers retrieved",
+        "totals": 50,
+        "last_page": 2,
+        "current_page": 1,
+        "selected": 30,
+        "items": [
+          {
+            "id": "cus_123456789",
+            "name": "John Doe",
+            "email": "john@example.com",
+            "phone": "+237600000000",
+            "created_at": "2023-01-01T12:00:00Z"
+          },
+          // More customers...
+        ]
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="Create a Customer" icon="plus" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      POST /customers
+      ```
+
+      Create a new customer.
+
+      ### Request Parameters
+
+      <ParamField body="name" type="string" required>
+        Customer's full name
+      </ParamField>
+
+      <ParamField body="email" type="string" required={false}>
+        Customer's email address (required if `phone` is not provided)
+      </ParamField>
+
+      <ParamField body="phone" type="string" required={false}>
+        Customer's phone number (required if `email` is not provided)
+      </ParamField>
+
+      <ParamField body="metadata" type="object">
+        Additional data to attach to the customer
+      </ParamField>
+
+      ### Example Request
+
+      <CodeGroup>
+        ```json JSON
+        {
+          "name": "John Doe",
+          "email": "john@example.com",
+          "phone": "+237600000000",
+          "metadata": {
+            "user_id": "12345",
+            "company": "Acme Inc."
+          }
+        }
+        ```
+
+        ```javascript JavaScript
+        const customer = {
+          name: "John Doe",
+          email: "john@example.com",
+          phone: "+237600000000",
+          metadata: {
+            user_id: "12345",
+            company: "Acme Inc."
+          }
+        };
+
+        fetch('https://api.notchpay.co/customers', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'YOUR_API_KEY',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(customer)
+        });
+        ```
+      </CodeGroup>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "status": "Created",
+        "message": "Customer created",
+        "code": 201,
+        "customer": {
+          "id": "cus_123456789",
+          "name": "John Doe",
+          "email": "john@example.com",
+          "phone": "+237600000000",
+          "metadata": {
+            "user_id": "12345",
+            "company": "Acme Inc."
+          },
+          "created_at": "2023-01-01T12:00:00Z",
+          "updated_at": "2023-01-01T12:00:00Z"
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="Retrieve a Customer" icon="magnifying-glass" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /customers/{id}
+      ```
+
+      Retrieve details of a specific customer.
+
+      ### Path Parameters
+
+      <ParamField path="id" type="string" required>
+        ID of the customer to retrieve
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "status": "OK",
+        "message": "Customer retrieved",
+        "code": 200,
+        "customer": {
+          "id": "cus_123456789",
+          "name": "John Doe",
+          "email": "john@example.com",
+          "phone": "+237600000000",
+          "metadata": {
+            "user_id": "12345",
+            "company": "Acme Inc."
+          },
+          "created_at": "2023-01-01T12:00:00Z",
+          "updated_at": "2023-01-01T12:00:00Z"
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="Update a Customer" icon="pen-to-square" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      PUT /customers/{id}
+      ```
+
+      Update an existing customer.
+
+      ### Path Parameters
+
+      <ParamField path="id" type="string" required>
+        ID of the customer to update
+      </ParamField>
+
+      ### Request Parameters
+
+      <ParamField body="name" type="string">
+        Customer's full name
+      </ParamField>
+
+      <ParamField body="email" type="string">
+        Customer's email address
+      </ParamField>
+
+      <ParamField body="phone" type="string">
+        Customer's phone number
+      </ParamField>
+
+      <ParamField body="metadata" type="object">
+        Additional data to attach to the customer
+      </ParamField>
+
+      ### Example Request
+
+      ```json
+      {
+        "name": "John Smith",
+        "phone": "+237600000001",
+        "metadata": {
+          "user_id": "12345",
+          "company": "Acme Corporation"
+        }
+      }
+      ```
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "status": "OK",
+        "message": "Customer updated",
+        "code": 200,
+        "customer": {
+          "id": "cus_123456789",
+          "name": "John Smith",
+          "email": "john@example.com",
+          "phone": "+237600000001",
+          "metadata": {
+            "user_id": "12345",
+            "company": "Acme Corporation"
+          },
+          "created_at": "2023-01-01T12:00:00Z",
+          "updated_at": "2023-01-02T10:00:00Z"
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="Delete a Customer" icon="trash" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      DELETE /customers/{id}
+      ```
+
+      Delete a customer.
+
+      ### Path Parameters
+
+      <ParamField path="id" type="string" required>
+        ID of the customer to delete
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "status": "OK",
+        "message": "Customer deleted",
+        "code": 200
+      }
+      ```
+
+      <Callout type="warning">
+        Deleting a customer will not delete any associated payments or other records. It only removes the customer record itself.
+      </Callout>
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="List Customer Payments" icon="credit-card" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /customers/{id}/payments
+      ```
+
+      Retrieve a list of payments made by a specific customer.
+
+      ### Path Parameters
+
+      <ParamField path="id" type="string" required>
+        ID of the customer
+      </ParamField>
+
+      ### Query Parameters
+
+      <ParamField query="limit" type="integer">
+        Number of items per page (default: 30, max: 100)
+      </ParamField>
+
+      <ParamField query="page" type="integer">
+        Page number (default: 1)
+      </ParamField>
+
+      <ParamField query="status" type="string">
+        Filter by payment status
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Payments retrieved",
+        "totals": 10,
+        "last_page": 1,
+        "current_page": 1,
+        "selected": 10,
+        "items": [
+          {
+            "id": "pay_123456789",
+            "reference": "order_123",
+            "amount": 5000,
+            "currency": "XAF",
+            "status": "complete",
+            "created_at": "2023-01-01T12:00:00Z"
+          },
+          // More payments...
+        ]
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Collect Complete Information" icon="address-card" color="#16A34A">
+    Collect as much customer information as possible to improve payment success rates and reduce fraud.
+    
+    Include both email and phone when available.
+  </Card>
+  <Card title="Use Metadata Effectively" icon="tags" color="#16A34A">
+    Use the metadata field to store additional information about your customers that's relevant to your business.
+    
+    This can include user IDs from your system, subscription information, or other custom data.
+  </Card>
+  <Card title="Validate Customer Data" icon="check-double" color="#16A34A">
+    Validate email addresses and phone numbers before sending them to the API to ensure they're in the correct format.
+    
+    This helps prevent errors and improves the quality of your customer data.
+  </Card>
+  <Card title="Implement Customer Search" icon="search" color="#16A34A">
+    Use the search parameter when listing customers to quickly find existing customers instead of creating duplicates.
+    
+    Search by email, phone, or name to find matching customers.
+  </Card>
+</CardGroup>
+
+## Related Resources
+
+<CardGroup cols={3}>
+  <Card title="Payments API" icon="credit-card" href="/api-reference/payments">
+    Create and manage payments for customers
+  </Card>
+  <Card title="Transfers API" icon="money-bill-transfer" href="/api-reference/transfers">
+    Send money to customers
+  </Card>
+  <Card title="Webhooks API" icon="bell" href="/api-reference/webhooks">
+    Receive notifications about customer events
+  </Card>
+</CardGroup>

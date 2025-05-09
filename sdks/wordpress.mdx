@@ -1,0 +1,472 @@
+---
+title: WordPress Plugin
+description: Accept payments on your WordPress site with the Notch Pay plugin
+---
+
+# Notch Pay WordPress Plugin
+
+<Note>
+  The Notch Pay WordPress plugin allows you to accept payments on your WordPress site without any coding. It integrates seamlessly with popular plugins like WooCommerce, Easy Digital Downloads, and more.
+</Note>
+
+## Installation
+
+<Steps>
+  <Step title="Download the Plugin">
+    Download the Notch Pay WordPress plugin from the [WordPress Plugin Directory](https://wordpress.org/plugins/notchpay/) or directly from your WordPress admin dashboard.
+  </Step>
+  
+  <Step title="Install the Plugin">
+    1. Log in to your WordPress admin dashboard
+    2. Go to **Plugins > Add New**
+    3. Click **Upload Plugin** and select the downloaded zip file
+    4. Click **Install Now**
+    5. After installation, click **Activate Plugin**
+  </Step>
+  
+  <Step title="Configure the Plugin">
+    1. Go to **Settings > Notch Pay**
+    2. Enter your API keys (found in your [Notch Pay Business dashboard](https://business.notchpay.co))
+    3. Configure other settings according to your preferences
+  </Step>
+</Steps>
+
+## Basic Configuration
+
+<img
+  src="/images/wordpress/settings-page.png"
+  alt="Notch Pay WordPress Plugin Settings"
+  className="rounded-lg border border-gray-200 my-6"
+/>
+
+### General Settings
+
+<ParamField name="Test Mode" type="boolean">
+  Enable test mode to use test API keys and process test payments
+</ParamField>
+
+<ParamField name="API Key" type="string" required>
+  Your Notch Pay API key (starts with `test_` for test mode or `live_` for live mode)
+</ParamField>
+
+<ParamField name="Private Key" type="string" required>
+  Your Notch Pay private key (required for certain operations like transfers)
+</ParamField>
+
+<ParamField name="Webhook Secret" type="string">
+  Your webhook secret for verifying webhook signatures
+</ParamField>
+
+<ParamField name="Default Currency" type="string">
+  The default currency for payments (e.g., XAF, NGN, USD)
+</ParamField>
+
+<ParamField name="Success Page" type="page">
+  The page to redirect customers after a successful payment
+</ParamField>
+
+<ParamField name="Cancel Page" type="page">
+  The page to redirect customers if they cancel the payment
+</ParamField>
+
+## Payment Forms
+
+The plugin provides shortcodes to create payment forms on any page or post:
+
+### Basic Payment Form
+
+```
+[notchpay_payment_form amount="5000" currency="XAF" button_text="Pay Now"]
+```
+
+This will create a simple payment form with name and email fields.
+
+### Advanced Payment Form
+
+```
+[notchpay_payment_form 
+  amount="5000" 
+  currency="XAF" 
+  button_text="Pay Now" 
+  title="Payment for Premium Content" 
+  description="Access to premium articles for one month" 
+  show_phone="yes" 
+  redirect="https://example.com/thank-you"
+]
+```
+
+### Payment Form Parameters
+
+<ParamField name="amount" type="number" required>
+  The payment amount in the smallest currency unit (e.g., 5000 for 5,000 XAF)
+</ParamField>
+
+<ParamField name="currency" type="string">
+  The currency code (defaults to the one set in settings)
+</ParamField>
+
+<ParamField name="button_text" type="string">
+  The text to display on the payment button
+</ParamField>
+
+<ParamField name="title" type="string">
+  The title of the payment
+</ParamField>
+
+<ParamField name="description" type="string">
+  The description of the payment
+</ParamField>
+
+<ParamField name="show_phone" type="boolean">
+  Whether to show a phone number field in the form
+</ParamField>
+
+<ParamField name="redirect" type="string">
+  Custom URL to redirect after payment (overrides the success page setting)
+</ParamField>
+
+<ParamField name="cancel_redirect" type="string">
+  Custom URL to redirect if payment is canceled
+</ParamField>
+
+<ParamField name="reference" type="string">
+  Custom payment reference (if not provided, one will be generated)
+</ParamField>
+
+<ParamField name="metadata" type="json">
+  Additional metadata to attach to the payment (in JSON format)
+</ParamField>
+
+## Payment Buttons
+
+For a simpler integration, you can use payment buttons:
+
+```
+[notchpay_button amount="5000" currency="XAF" email="customer@example.com" name="John Doe" button_text="Pay Now"]
+```
+
+This creates a button that directly initiates a payment when clicked, without showing a form.
+
+### Payment Button Parameters
+
+<ParamField name="amount" type="number" required>
+  The payment amount in the smallest currency unit
+</ParamField>
+
+<ParamField name="currency" type="string">
+  The currency code
+</ParamField>
+
+<ParamField name="email" type="string" required>
+  Customer's email address
+</ParamField>
+
+<ParamField name="name" type="string">
+  Customer's name
+</ParamField>
+
+<ParamField name="button_text" type="string">
+  The text to display on the button
+</ParamField>
+
+<ParamField name="button_class" type="string">
+  CSS classes to apply to the button
+</ParamField>
+
+<ParamField name="title" type="string">
+  The title of the payment
+</ParamField>
+
+<ParamField name="description" type="string">
+  The description of the payment
+</ParamField>
+
+## Payment Links
+
+Create shareable payment links that can be sent via email, social media, or any other channel:
+
+```
+[notchpay_link amount="5000" currency="XAF" title="Donation" description="Support our cause"]
+```
+
+This will display a link that, when clicked, takes the user to a payment page.
+
+### Payment Link Parameters
+
+<ParamField name="amount" type="number" required>
+  The payment amount in the smallest currency unit
+</ParamField>
+
+<ParamField name="currency" type="string">
+  The currency code
+</ParamField>
+
+<ParamField name="title" type="string">
+  The title of the payment
+</ParamField>
+
+<ParamField name="description" type="string">
+  The description of the payment
+</ParamField>
+
+<ParamField name="link_text" type="string">
+  The text to display for the link
+</ParamField>
+
+## Gutenberg Blocks
+
+The plugin also provides Gutenberg blocks for a more visual editing experience:
+
+<CardGroup cols={2}>
+  <Card title="Payment Form Block" icon="wpforms">
+    Add a payment form to your page using the visual editor
+  </Card>
+  <Card title="Payment Button Block" icon="square-arrow-up-right">
+    Add a payment button to your page
+  </Card>
+  <Card title="Payment Link Block" icon="link">
+    Add a payment link to your page
+  </Card>
+  <Card title="Recent Payments Block" icon="list">
+    Display a list of recent payments
+  </Card>
+</CardGroup>
+
+## WooCommerce Integration
+
+The plugin integrates with WooCommerce to provide Notch Pay as a payment gateway:
+
+<Steps>
+  <Step title="Enable the Gateway">
+    1. Go to **WooCommerce > Settings > Payments**
+    2. Find "Notch Pay" in the list of payment gateways
+    3. Click **Set up** or toggle the switch to enable it
+  </Step>
+  
+  <Step title="Configure the Gateway">
+    1. Enter the title and description to display at checkout
+    2. Select which payment methods to enable
+    3. Configure other settings as needed
+    4. Click **Save changes**
+  </Step>
+</Steps>
+
+### WooCommerce Settings
+
+<img
+  src="/images/wordpress/woocommerce-settings.png"
+  alt="Notch Pay WooCommerce Settings"
+  className="rounded-lg border border-gray-200 my-6"
+/>
+
+<ParamField name="Enable/Disable" type="boolean">
+  Enable Notch Pay for WooCommerce
+</ParamField>
+
+<ParamField name="Title" type="string">
+  The title shown to customers during checkout
+</ParamField>
+
+<ParamField name="Description" type="string">
+  The description shown to customers during checkout
+</ParamField>
+
+<ParamField name="Payment Methods" type="array">
+  The payment methods to enable (Mobile Money, Cards, etc.)
+</ParamField>
+
+<ParamField name="Auto Complete Orders" type="boolean">
+  Automatically mark orders as completed when payment is successful
+</ParamField>
+
+## Easy Digital Downloads Integration
+
+The plugin also integrates with Easy Digital Downloads:
+
+<Steps>
+  <Step title="Enable the Gateway">
+    1. Go to **Downloads > Settings > Payment Gateways**
+    2. Check the "Notch Pay" checkbox
+    3. Click **Save Changes**
+  </Step>
+  
+  <Step title="Configure the Gateway">
+    1. Go to the "Notch Pay" tab
+    2. Configure the gateway settings
+    3. Click **Save Changes**
+  </Step>
+</Steps>
+
+## Membership Plugins Integration
+
+The plugin integrates with popular membership plugins:
+
+### Paid Memberships Pro
+
+1. Go to **Memberships > Settings > Payment Gateways**
+2. Select "Notch Pay" as the payment gateway
+3. Configure the gateway settings
+4. Click **Save Settings**
+
+### MemberPress
+
+1. Go to **MemberPress > Settings > Payments**
+2. Click **Add Payment Method**
+3. Select "Notch Pay" from the dropdown
+4. Configure the gateway settings
+5. Click **Update Options**
+
+## Webhooks
+
+The plugin automatically sets up a webhook endpoint to receive notifications from Notch Pay:
+
+```
+https://your-site.com/wp-json/notchpay/v1/webhook
+```
+
+Make sure to add this URL to your webhook endpoints in the Notch Pay dashboard.
+
+## Payment Records
+
+The plugin keeps records of all payments made through it:
+
+1. Go to **Notch Pay > Payments** in your WordPress admin
+2. View a list of all payments with their status, amount, and customer information
+3. Click on a payment to view its details
+
+<img
+  src="/images/wordpress/payment-records.png"
+  alt="Notch Pay Payment Records"
+  className="rounded-lg border border-gray-200 my-6"
+/>
+
+## Customization
+
+### Custom CSS
+
+You can customize the appearance of payment forms and buttons by adding custom CSS to your theme:
+
+```css
+/* Customize payment form */
+.notchpay-form {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+/* Customize payment button */
+.notchpay-button {
+    background-color: #4F46E5;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 4px;
+    border: none;
+    font-weight: bold;
+}
+
+.notchpay-button:hover {
+    background-color: #4338CA;
+}
+```
+
+### Hooks and Filters
+
+The plugin provides hooks and filters for developers to extend its functionality:
+
+```php
+// Modify payment parameters before creating a payment
+add_filter('notchpay_payment_params', function($params, $form_data) {
+    // Add custom metadata
+    $params['metadata']['custom_field'] = 'custom_value';
+    
+    return $params;
+}, 10, 2);
+
+// Do something after a successful payment
+add_action('notchpay_payment_complete', function($payment, $order = null) {
+    // Send a custom email
+    wp_mail(
+        $payment['customer']['email'],
+        'Thank you for your payment',
+        'Your payment of ' . $payment['amount'] . ' ' . $payment['currency'] . ' has been received.'
+    );
+}, 10, 2);
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Payment Form Not Displaying">
+    If the payment form is not displaying correctly:
+    
+    1. Check that the shortcode is correctly formatted
+    2. Ensure that the plugin is activated
+    3. Check for JavaScript errors in your browser console
+    4. Try disabling other plugins to check for conflicts
+  </Accordion>
+  
+  <Accordion title="Payments Not Being Processed">
+    If payments are not being processed:
+    
+    1. Verify that your API keys are correct
+    2. Check that you're using the right keys for test/live mode
+    3. Check the Notch Pay dashboard for any failed payments
+    4. Ensure your server can make outgoing HTTP requests
+  </Accordion>
+  
+  <Accordion title="Webhooks Not Working">
+    If webhooks are not being received:
+    
+    1. Verify that the webhook URL is correctly added in the Notch Pay dashboard
+    2. Check that your webhook secret is correct
+    3. Ensure your server is accessible from the internet
+    4. Check your server logs for any errors
+  </Accordion>
+  
+  <Accordion title="WooCommerce Integration Issues">
+    If the WooCommerce integration is not working:
+    
+    1. Make sure WooCommerce is up to date
+    2. Verify that the Notch Pay gateway is enabled in WooCommerce settings
+    3. Check that your currency is supported by Notch Pay
+    4. Try placing a test order to see if there are any error messages
+  </Accordion>
+</AccordionGroup>
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Can I use the plugin in test mode?">
+    Yes, you can enable test mode in the plugin settings. In test mode, the plugin will use your test API keys and process test payments.
+  </Accordion>
+  
+  <Accordion title="Which payment methods are supported?">
+    The plugin supports all payment methods available on Notch Pay, including Mobile Money, Cards, Bank Transfers, and more. The available methods depend on your Notch Pay account and the countries you operate in.
+  </Accordion>
+  
+  <Accordion title="Can I customize the checkout experience?">
+    Yes, you can customize the appearance of payment forms and buttons using custom CSS. You can also use hooks and filters to modify the behavior of the plugin.
+  </Accordion>
+  
+  <Accordion title="Does the plugin support recurring payments?">
+    Yes, when integrated with WooCommerce Subscriptions or membership plugins, the plugin can handle recurring payments.
+  </Accordion>
+  
+  <Accordion title="Is the plugin compatible with my theme?">
+    The plugin is designed to be compatible with most WordPress themes. If you encounter any compatibility issues, you can use custom CSS to adjust the appearance.
+  </Accordion>
+</AccordionGroup>
+
+## Related Resources
+
+<CardGroup cols={3}>
+  <Card title="WooCommerce Plugin" icon="cart-shopping" href="/sdks/woocommerce">
+    Dedicated WooCommerce integration
+  </Card>
+  <Card title="PHP SDK" icon="php" href="/sdks/php">
+    PHP SDK documentation
+  </Card>
+  <Card title="API Reference" icon="book" href="/api-reference">
+    Complete API documentation
+  </Card>
+</CardGroup>

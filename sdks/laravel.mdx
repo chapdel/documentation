@@ -1,0 +1,691 @@
+---
+title: Laravel SDK
+description: Integrate Notch Pay into your Laravel applications
+---
+
+# Notch Pay Laravel SDK
+
+<Note>
+  The Notch Pay Laravel SDK provides a convenient way to integrate Notch Pay into your Laravel applications with native Laravel features like facades, config files, and Blade components.
+</Note>
+
+## Installation
+
+```bash
+composer require notchpay/notchpay-laravel
+```
+
+## Configuration
+
+### Publish the Configuration
+
+```bash
+php artisan vendor:publish --provider="NotchPay\Laravel\NotchPayServiceProvider"
+```
+
+This will create a `config/notchpay.php` file in your application.
+
+### Set Your API Keys
+
+Add your Notch Pay API keys to your `.env` file:
+
+```
+NOTCHPAY_API_KEY=your_api_key
+NOTCHPAY_GRANT_KEY=your_private_key
+NOTCHPAY_WEBHOOK_SECRET=your_webhook_secret
+NOTCHPAY_TEST_MODE=true # Set to false for production
+```
+
+## Basic Usage
+
+### Using the Facade
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use NotchPay\Laravel\Facades\NotchPay;
+
+class PaymentController extends Controller
+{
+    public function createPayment(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:100',
+            'email' => 'required|email',
+            'name' => 'required|string',
+        ]);
+        
+        try {
+            $payment = NotchPay::payments()->create([
+                'amount' => $request->amount,
+                'currency' => 'XAF',
+                'customer' => [
+                    'email' => $request->email,
+                    'name' => $request->name
+                ],
+                'reference' => 'order_' . time(),
+                'callback' => route('payment.callback'),
+                'description' => 'Payment from Laravel app'
+            ]);
+            
+            return redirect($payment->authorization_url);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+    
+    public function handleCallback(Request $request)
+    {
+        $reference = $request->query('reference');
+        
+        try {
+            $payment = NotchPay::payments()->retrieve($reference);
+            
+            if ($payment->transaction->status === 'complete') {
+                // Payment is complete, fulfill the order
+                return view('payment.success', [
+                    'payment' => $payment->transaction
+                ]);
+            } else {
+                // Payment is not complete
+                return view('payment.failed', [
+                    'payment' => $payment->transaction
+                ]);
+            }
+        } catch (\Exception $e) {
+            return view('payment.error', [
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+}
+```
+
+### Using the Helper Function
+
+The SDK also provides a helper function for quick access:
+
+```php
+// Instead of using the facade, you can use the helper function
+$payment = notchpay()->payments()->create([
+    'amount' => 5000,
+    'currency' => 'XAF',
+    // ...
+]);
+```
+
+## Blade Components
+
+The SDK provides Blade components for easy integration in your views:
+
+### Payment Button Component
+
+```blade
+<x-notchpay::button
+    :amount="5000"
+    currency="XAF"
+    :email="$user->email"
+    :name="$user->name"
+    reference="order_123"
+    :callback="route('payment.callback')"
+    class="btn btn-primary"
+>
+    Pay 5,000 XAF
+</x-notchpay::button>
+```
+
+### Inline Checkout Component
+
+```blade
+<x-notchpay::checkout
+    :payment-id="$paymentId"
+    title="Payment for Order #123"
+    description="Your order from Example Store"
+    primary-color="#4F46E5"
+/>
+```
+
+## Webhook Handling
+
+### Register the Route
+
+Add the webhook route to your `routes/api.php` file:
+
+```php
+Route::post('webhooks/notchpay', '\NotchPay\Laravel\Http\Controllers\WebhookController');
+```
+
+Or, if you want to use your own controller:
+
+```php
+Route::post('webhooks/notchpay', [App\Http\Controllers\WebhookController::class, 'handle']);
+```
+
+### Create a Webhook Controller
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use NotchPay\Laravel\Http\Middleware\VerifyWebhookSignature;
+
+class WebhookController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware(VerifyWebhookSignature::class);
+    }
+    
+    public function handle(Request $request)
+    {
+        $payload = $request->all();
+        $event = $payload;
+        
+        // Process the event based on its type
+        switch ($event['type']) {
+            case 'payment.complete':
+                // Handle completed payment
+                $payment = $event['data'];
+                // Update order status, send confirmation email, etc.
+                \Log::info('Payment completed', ['reference' => $payment['reference']]);
+                break;
+                
+            case 'payment.failed':
+                // Handle failed payment
+                $payment = $event['data'];
+                // Update order status, notify customer, etc.
+                \Log::info('Payment failed', ['reference' => $payment['reference']]);
+                break;
+                
+            // Handle other event types...
+        }
+        
+        return response()->json(['status' => 'success']);
+    }
+}
+```
+
+### Using Event Listeners
+
+You can also use Laravel's event system to handle webhooks:
+
+1. Register the events in your `EventServiceProvider`:
+
+```php
+protected $listen = [
+    'notchpay.payment.complete' => [
+        \App\Listeners\HandleCompletedPayment::class,
+    ],
+    'notchpay.payment.failed' => [
+        \App\Listeners\HandleFailedPayment::class,
+    ],
+    // Other events...
+];
+```
+
+2. Create the event listeners:
+
+```php
+<?php
+
+namespace App\Listeners;
+
+class HandleCompletedPayment
+{
+    public function handle($event)
+    {
+        $payment = $event->data;
+        
+        // Update order status, send confirmation email, etc.
+        \Log::info('Payment completed', ['reference' => $payment['reference']]);
+    }
+}
+```
+
+## Complete Example
+
+### Routes
+
+```php
+// routes/web.php
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::get('/payment', [App\Http\Controllers\PaymentController::class, 'showPaymentForm'])->name('payment.form');
+Route::post('/payment', [App\Http\Controllers\PaymentController::class, 'createPayment'])->name('payment.create');
+Route::get('/payment/callback', [App\Http\Controllers\PaymentController::class, 'handleCallback'])->name('payment.callback');
+
+// routes/api.php
+Route::post('webhooks/notchpay', '\NotchPay\Laravel\Http\Controllers\WebhookController');
+```
+
+### Controller
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use NotchPay\Laravel\Facades\NotchPay;
+
+class PaymentController extends Controller
+{
+    public function showPaymentForm()
+    {
+        return view('payment.form');
+    }
+    
+    public function createPayment(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:100',
+            'email' => 'required|email',
+            'name' => 'required|string',
+        ]);
+        
+        try {
+            $payment = NotchPay::payments()->create([
+                'amount' => $request->amount,
+                'currency' => 'XAF',
+                'customer' => [
+                    'email' => $request->email,
+                    'name' => $request->name
+                ],
+                'reference' => 'order_' . time(),
+                'callback' => route('payment.callback'),
+                'description' => 'Payment from Laravel app'
+            ]);
+            
+            // Store payment details in session for verification
+            session(['payment_reference' => $payment->transaction->reference]);
+            
+            return redirect($payment->authorization_url);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+    
+    public function handleCallback(Request $request)
+    {
+        $reference = $request->query('reference');
+        
+        // Verify that this is the same payment we initiated
+        if (!session('payment_reference') || session('payment_reference') !== $reference) {
+            return view('payment.error', [
+                'message' => 'Invalid payment reference'
+            ]);
+        }
+        
+        try {
+            $payment = NotchPay::payments()->retrieve($reference);
+            
+            if ($payment->transaction->status === 'complete') {
+                // Payment is complete, fulfill the order
+                
+                // Clear the session
+                session()->forget('payment_reference');
+                
+                return view('payment.success', [
+                    'payment' => $payment->transaction
+                ]);
+            } else {
+                // Payment is not complete
+                return view('payment.failed', [
+                    'payment' => $payment->transaction
+                ]);
+            }
+        } catch (\Exception $e) {
+            return view('payment.error', [
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+}
+```
+
+### Views
+
+```blade
+<!-- resources/views/payment/form.blade.php -->
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">Make a Payment</div>
+
+                <div class="card-body">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('payment.create') }}">
+                        @csrf
+
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
+                            <div class="col-md-6">
+                                <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="email" class="col-md-4 col-form-label text-md-right">Email</label>
+                            <div class="col-md-6">
+                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="amount" class="col-md-4 col-form-label text-md-right">Amount (XAF)</label>
+                            <div class="col-md-6">
+                                <input id="amount" type="number" class="form-control" name="amount" value="{{ old('amount', 5000) }}" min="100" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-0">
+                            <div class="col-md-6 offset-md-4">
+                                <button type="submit" class="btn btn-primary">
+                                    Pay Now
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <hr>
+
+                    <h4>Or use the payment button component:</h4>
+
+                    <x-notchpay::button
+                        :amount="5000"
+                        currency="XAF"
+                        email="customer@example.com"
+                        name="John Doe"
+                        reference="order_{{ time() }}"
+                        :callback="route('payment.callback')"
+                        class="btn btn-success"
+                    >
+                        Quick Pay 5,000 XAF
+                    </x-notchpay::button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+<!-- resources/views/payment/success.blade.php -->
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">Payment Successful</div>
+
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fa fa-check-circle text-success" style="font-size: 64px;"></i>
+                    </div>
+
+                    <h4>Thank you for your payment!</h4>
+                    
+                    <div class="mt-4">
+                        <p><strong>Reference:</strong> {{ $payment->reference }}</p>
+                        <p><strong>Amount:</strong> {{ $payment->amount }} {{ $payment->currency }}</p>
+                        <p><strong>Status:</strong> {{ $payment->status }}</p>
+                        <p><strong>Date:</strong> {{ \Carbon\Carbon::parse($payment->completed_at)->format('F j, Y, g:i a') }}</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ url('/') }}" class="btn btn-primary">Return to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+<!-- resources/views/payment/failed.blade.php -->
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-warning">Payment Not Completed</div>
+
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fa fa-exclamation-triangle text-warning" style="font-size: 64px;"></i>
+                    </div>
+
+                    <h4>Your payment was not completed.</h4>
+                    
+                    <div class="mt-4">
+                        <p><strong>Reference:</strong> {{ $payment->reference }}</p>
+                        <p><strong>Status:</strong> {{ $payment->status }}</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ route('payment.form') }}" class="btn btn-primary">Try Again</a>
+                        <a href="{{ url('/') }}" class="btn btn-secondary ml-2">Return to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+<!-- resources/views/payment/error.blade.php -->
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-danger text-white">Payment Error</div>
+
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <i class="fa fa-times-circle text-danger" style="font-size: 64px;"></i>
+                    </div>
+
+                    <h4>An error occurred while processing your payment.</h4>
+                    
+                    <div class="mt-4">
+                        <p>{{ $message }}</p>
+                    </div>
+
+                    <div class="mt-4">
+                        <a href="{{ route('payment.form') }}" class="btn btn-primary">Try Again</a>
+                        <a href="{{ url('/') }}" class="btn btn-secondary ml-2">Return to Home</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+```
+
+## Advanced Features
+
+### Custom Middleware
+
+The SDK provides middleware for webhook verification, but you can also create your own middleware:
+
+```php
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use NotchPay\Laravel\Facades\NotchPay;
+
+class RequireNotchPayAuth
+{
+    public function handle(Request $request, Closure $next)
+    {
+        // Check if user has a valid Notch Pay account
+        try {
+            $balance = NotchPay::balance()->retrieve();
+            
+            // Store balance in the request for later use
+            $request->attributes->set('notchpay_balance', $balance);
+            
+            return $next($request);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Invalid Notch Pay credentials',
+                'message' => $e->getMessage()
+            ], 401);
+        }
+    }
+}
+```
+
+### Using with Laravel Cashier
+
+If you're using Laravel Cashier for subscription billing, you can integrate Notch Pay as an additional payment provider:
+
+```php
+<?php
+
+namespace App\Services;
+
+use App\Models\User;
+use NotchPay\Laravel\Facades\NotchPay;
+
+class NotchPayBillingService
+{
+    public function createSubscription(User $user, string $plan, int $amount)
+    {
+        // Create a payment for the subscription
+        $payment = NotchPay::payments()->create([
+            'amount' => $amount,
+            'currency' => 'XAF',
+            'customer' => [
+                'email' => $user->email,
+                'name' => $user->name
+            ],
+            'reference' => 'sub_' . $user->id . '_' . time(),
+            'callback' => route('subscription.callback'),
+            'description' => "Subscription to {$plan} plan"
+        ]);
+        
+        // Store subscription details
+        $user->subscriptions()->create([
+            'name' => $plan,
+            'notchpay_reference' => $payment->transaction->reference,
+            'notchpay_status' => $payment->transaction->status,
+            'ends_at' => now()->addMonth(),
+            // Other subscription details...
+        ]);
+        
+        return $payment;
+    }
+    
+    public function cancelSubscription(User $user, string $plan)
+    {
+        $subscription = $user->subscriptions()
+            ->where('name', $plan)
+            ->whereNull('ends_at')
+            ->first();
+            
+        if ($subscription) {
+            $subscription->update([
+                'ends_at' => now(),
+            ]);
+            
+            return true;
+        }
+        
+        return false;
+    }
+}
+```
+
+## API Reference
+
+The Laravel SDK provides access to all Notch Pay API endpoints through the facade:
+
+### Payments
+
+- `NotchPay::payments()->create($data)` - Create a payment
+- `NotchPay::payments()->retrieve($reference)` - Retrieve a payment
+- `NotchPay::payments()->list($params)` - List payments
+- `NotchPay::payments()->cancel($reference)` - Cancel a payment
+
+### Transfers
+
+- `NotchPay::transfers()->create($data)` - Create a transfer
+- `NotchPay::transfers()->retrieve($reference)` - Retrieve a transfer
+- `NotchPay::transfers()->list($params)` - List transfers
+- `NotchPay::transfers()->cancel($reference)` - Cancel a transfer
+- `NotchPay::transfers()->createBulk($data)` - Create a bulk transfer
+
+### Customers
+
+- `NotchPay::customers()->create($data)` - Create a customer
+- `NotchPay::customers()->retrieve($id)` - Retrieve a customer
+- `NotchPay::customers()->update($id, $data)` - Update a customer
+- `NotchPay::customers()->list($params)` - List customers
+- `NotchPay::customers()->delete($id)` - Delete a customer
+
+### Beneficiaries
+
+- `NotchPay::beneficiaries()->create($data)` - Create a beneficiary
+- `NotchPay::beneficiaries()->retrieve($id)` - Retrieve a beneficiary
+- `NotchPay::beneficiaries()->update($id, $data)` - Update a beneficiary
+- `NotchPay::beneficiaries()->list($params)` - List beneficiaries
+- `NotchPay::beneficiaries()->delete($id)` - Delete a beneficiary
+
+### Balance
+
+- `NotchPay::balance()->retrieve()` - Check balance
+- `NotchPay::balance()->retrieveCurrency($currency)` - Check balance for a specific currency
+- `NotchPay::balance()->history($params)` - List balance history
+
+### Webhooks
+
+- `NotchPay::webhooks()->create($data)` - Create a webhook
+- `NotchPay::webhooks()->retrieve($id)` - Retrieve a webhook
+- `NotchPay::webhooks()->update($id, $data)` - Update a webhook
+- `NotchPay::webhooks()->list($params)` - List webhooks
+- `NotchPay::webhooks()->delete($id)` - Delete a webhook
+
+## Related Resources
+
+<CardGroup cols={3}>
+  <Card title="API Reference" icon="book" href="/api-reference">
+    Complete API documentation
+  </Card>
+  <Card title="PHP SDK" icon="php" href="/sdks/php">
+    Base PHP SDK documentation
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/api-reference/webhooks">
+    Learn about webhooks
+  </Card>
+</CardGroup>

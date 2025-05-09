@@ -1,0 +1,442 @@
+---
+title: Resources API
+description: Get information about payment channels, countries, currencies, and banks supported by Notch Pay
+---
+
+# Resources API
+
+<Note>
+  The Resources API provides information about payment channels, countries, currencies, and banks supported by Notch Pay. Use these endpoints to get up-to-date information for your integration.
+</Note>
+
+## API Endpoints
+
+<Card title="List Payment Channels" icon="credit-card" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /resources/channels
+      ```
+
+      Retrieve a list of available payment channels.
+
+      ### Query Parameters
+
+      <ParamField query="country" type="string">
+        Filter channels by country code (e.g., CM, NG)
+      </ParamField>
+
+      <ParamField query="currency" type="string">
+        Filter channels by currency code (e.g., XAF, NGN)
+      </ParamField>
+
+      <ParamField query="type" type="string">
+        Filter by channel type: `mobile_money`, `card`, `bank`, `ussd`, `qr`
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Channels retrieved",
+        "channels": [
+          {
+            "id": "cm.mtn",
+            "name": "MTN Mobile Money",
+            "country": "CM",
+            "currency": "XAF",
+            "type": "mobile_money",
+            "logo": "https://assets.notchpay.co/channels/mtn.png",
+            "minimum": 100,
+            "maximum": 5000000
+          },
+          {
+            "id": "cm.orange",
+            "name": "Orange Money",
+            "country": "CM",
+            "currency": "XAF",
+            "type": "mobile_money",
+            "logo": "https://assets.notchpay.co/channels/orange.png",
+            "minimum": 100,
+            "maximum": 5000000
+          },
+          // More channels...
+        ]
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="Get Channel Details" icon="circle-info" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /resources/channels/{id}
+      ```
+
+      Retrieve details of a specific payment channel.
+
+      ### Path Parameters
+
+      <ParamField path="id" type="string" required>
+        ID of the channel to retrieve (e.g., cm.mtn, ng.card)
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Channel retrieved",
+        "channel": {
+          "id": "cm.mtn",
+          "name": "MTN Mobile Money",
+          "country": "CM",
+          "currency": "XAF",
+          "type": "mobile_money",
+          "logo": "https://assets.notchpay.co/channels/mtn.png",
+          "minimum": 100,
+          "maximum": 5000000,
+          "processing_time": "instant",
+          "requires_phone": true,
+          "requires_otp": true,
+          "description": "Pay with MTN Mobile Money in Cameroon",
+          "instructions": "You will receive a prompt on your phone to confirm the payment."
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="List Countries" icon="globe" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /resources/countries
+      ```
+
+      Retrieve a list of supported countries.
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Countries retrieved",
+        "countries": [
+          {
+            "code": "CM",
+            "name": "Cameroon",
+            "currency": "XAF",
+            "flag": "https://assets.notchpay.co/flags/cm.png",
+            "phone_code": "+237",
+            "channels": ["mobile_money", "card", "bank"]
+          },
+          {
+            "code": "NG",
+            "name": "Nigeria",
+            "currency": "NGN",
+            "flag": "https://assets.notchpay.co/flags/ng.png",
+            "phone_code": "+234",
+            "channels": ["mobile_money", "card", "bank", "ussd"]
+          },
+          // More countries...
+        ]
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="Get Country Details" icon="flag" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /resources/countries/{code}
+      ```
+
+      Retrieve details of a specific country.
+
+      ### Path Parameters
+
+      <ParamField path="code" type="string" required>
+        Two-letter ISO country code (e.g., CM, NG)
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Country retrieved",
+        "country": {
+          "code": "CM",
+          "name": "Cameroon",
+          "currency": "XAF",
+          "flag": "https://assets.notchpay.co/flags/cm.png",
+          "phone_code": "+237",
+          "channels": ["mobile_money", "card", "bank"],
+          "available_channels": [
+            {
+              "id": "cm.mtn",
+              "name": "MTN Mobile Money",
+              "type": "mobile_money"
+            },
+            {
+              "id": "cm.orange",
+              "name": "Orange Money",
+              "type": "mobile_money"
+            },
+            {
+              "id": "cm.card",
+              "name": "Card Payment",
+              "type": "card"
+            }
+          ]
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="List Currencies" icon="money-bill" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /resources/currencies
+      ```
+
+      Retrieve a list of supported currencies.
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Currencies retrieved",
+        "currencies": [
+          {
+            "code": "XAF",
+            "name": "Central African CFA Franc",
+            "symbol": "FCFA",
+            "countries": ["CM", "GA", "TD", "CG", "CF", "GQ"],
+            "minimum_amount": 100,
+            "maximum_amount": 50000000
+          },
+          {
+            "code": "NGN",
+            "name": "Nigerian Naira",
+            "symbol": "₦",
+            "countries": ["NG"],
+            "minimum_amount": 100,
+            "maximum_amount": 10000000
+          },
+          {
+            "code": "USD",
+            "name": "United States Dollar",
+            "symbol": "$",
+            "countries": [],
+            "minimum_amount": 1,
+            "maximum_amount": 100000
+          },
+          // More currencies...
+        ]
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="Get Currency Details" icon="coins" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /resources/currencies/{code}
+      ```
+
+      Retrieve details of a specific currency.
+
+      ### Path Parameters
+
+      <ParamField path="code" type="string" required>
+        Three-letter ISO currency code (e.g., XAF, NGN, USD)
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Currency retrieved",
+        "currency": {
+          "code": "XAF",
+          "name": "Central African CFA Franc",
+          "symbol": "FCFA",
+          "countries": ["CM", "GA", "TD", "CG", "CF", "GQ"],
+          "minimum_amount": 100,
+          "maximum_amount": 50000000,
+          "decimal_places": 0,
+          "exchange_rates": {
+            "USD": 0.00165,
+            "EUR": 0.00152,
+            "NGN": 2.5
+          }
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="List Banks" icon="building-columns" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /resources/banks
+      ```
+
+      Retrieve a list of supported banks.
+
+      ### Query Parameters
+
+      <ParamField query="country" type="string">
+        Filter banks by country code (e.g., CM, NG)
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Banks retrieved",
+        "banks": [
+          {
+            "code": "SGCM",
+            "name": "Société Générale Cameroun",
+            "country": "CM",
+            "logo": "https://assets.notchpay.co/banks/sgcm.png"
+          },
+          {
+            "code": "BICEC",
+            "name": "Banque Internationale du Cameroun pour l'Epargne et le Crédit",
+            "country": "CM",
+            "logo": "https://assets.notchpay.co/banks/bicec.png"
+          },
+          {
+            "code": "GTB",
+            "name": "Guaranty Trust Bank",
+            "country": "NG",
+            "logo": "https://assets.notchpay.co/banks/gtb.png"
+          },
+          // More banks...
+        ]
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="Get Bank Details" icon="landmark" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /resources/banks/{code}
+      ```
+
+      Retrieve details of a specific bank.
+
+      ### Path Parameters
+
+      <ParamField path="code" type="string" required>
+        Bank code (e.g., SGCM, GTB)
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Bank retrieved",
+        "bank": {
+          "code": "SGCM",
+          "name": "Société Générale Cameroun",
+          "country": "CM",
+          "logo": "https://assets.notchpay.co/banks/sgcm.png",
+          "swift_code": "SGCMCMCX",
+          "branch_codes": ["001", "002", "003"],
+          "account_format": "^[0-9]{11}$",
+          "account_validation": "regex",
+          "transfer_enabled": true,
+          "transfer_processing_time": "1-2 business days"
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+## Channel Types
+
+<CardGroup cols={3}>
+  <Card title="mobile_money" icon="mobile-screen" color="#16A34A">
+    Mobile money payment channels like MTN Mobile Money, Orange Money, etc.
+  </Card>
+  <Card title="card" icon="credit-card" color="#16A34A">
+    Card payment channels for debit and credit cards
+  </Card>
+  <Card title="bank" icon="building-columns" color="#16A34A">
+    Bank transfer payment channels
+  </Card>
+  <Card title="ussd" icon="hashtag" color="#16A34A">
+    USSD-based payment channels
+  </Card>
+  <Card title="qr" icon="qrcode" color="#16A34A">
+    QR code-based payment channels
+  </Card>
+  <Card title="wallet" icon="wallet" color="#16A34A">
+    Digital wallet payment channels
+  </Card>
+</CardGroup>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Cache Resource Data" icon="database" color="#16A34A">
+    Cache resource data like countries, currencies, and banks to reduce API calls.
+    
+    Refresh your cache periodically (e.g., daily) to ensure you have the latest information.
+  </Card>
+  <Card title="Dynamic Channel Selection" icon="list-check" color="#16A34A">
+    Use the channels endpoint to dynamically populate payment method options in your checkout.
+    
+    Filter channels based on the customer's country and currency for a better user experience.
+  </Card>
+  <Card title="Validate Input Data" icon="check-double" color="#16A34A">
+    Use the resources API to validate input data like country codes, currency codes, and bank codes.
+    
+    This helps prevent errors when creating payments or transfers.
+  </Card>
+  <Card title="Check Limits" icon="ruler" color="#16A34A">
+    Check the minimum and maximum amounts for each payment channel to ensure your payment requests are within the allowed limits.
+    
+    Display appropriate error messages to users when amounts are outside these limits.
+  </Card>
+</CardGroup>
+
+## Related Resources
+
+<CardGroup cols={3}>
+  <Card title="Payments API" icon="credit-card" href="/api-reference/payments">
+    Create and manage payments using the available channels
+  </Card>
+  <Card title="Transfers API" icon="money-bill-transfer" href="/api-reference/transfers">
+    Send money to beneficiaries using the available banks
+  </Card>
+  <Card title="Beneficiaries API" icon="user-plus" href="/api-reference/beneficiaries">
+    Create and manage beneficiaries with bank information
+  </Card>
+</CardGroup>

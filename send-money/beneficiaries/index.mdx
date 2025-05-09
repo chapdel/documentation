@@ -1,0 +1,89 @@
+---
+title: Beneficiaries
+description: Learn how to manage beneficiaries for money transfers with Notch Pay
+---
+
+# Beneficiaries
+
+Beneficiaries are individuals or entities that you can send money to using Notch Pay's transfer services. Managing beneficiaries allows you to save recipient information for future transfers, making the process faster and more convenient.
+
+## What is a Beneficiary?
+
+A beneficiary in Notch Pay is a saved recipient with the following information:
+- Name
+- Payment method (mobile money account, bank account, etc.)
+- Contact information (email, phone)
+- Country
+
+Once you've created a beneficiary, you can easily send money to them without having to re-enter their details each time.
+
+## Benefits of Using Beneficiaries
+
+- **Speed**: Initiate transfers quickly without re-entering recipient details
+- **Accuracy**: Reduce errors by using pre-validated recipient information
+- **Organization**: Keep track of all your recipients in one place
+- **Security**: Ensure money is sent to the correct recipients
+
+## Creating Beneficiaries
+
+You can create beneficiaries through:
+
+1. **Notch Pay Dashboard**: Add beneficiaries manually in the dashboard
+2. **API**: Create beneficiaries programmatically using the [Beneficiaries API](/api-reference/beneficiaries)
+
+### Required Information
+
+To create a beneficiary, you'll need:
+
+- **Name**: The recipient's full name
+- **Channel**: The payment method (e.g., `cm.mtn` for MTN Mobile Money in Cameroon)
+- **Account Number**: The recipient's account number or phone number
+- **Email or Phone**: At least one contact method
+- **Country**: The recipient's country code (e.g., `CM` for Cameroon)
+
+## Managing Beneficiaries
+
+Once you've created beneficiaries, you can:
+
+- **View**: See a list of all your beneficiaries
+- **Edit**: Update beneficiary information
+- **Delete**: Remove beneficiaries you no longer need
+- **Transfer**: Send money directly to a beneficiary
+
+Learn more about [managing beneficiaries](/send-money/beneficiaries/manage).
+
+## Using Beneficiaries in Transfers
+
+When initiating a transfer, you can:
+
+1. **Select an existing beneficiary**: Use the beneficiary ID
+2. **Create a new beneficiary on-the-fly**: Provide recipient details during the transfer
+
+```json
+// Transfer to an existing beneficiary
+{
+  "amount": 5000,
+  "currency": "XAF",
+  "beneficiary": "ben_123456789",
+  "description": "Monthly payment"
+}
+
+// Transfer with new recipient details
+{
+  "amount": 5000,
+  "currency": "XAF",
+  "channel": "cm.mtn",
+  "recipient": {
+    "name": "John Doe",
+    "account_number": "+237600000000",
+    "email": "john@example.com"
+  },
+  "description": "One-time payment"
+}
+```
+
+## Next Steps
+
+- [Managing Beneficiaries](/send-money/beneficiaries/manage) - Learn how to view, edit, and delete beneficiaries
+- [Making Transfers](/send-money/transfers) - Send money to your beneficiaries
+- [Beneficiaries API](/api-reference/beneficiaries) - Technical reference for the Beneficiaries API

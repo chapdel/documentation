@@ -1,0 +1,560 @@
+---
+title: PHP SDK
+description: Integrate Notch Pay into your PHP applications
+---
+
+# Notch Pay PHP SDK
+
+<Note>
+  The Notch Pay PHP SDK provides a convenient way to integrate Notch Pay into your PHP applications, including frameworks like Laravel, Symfony, and WordPress.
+</Note>
+
+## Installation
+
+<Tabs>
+  <Tab title="Composer">
+    ```bash
+    composer require notchpay/notchpay-php
+    ```
+  </Tab>
+  <Tab title="Manual Installation">
+    ```php
+    // Download the latest release from GitHub
+    // https://github.com/notchafrica/notchpay-php/releases
+    
+    // Include the autoloader
+    require_once '/path/to/notchpay-php/autoload.php';
+    ```
+  </Tab>
+</Tabs>
+
+## Basic Usage
+
+### Initialize the SDK
+
+```php
+<?php
+require_once 'vendor/autoload.php';
+
+use NotchPay\NotchPay;
+
+// Initialize with your API key
+$notchpay = new NotchPay('YOUR_API_KEY');
+
+// For endpoints requiring advanced authentication
+$notchpay->setGrantKey('YOUR_PRIVATE_KEY');
+```
+
+### Create a Payment
+
+```php
+<?php
+try {
+    $payment = $notchpay->payments->create([
+        'amount' => 5000,
+        'currency' => 'XAF',
+        'customer' => [
+            'email' => 'customer@example.com',
+            'name' => 'John Doe'
+        ],
+        'reference' => 'order_123',
+        'callback' => 'https://example.com/callback',
+        'description' => 'Payment for Order #123'
+    ]);
+    
+    // Redirect to the payment page
+    header('Location: ' . $payment->authorization_url);
+    exit;
+} catch (\NotchPay\Exception\ApiException $e) {
+    // Handle API error
+    echo 'Error: ' . $e->getMessage();
+} catch (\Exception $e) {
+    // Handle other errors
+    echo 'Error: ' . $e->getMessage();
+}
+```
+
+### Retrieve a Payment
+
+```php
+<?php
+try {
+    $reference = 'order_123';
+    $payment = $notchpay->payments->retrieve($reference);
+    
+    if ($payment->transaction->status === 'complete') {
+        // Payment is complete, fulfill the order
+        echo 'Payment complete!';
+    } else {
+        // Payment is not complete
+        echo 'Payment status: ' . $payment->transaction->status;
+    }
+} catch (\NotchPay\Exception\ApiException $e) {
+    // Handle API error
+    echo 'Error: ' . $e->getMessage();
+}
+```
+
+### List Payments
+
+```php
+<?php
+try {
+    $payments = $notchpay->payments->list([
+        'limit' => 10,
+        'page' => 1,
+        'status' => 'complete'
+    ]);
+    
+    foreach ($payments->items as $payment) {
+        echo $payment->reference . ': ' . $payment->amount . ' ' . $payment->currency . '<br>';
+    }
+} catch (\NotchPay\Exception\ApiException $e) {
+    // Handle API error
+    echo 'Error: ' . $e->getMessage();
+}
+```
+
+### Create a Transfer
+
+```php
+<?php
+try {
+    // Set grant key for transfers
+    $notchpay->setGrantKey('YOUR_PRIVATE_KEY');
+    
+    $transfer = $notchpay->transfers->create([
+        'amount' => 5000,
+        'currency' => 'XAF',
+        'beneficiary' => [
+            'name' => 'John Doe',
+            'phone' => '+237600000000'
+        ],
+        'description' => 'Salary payment',
+        'reference' => 'transfer_123'
+    ]);
+    
+    echo 'Transfer created: ' . $transfer->transaction->id;
+} catch (\NotchPay\Exception\ApiException $e) {
+    // Handle API error
+    echo 'Error: ' . $e->getMessage();
+}
+```
+
+### Check Balance
+
+```php
+<?php
+try {
+    // Set grant key for balance
+    $notchpay->setGrantKey('YOUR_PRIVATE_KEY');
+    
+    $balance = $notchpay->balance->retrieve();
+    
+    echo 'Available balance: <br>';
+    foreach ($balance->balance->available as $currency => $amount) {
+        echo $currency . ': ' . $amount . '<br>';
+    }
+} catch (\NotchPay\Exception\ApiException $e) {
+    // Handle API error
+    echo 'Error: ' . $e->getMessage();
+}
+```
+
+## Laravel Integration
+
+### Installation
+
+```bash
+composer require notchpay/notchpay-php
+```
+
+### Service Provider (Laravel 5.4 and below)
+
+Add the service provider to your `config/app.php` file:
+
+```php
+'providers' => [
+    // ...
+    NotchPay\Laravel\NotchPayServiceProvider::class,
+],
+
+'aliases' => [
+    // ...
+    'NotchPay' => NotchPay\Laravel\Facades\NotchPay::class,
+],
+```
+
+### Configuration
+
+Publish the configuration file:
+
+```bash
+php artisan vendor:publish --provider="NotchPay\Laravel\NotchPayServiceProvider"
+```
+
+Update your `.env` file with your Notch Pay credentials:
+
+```
+NOTCHPAY_API_KEY=your_api_key
+NOTCHPAY_GRANT_KEY=your_private_key
+```
+
+### Usage in Laravel
+
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use NotchPay\Laravel\Facades\NotchPay;
+
+class PaymentController extends Controller
+{
+    public function createPayment(Request $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:100',
+            'email' => 'required|email',
+            'name' => 'required|string',
+        ]);
+        
+        try {
+            $payment = NotchPay::payments()->create([
+                'amount' => $request->amount,
+                'currency' => 'XAF',
+                'customer' => [
+                    'email' => $request->email,
+                    'name' => $request->name
+                ],
+                'reference' => 'order_' . time(),
+                'callback' => route('payment.callback'),
+                'description' => 'Payment from Laravel app'
+            ]);
+            
+            return redirect($payment->authorization_url);
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+    
+    public function handleCallback(Request $request)
+    {
+        $reference = $request->query('reference');
+        
+        try {
+            $payment = NotchPay::payments()->retrieve($reference);
+            
+            if ($payment->transaction->status === 'complete') {
+                // Payment is complete, fulfill the order
+                return view('payment.success', [
+                    'payment' => $payment->transaction
+                ]);
+            } else {
+                // Payment is not complete
+                return view('payment.failed', [
+                    'payment' => $payment->transaction
+                ]);
+            }
+        } catch (\Exception $e) {
+            return view('payment.error', [
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+    
+    public function handleWebhook(Request $request)
+    {
+        $payload = $request->all();
+        $event = $payload;
+        
+        // Process the event based on its type
+        switch ($event['type']) {
+            case 'payment.complete':
+                // Handle completed payment
+                $payment = $event['data'];
+                // Update order status, send confirmation email, etc.
+                break;
+                
+            case 'payment.failed':
+                // Handle failed payment
+                $payment = $event['data'];
+                // Update order status, notify customer, etc.
+                break;
+                
+            // Handle other event types...
+        }
+        
+        return response()->json(['status' => 'success']);
+    }
+}
+```
+
+### Routes
+
+```php
+<?php
+
+use App\Http\Controllers\PaymentController;
+
+Route::post('/payments', [PaymentController::class, 'createPayment'])->name('payment.create');
+Route::get('/payment/callback', [PaymentController::class, 'handleCallback'])->name('payment.callback');
+Route::post('/webhooks/notchpay', [PaymentController::class, 'handleWebhook'])->name('webhook.notchpay');
+```
+
+## WordPress Integration
+
+If you're using WordPress, you can use the PHP SDK to create a custom payment integration:
+
+### Create a Payment Form Shortcode
+
+```php
+<?php
+// Add this to your theme's functions.php or a custom plugin
+
+// Include the Notch Pay SDK
+require_once 'vendor/autoload.php';
+
+use NotchPay\NotchPay;
+
+// Initialize the SDK
+$notchpay = new NotchPay('YOUR_API_KEY');
+
+// Create a shortcode for the payment form
+function notchpay_payment_form_shortcode($atts) {
+    $atts = shortcode_atts(array(
+        'amount' => '1000',
+        'currency' => 'XAF',
+        'button_text' => 'Pay Now',
+    ), $atts);
+    
+    $form = '<form action="' . esc_url(admin_url('admin-post.php')) . '" method="post">
+        <input type="hidden" name="action" value="process_notchpay_payment">
+        <input type="hidden" name="amount" value="' . esc_attr($atts['amount']) . '">
+        <input type="hidden" name="currency" value="' . esc_attr($atts['currency']) . '">
+        
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" required>
+        </div>
+        
+        <button type="submit">' . esc_html($atts['button_text']) . ' (' . esc_html($atts['amount']) . ' ' . esc_html($atts['currency']) . ')</button>
+    </form>';
+    
+    return $form;
+}
+add_shortcode('notchpay_payment_form', 'notchpay_payment_form_shortcode');
+
+// Process the payment form
+function process_notchpay_payment() {
+    global $notchpay;
+    
+    if (!isset($_POST['amount']) || !isset($_POST['email']) || !isset($_POST['name'])) {
+        wp_die('Missing required fields');
+    }
+    
+    try {
+        $payment = $notchpay->payments->create([
+            'amount' => intval($_POST['amount']),
+            'currency' => sanitize_text_field($_POST['currency']),
+            'customer' => [
+                'email' => sanitize_email($_POST['email']),
+                'name' => sanitize_text_field($_POST['name'])
+            ],
+            'reference' => 'wp_order_' . time(),
+            'callback' => home_url('/payment-callback/'),
+            'description' => 'Payment from WordPress site'
+        ]);
+        
+        wp_redirect($payment->authorization_url);
+        exit;
+    } catch (\Exception $e) {
+        wp_die('Error: ' . $e->getMessage());
+    }
+}
+add_action('admin_post_process_notchpay_payment', 'process_notchpay_payment');
+add_action('admin_post_nopriv_process_notchpay_payment', 'process_notchpay_payment');
+
+// Handle the payment callback
+function handle_notchpay_callback() {
+    global $notchpay;
+    
+    if (isset($_GET['reference'])) {
+        $reference = sanitize_text_field($_GET['reference']);
+        
+        try {
+            $payment = $notchpay->payments->retrieve($reference);
+            
+            if ($payment->transaction->status === 'complete') {
+                // Payment is complete
+                echo '<h1>Payment Complete!</h1>';
+                echo '<p>Thank you for your payment of ' . $payment->transaction->amount . ' ' . $payment->transaction->currency . '</p>';
+                echo '<p><a href="' . home_url() . '">Return to Home</a></p>';
+            } else {
+                // Payment is not complete
+                echo '<h1>Payment Not Completed</h1>';
+                echo '<p>Status: ' . $payment->transaction->status . '</p>';
+                echo '<p><a href="' . home_url() . '">Return to Home</a></p>';
+            }
+        } catch (\Exception $e) {
+            echo '<h1>Error</h1>';
+            echo '<p>' . $e->getMessage() . '</p>';
+            echo '<p><a href="' . home_url() . '">Return to Home</a></p>';
+        }
+        
+        exit;
+    }
+}
+
+// Add a rewrite rule for the payment callback
+function notchpay_rewrite_rules() {
+    add_rewrite_rule('^payment-callback/?$', 'index.php?notchpay_callback=1', 'top');
+}
+add_action('init', 'notchpay_rewrite_rules');
+
+function notchpay_query_vars($vars) {
+    $vars[] = 'notchpay_callback';
+    return $vars;
+}
+add_filter('query_vars', 'notchpay_query_vars');
+
+function notchpay_template_redirect() {
+    if (get_query_var('notchpay_callback')) {
+        handle_notchpay_callback();
+    }
+}
+add_action('template_redirect', 'notchpay_template_redirect');
+```
+
+### Usage in WordPress
+
+Add the payment form to any page or post using the shortcode:
+
+```
+[notchpay_payment_form amount="5000" currency="XAF" button_text="Pay Now"]
+```
+
+## API Reference
+
+The PHP SDK provides access to all Notch Pay API endpoints:
+
+### Payments
+
+- `$notchpay->payments->create($data)` - Create a payment
+- `$notchpay->payments->retrieve($reference)` - Retrieve a payment
+- `$notchpay->payments->list($params)` - List payments
+- `$notchpay->payments->cancel($reference)` - Cancel a payment
+
+### Transfers
+
+- `$notchpay->transfers->create($data)` - Create a transfer
+- `$notchpay->transfers->retrieve($reference)` - Retrieve a transfer
+- `$notchpay->transfers->list($params)` - List transfers
+- `$notchpay->transfers->cancel($reference)` - Cancel a transfer
+- `$notchpay->transfers->createBulk($data)` - Create a bulk transfer
+
+### Customers
+
+- `$notchpay->customers->create($data)` - Create a customer
+- `$notchpay->customers->retrieve($id)` - Retrieve a customer
+- `$notchpay->customers->update($id, $data)` - Update a customer
+- `$notchpay->customers->list($params)` - List customers
+- `$notchpay->customers->delete($id)` - Delete a customer
+
+### Beneficiaries
+
+- `$notchpay->beneficiaries->create($data)` - Create a beneficiary
+- `$notchpay->beneficiaries->retrieve($id)` - Retrieve a beneficiary
+- `$notchpay->beneficiaries->update($id, $data)` - Update a beneficiary
+- `$notchpay->beneficiaries->list($params)` - List beneficiaries
+- `$notchpay->beneficiaries->delete($id)` - Delete a beneficiary
+
+### Balance
+
+- `$notchpay->balance->retrieve()` - Check balance
+- `$notchpay->balance->retrieveCurrency($currency)` - Check balance for a specific currency
+- `$notchpay->balance->history($params)` - List balance history
+
+### Webhooks
+
+- `$notchpay->webhooks->create($data)` - Create a webhook
+- `$notchpay->webhooks->retrieve($id)` - Retrieve a webhook
+- `$notchpay->webhooks->update($id, $data)` - Update a webhook
+- `$notchpay->webhooks->list($params)` - List webhooks
+- `$notchpay->webhooks->delete($id)` - Delete a webhook
+
+## Error Handling
+
+The SDK throws exceptions that you can catch and handle:
+
+```php
+<?php
+try {
+    $payment = $notchpay->payments->create([
+        // Payment data
+    ]);
+} catch (\NotchPay\Exception\ValidationException $e) {
+    // Handle validation errors
+    $errors = $e->getErrors();
+    foreach ($errors as $field => $messages) {
+        echo $field . ': ' . implode(', ', $messages) . '<br>';
+    }
+} catch (\NotchPay\Exception\AuthenticationException $e) {
+    // Handle authentication errors
+    echo 'Authentication error: ' . $e->getMessage();
+} catch (\NotchPay\Exception\ApiException $e) {
+    // Handle API errors
+    echo 'API error: ' . $e->getMessage();
+    echo 'Error code: ' . $e->getCode();
+} catch (\Exception $e) {
+    // Handle other errors
+    echo 'Error: ' . $e->getMessage();
+}
+```
+
+## Webhook Verification
+
+Verify webhook signatures to ensure they're coming from Notch Pay:
+
+```php
+<?php
+function verifyWebhookSignature($payload, $signature, $secret) {
+    $calculatedSignature = hash_hmac('sha256', $payload, $secret);
+    return hash_equals($calculatedSignature, $signature);
+}
+
+// In your webhook handler
+$payload = file_get_contents('php://input');
+$signature = $_SERVER['HTTP_X_NOTCHPAY_SIGNATURE'] ?? '';
+$webhookSecret = 'YOUR_WEBHOOK_SECRET';
+
+if (!verifyWebhookSignature($payload, $signature, $webhookSecret)) {
+    http_response_code(401);
+    echo 'Invalid signature';
+    exit;
+}
+
+// Process the webhook event
+$event = json_decode($payload, true);
+// ...
+```
+
+## Related Resources
+
+<CardGroup cols={3}>
+  <Card title="API Reference" icon="book" href="/api-reference">
+    Complete API documentation
+  </Card>
+  <Card title="JavaScript SDK" icon="js" href="/sdks/javascript">
+    Integrate with JavaScript applications
+  </Card>
+  <Card title="Laravel Integration" icon="laravel" href="/sdks/laravel">
+    Dedicated Laravel package
+  </Card>
+</CardGroup>

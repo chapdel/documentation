@@ -1,0 +1,374 @@
+---
+title: WooCommerce Plugin
+description: Accept payments on your WooCommerce store with Notch Pay
+---
+
+# Notch Pay WooCommerce Plugin
+
+<Note>
+  The Notch Pay WooCommerce plugin allows you to accept payments on your WooCommerce store using various payment methods including Mobile Money, Cards, and Bank Transfers.
+</Note>
+
+## Installation
+
+<Steps>
+  <Step title="Download the Plugin">
+    Download the Notch Pay WooCommerce plugin from the [WordPress Plugin Directory](https://wordpress.org/plugins/notchpay-woocommerce/) or directly from your WordPress admin dashboard.
+  </Step>
+  
+  <Step title="Install the Plugin">
+    1. Log in to your WordPress admin dashboard
+    2. Go to **Plugins > Add New**
+    3. Click **Upload Plugin** and select the downloaded zip file
+    4. Click **Install Now**
+    5. After installation, click **Activate Plugin**
+  </Step>
+  
+  <Step title="Configure the Plugin">
+    1. Go to **WooCommerce > Settings > Payments**
+    2. Find "Notch Pay" in the list of payment gateways
+    3. Click **Set up** or toggle the switch to enable it
+    4. Configure the gateway settings
+  </Step>
+</Steps>
+
+## Configuration
+
+<img
+  src="/images/woocommerce/settings-page.png"
+  alt="Notch Pay WooCommerce Settings"
+  className="rounded-lg border border-gray-200 my-6"
+/>
+
+### General Settings
+
+<ParamField name="Enable/Disable" type="boolean">
+  Enable Notch Pay for WooCommerce
+</ParamField>
+
+<ParamField name="Title" type="string">
+  The title shown to customers during checkout (default: "Pay with Notch Pay")
+</ParamField>
+
+<ParamField name="Description" type="string">
+  The description shown to customers during checkout
+</ParamField>
+
+<ParamField name="Test Mode" type="boolean">
+  Enable test mode to use test API keys and process test payments
+</ParamField>
+
+<ParamField name="API Key" type="string" required>
+  Your Notch Pay API key (starts with `test_` for test mode or `live_` for live mode)
+</ParamField>
+
+<ParamField name="Private Key" type="string" required>
+  Your Notch Pay private key (required for certain operations like refunds)
+</ParamField>
+
+<ParamField name="Webhook Secret" type="string">
+  Your webhook secret for verifying webhook signatures
+</ParamField>
+
+### Payment Options
+
+<ParamField name="Payment Methods" type="array">
+  The payment methods to enable:
+  - Mobile Money
+  - Cards
+  - Bank Transfers
+  - USSD
+  - QR Code
+</ParamField>
+
+<ParamField name="Default Payment Method" type="string">
+  The default payment method to pre-select at checkout
+</ParamField>
+
+<ParamField name="Mobile Money Providers" type="array">
+  The mobile money providers to enable (e.g., MTN, Orange, Airtel)
+</ParamField>
+
+### Order Management
+
+<ParamField name="Auto Complete Orders" type="boolean">
+  Automatically mark orders as completed when payment is successful
+</ParamField>
+
+<ParamField name="Order Status After Payment" type="string">
+  The status to set for orders after successful payment (Processing, Completed, etc.)
+</ParamField>
+
+<ParamField name="Failed Order Status" type="string">
+  The status to set for orders when payment fails (Failed, Pending Payment, etc.)
+</ParamField>
+
+## Checkout Experience
+
+The plugin adds Notch Pay as a payment option at checkout:
+
+<img
+  src="/images/woocommerce/checkout-page.png"
+  alt="Notch Pay Checkout Experience"
+  className="rounded-lg border border-gray-200 my-6"
+/>
+
+### Payment Flow
+
+<Steps>
+  <Step title="Customer Selects Notch Pay">
+    At checkout, the customer selects Notch Pay as their payment method.
+  </Step>
+  
+  <Step title="Customer Completes Order">
+    The customer fills in their billing and shipping information and clicks "Place Order".
+  </Step>
+  
+  <Step title="Redirect to Payment Page">
+    The customer is redirected to the Notch Pay checkout page to complete the payment.
+  </Step>
+  
+  <Step title="Customer Selects Payment Method">
+    On the Notch Pay checkout page, the customer selects their preferred payment method (Mobile Money, Card, etc.).
+  </Step>
+  
+  <Step title="Customer Completes Payment">
+    The customer completes the payment using their selected method.
+  </Step>
+  
+  <Step title="Redirect Back to Store">
+    After payment, the customer is redirected back to your store's thank you page.
+  </Step>
+</Steps>
+
+## Webhooks
+
+The plugin automatically sets up a webhook endpoint to receive notifications from Notch Pay:
+
+```
+https://your-store.com/wc-api/notchpay
+```
+
+Make sure to add this URL to your webhook endpoints in the Notch Pay dashboard.
+
+### Webhook Events
+
+The plugin listens for the following webhook events:
+
+<CardGroup cols={2}>
+  <Card title="payment.complete" icon="check-circle" color="#16A34A">
+    Triggered when a payment is completed. The plugin updates the corresponding order status.
+  </Card>
+  <Card title="payment.failed" icon="x-circle" color="#DC2626">
+    Triggered when a payment fails. The plugin updates the order status to "Failed".
+  </Card>
+  <Card title="payment.canceled" icon="ban" color="#6B7280">
+    Triggered when a payment is canceled. The plugin updates the order status to "Cancelled".
+  </Card>
+  <Card title="payment.refunded" icon="rotate-left" color="#F97316">
+    Triggered when a payment is refunded. The plugin updates the order status and creates a refund in WooCommerce.
+  </Card>
+</CardGroup>
+
+## Refunds
+
+The plugin supports refunds directly from the WooCommerce order page:
+
+<Steps>
+  <Step title="Go to the Order">
+    Navigate to **WooCommerce > Orders** and click on the order you want to refund.
+  </Step>
+  
+  <Step title="Initiate Refund">
+    Click the "Refund" button at the top of the order page.
+  </Step>
+  
+  <Step title="Enter Refund Details">
+    Enter the amount to refund and any refund reason.
+  </Step>
+  
+  <Step title="Process Refund">
+    Check the "Refund via Notch Pay" checkbox and click "Refund".
+  </Step>
+</Steps>
+
+<Callout type="info">
+  Refunds are only available for orders paid with Notch Pay and require the Private Key to be configured.
+</Callout>
+
+## Subscriptions
+
+The plugin integrates with WooCommerce Subscriptions to support recurring payments:
+
+<Callout type="warning">
+  Recurring payments are currently only supported for card payments. Mobile Money and other payment methods can only be used for initial subscription payments.
+</Callout>
+
+### Subscription Settings
+
+<ParamField name="Enable Subscriptions" type="boolean">
+  Enable support for WooCommerce Subscriptions
+</ParamField>
+
+<ParamField name="Save Payment Methods" type="boolean">
+  Allow customers to save their payment methods for future subscription payments
+</ParamField>
+
+## Currency Conversion
+
+The plugin supports automatic currency conversion if your store currency is different from the currencies supported by Notch Pay:
+
+<ParamField name="Enable Currency Conversion" type="boolean">
+  Enable automatic currency conversion
+</ParamField>
+
+<ParamField name="Conversion Rate" type="number">
+  The conversion rate to use (e.g., 1 USD = X XAF)
+</ParamField>
+
+<ParamField name="Auto Update Rates" type="boolean">
+  Automatically update conversion rates daily
+</ParamField>
+
+## Customization
+
+### Custom CSS
+
+You can customize the appearance of the Notch Pay checkout button by adding custom CSS to your theme:
+
+```css
+/* Customize the Notch Pay checkout button */
+.payment_method_notchpay label img {
+    max-height: 40px;
+}
+
+.payment_box.payment_method_notchpay {
+    background-color: #f9f9f9 !important;
+}
+```
+
+### Hooks and Filters
+
+The plugin provides hooks and filters for developers to extend its functionality:
+
+```php
+// Modify payment parameters before creating a payment
+add_filter('wc_notchpay_payment_params', function($params, $order) {
+    // Add custom metadata
+    $params['metadata']['custom_field'] = 'custom_value';
+    
+    return $params;
+}, 10, 2);
+
+// Do something after a successful payment
+add_action('wc_notchpay_payment_complete', function($order, $payment) {
+    // Send a custom email
+    $mailer = WC()->mailer();
+    $mailer->emails['WC_Email_Customer_Processing_Order']->trigger($order->get_id());
+}, 10, 2);
+```
+
+## Multi-Currency Support
+
+The plugin integrates with popular multi-currency plugins:
+
+### WPML
+
+If you're using WPML with the WooCommerce Multilingual module, the plugin will automatically use the correct currency based on the customer's selected language.
+
+### Currency Switcher for WooCommerce
+
+The plugin integrates with the Currency Switcher for WooCommerce plugin to support multiple currencies.
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Payment Gateway Not Showing at Checkout">
+    If the Notch Pay payment gateway is not showing at checkout:
+    
+    1. Check that the plugin is activated
+    2. Verify that the gateway is enabled in WooCommerce settings
+    3. Check if there are any currency restrictions (Notch Pay supports XAF, NGN, USD, etc.)
+    4. Ensure that your customer's billing country is supported by Notch Pay
+  </Accordion>
+  
+  <Accordion title="Payments Not Being Processed">
+    If payments are not being processed:
+    
+    1. Verify that your API keys are correct
+    2. Check that you're using the right keys for test/live mode
+    3. Check the Notch Pay dashboard for any failed payments
+    4. Ensure your server can make outgoing HTTP requests
+  </Accordion>
+  
+  <Accordion title="Webhooks Not Working">
+    If webhooks are not being received:
+    
+    1. Verify that the webhook URL is correctly added in the Notch Pay dashboard
+    2. Check that your webhook secret is correct
+    3. Ensure your server is accessible from the internet
+    4. Check your server logs for any errors
+    5. Try enabling WooCommerce logging (WooCommerce > Status > Logs)
+  </Accordion>
+  
+  <Accordion title="Order Status Not Updating">
+    If order statuses are not updating after payment:
+    
+    1. Check that webhooks are properly configured
+    2. Verify that the order exists in your WooCommerce store
+    3. Check if there are any conflicts with other plugins that might be modifying order statuses
+    4. Enable WooCommerce logging and check the logs for any errors
+  </Accordion>
+</AccordionGroup>
+
+## Frequently Asked Questions
+
+<AccordionGroup>
+  <Accordion title="Which payment methods are supported?">
+    The plugin supports all payment methods available on Notch Pay, including:
+    
+    - Mobile Money (MTN, Orange, Airtel, etc.)
+    - Cards (Visa, Mastercard, etc.)
+    - Bank Transfers
+    - USSD
+    - QR Code
+    
+    The available methods depend on your Notch Pay account and the countries you operate in.
+  </Accordion>
+  
+  <Accordion title="Which currencies are supported?">
+    Notch Pay primarily supports:
+    
+    - XAF (Central African CFA Franc)
+    - NGN (Nigerian Naira)
+    - USD (United States Dollar)
+    
+    If your store uses a different currency, you can enable currency conversion in the plugin settings.
+  </Accordion>
+  
+  <Accordion title="Can I use the plugin in test mode?">
+    Yes, you can enable test mode in the plugin settings. In test mode, the plugin will use your test API keys and process test payments.
+  </Accordion>
+  
+  <Accordion title="Does the plugin support subscriptions?">
+    Yes, the plugin integrates with WooCommerce Subscriptions to support recurring payments. However, recurring payments are currently only supported for card payments.
+  </Accordion>
+  
+  <Accordion title="Can I offer multiple payment methods?">
+    Yes, you can enable multiple payment methods in the plugin settings. Customers will be able to choose their preferred payment method at the Notch Pay checkout page.
+  </Accordion>
+</AccordionGroup>
+
+## Related Resources
+
+<CardGroup cols={3}>
+  <Card title="WordPress Plugin" icon="wordpress" href="/sdks/wordpress">
+    General WordPress integration
+  </Card>
+  <Card title="PHP SDK" icon="php" href="/sdks/php">
+    PHP SDK documentation
+  </Card>
+  <Card title="API Reference" icon="book" href="/api-reference">
+    Complete API documentation
+  </Card>
+</CardGroup>

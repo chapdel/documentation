@@ -1,0 +1,323 @@
+---
+title: Balance API
+description: Check your account balance and transaction history with the Notch Pay API
+---
+
+# Balance API
+
+<Note>
+  The Balance API allows you to check your account balance and view transaction history. This is useful for monitoring your available funds and reconciling transactions.
+</Note>
+
+<Callout type="warning">
+  All Balance API endpoints require the `X-Grant` header for additional security. See the [Authentication](/api-reference/authentication) documentation for more details.
+</Callout>
+
+## The Balance Object
+
+<CodeGroup>
+```json Balance Object
+{
+  "available": {
+    "XAF": 1000000,
+    "NGN": 500000,
+    "USD": 1000
+  },
+  "pending": {
+    "XAF": 50000,
+    "NGN": 0,
+    "USD": 0
+  }
+}
+```
+</CodeGroup>
+
+### Balance Object Properties
+
+<ResponseField name="available" type="object">
+  Available balance by currency that can be used for transfers
+</ResponseField>
+
+<ResponseField name="pending" type="object">
+  Pending balance by currency that is not yet available for use
+</ResponseField>
+
+## API Endpoints
+
+<Card title="Check Balance" icon="wallet" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /balance
+      ```
+
+      Retrieve your current account balance across all currencies.
+
+      <Callout type="info">
+        This endpoint requires the `X-Grant` header in addition to your API key.
+      </Callout>
+
+      ### Example Request
+
+      <CodeGroup>
+        ```bash cURL
+        curl https://api.notchpay.co/balance \
+          -H "Authorization: YOUR_API_KEY" \
+          -H "X-Grant: YOUR_PRIVATE_KEY"
+        ```
+
+        ```javascript JavaScript
+        fetch('https://api.notchpay.co/balance', {
+          method: 'GET',
+          headers: {
+            'Authorization': 'YOUR_API_KEY',
+            'X-Grant': 'YOUR_PRIVATE_KEY'
+          }
+        })
+        .then(response => response.json())
+        .then(data => console.log(data));
+        ```
+
+        ```php PHP
+        <?php
+        $curl = curl_init();
+
+        curl_setopt_array($curl, [
+          CURLOPT_URL => "https://api.notchpay.co/balance",
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_HTTPHEADER => [
+            "Authorization: YOUR_API_KEY",
+            "X-Grant: YOUR_PRIVATE_KEY"
+          ]
+        ]);
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        echo $response;
+        ```
+      </CodeGroup>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Balance retrieved",
+        "balance": {
+          "available": {
+            "XAF": 1000000,
+            "NGN": 500000,
+            "USD": 1000
+          },
+          "pending": {
+            "XAF": 50000,
+            "NGN": 0,
+            "USD": 0
+          }
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="Check Balance for a Specific Currency" icon="money-bill" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /balance/{currency}
+      ```
+
+      Retrieve your current account balance for a specific currency.
+
+      ### Path Parameters
+
+      <ParamField path="currency" type="string" required>
+        Three-letter ISO currency code (e.g., XAF, NGN, USD)
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Balance retrieved",
+        "balance": {
+          "currency": "XAF",
+          "available": 1000000,
+          "pending": 50000
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="List Balance History" icon="clock-rotate-left" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /balance/history
+      ```
+
+      Retrieve a list of balance changes with pagination.
+
+      ### Query Parameters
+
+      <ParamField query="limit" type="integer">
+        Number of items per page (default: 30, max: 100)
+      </ParamField>
+
+      <ParamField query="page" type="integer">
+        Page number (default: 1)
+      </ParamField>
+
+      <ParamField query="currency" type="string">
+        Filter by currency code
+      </ParamField>
+
+      <ParamField query="type" type="string">
+        Filter by transaction type: `payment`, `transfer`, `refund`, `adjustment`
+      </ParamField>
+
+      <ParamField query="date_start" type="string">
+        Start date filter (format: YYYY-MM-DD)
+      </ParamField>
+
+      <ParamField query="date_end" type="string">
+        End date filter (format: YYYY-MM-DD)
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Balance history retrieved",
+        "totals": 50,
+        "last_page": 2,
+        "current_page": 1,
+        "selected": 30,
+        "items": [
+          {
+            "id": "txn_123456789",
+            "type": "payment",
+            "amount": 5000,
+            "currency": "XAF",
+            "reference": "pay_123456789",
+            "description": "Payment from customer@example.com",
+            "created_at": "2023-01-01T12:00:00Z"
+          },
+          {
+            "id": "txn_987654321",
+            "type": "transfer",
+            "amount": -2000,
+            "currency": "XAF",
+            "reference": "trf_987654321",
+            "description": "Transfer to John Doe",
+            "created_at": "2023-01-01T14:00:00Z"
+          },
+          // More transactions...
+        ]
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+<Card title="Get Transaction Details" icon="receipt" color="#16A34A">
+  <Tabs>
+    <Tab title="Request">
+      ```bash
+      GET /balance/history/{id}
+      ```
+
+      Retrieve details of a specific balance transaction.
+
+      ### Path Parameters
+
+      <ParamField path="id" type="string" required>
+        ID of the transaction to retrieve
+      </ParamField>
+    </Tab>
+    <Tab title="Response">
+      ```json
+      {
+        "code": 200,
+        "status": "OK",
+        "message": "Transaction retrieved",
+        "transaction": {
+          "id": "txn_123456789",
+          "type": "payment",
+          "amount": 5000,
+          "currency": "XAF",
+          "reference": "pay_123456789",
+          "description": "Payment from customer@example.com",
+          "metadata": {
+            "customer_id": "cus_123456789",
+            "payment_method": "mobile_money"
+          },
+          "created_at": "2023-01-01T12:00:00Z"
+        }
+      }
+      ```
+    </Tab>
+  </Tabs>
+</Card>
+
+## Transaction Types
+
+<CardGroup cols={4}>
+  <Card title="payment" icon="credit-card" color="#16A34A">
+    Incoming payment from a customer
+  </Card>
+  <Card title="transfer" icon="money-bill-transfer" color="#dc2626">
+    Outgoing transfer to a beneficiary
+  </Card>
+  <Card title="refund" icon="rotate-left" color="#dc2626">
+    Refund of a payment
+  </Card>
+  <Card title="adjustment" icon="sliders" color="#f97316">
+    Manual adjustment to your balance
+  </Card>
+</CardGroup>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Regular Reconciliation" icon="check-double" color="#16A34A">
+    Regularly check your balance history and reconcile it with your internal records to ensure accuracy.
+    
+    Use the transaction references to match transactions with your system.
+  </Card>
+  <Card title="Monitor Available Balance" icon="eye" color="#16A34A">
+    Before initiating transfers, check your available balance to ensure you have sufficient funds.
+    
+    Remember that pending funds are not available for transfers.
+  </Card>
+  <Card title="Secure Your Private Key" icon="key" color="#16A34A">
+    Keep your private key (`X-Grant`) secure as it provides access to sensitive balance information and transfer capabilities.
+    
+    Never share your private key in client-side code or public repositories.
+  </Card>
+  <Card title="Use Webhooks for Updates" icon="bell" color="#16A34A">
+    Set up webhooks to receive real-time notifications about balance changes instead of polling the balance API.
+    
+    This provides more timely updates and reduces API calls.
+  </Card>
+</CardGroup>
+
+## Related Resources
+
+<CardGroup cols={3}>
+  <Card title="Payments API" icon="credit-card" href="/api-reference/payments">
+    Accept payments to increase your balance
+  </Card>
+  <Card title="Transfers API" icon="money-bill-transfer" href="/api-reference/transfers">
+    Send money to beneficiaries
+  </Card>
+  <Card title="Webhooks API" icon="bell" href="/api-reference/webhooks">
+    Receive notifications about balance changes
+  </Card>
+</CardGroup>

@@ -1,0 +1,785 @@
+---
+title: Python SDK
+description: Integrate Notch Pay into your Python applications
+---
+
+# Notch Pay Python SDK
+
+<Note>
+  The Notch Pay Python SDK provides a convenient way to integrate Notch Pay into your Python applications, including frameworks like Django, Flask, and FastAPI.
+</Note>
+
+## Installation
+
+<Tabs>
+  <Tab title="pip">
+    ```bash
+    pip install notchpay
+    ```
+  </Tab>
+  <Tab title="poetry">
+    ```bash
+    poetry add notchpay
+    ```
+  </Tab>
+  <Tab title="pipenv">
+    ```bash
+    pipenv install notchpay
+    ```
+  </Tab>
+</Tabs>
+
+## Basic Usage
+
+### Initialize the SDK
+
+```python
+from notchpay import NotchPay
+
+# Initialize with your API key
+notchpay = NotchPay('YOUR_API_KEY')
+
+# For endpoints requiring advanced authentication
+notchpay.set_grant_key('YOUR_PRIVATE_KEY')
+```
+
+### Create a Payment
+
+```python
+try:
+    payment = notchpay.payments.create({
+        'amount': 5000,
+        'currency': 'XAF',
+        'customer': {
+            'email': 'customer@example.com',
+            'name': 'John Doe'
+        },
+        'reference': 'order_123',
+        'callback': 'https://example.com/callback',
+        'description': 'Payment for Order #123'
+    })
+    
+    # Redirect to the payment page
+    print(f"Redirect to: {payment.authorization_url}")
+except Exception as e:
+    print(f"Error: {str(e)}")
+```
+
+### Retrieve a Payment
+
+```python
+try:
+    reference = 'order_123'
+    payment = notchpay.payments.retrieve(reference)
+    
+    if payment.transaction.status == 'complete':
+        # Payment is complete, fulfill the order
+        print('Payment complete!')
+    else:
+        # Payment is not complete
+        print(f"Payment status: {payment.transaction.status}")
+except Exception as e:
+    print(f"Error: {str(e)}")
+```
+
+### List Payments
+
+```python
+try:
+    payments = notchpay.payments.list({
+        'limit': 10,
+        'page': 1,
+        'status': 'complete'
+    })
+    
+    for payment in payments.items:
+        print(f"{payment.reference}: {payment.amount} {payment.currency}")
+except Exception as e:
+    print(f"Error: {str(e)}")
+```
+
+### Create a Transfer
+
+```python
+try:
+    # Set grant key for transfers
+    notchpay.set_grant_key('YOUR_PRIVATE_KEY')
+    
+    transfer = notchpay.transfers.create({
+        'amount': 5000,
+        'currency': 'XAF',
+        'beneficiary': {
+            'name': 'John Doe',
+            'phone': '+237600000000'
+        },
+        'description': 'Salary payment',
+        'reference': 'transfer_123'
+    })
+    
+    print(f"Transfer created: {transfer.transaction.id}")
+except Exception as e:
+    print(f"Error: {str(e)}")
+```
+
+### Check Balance
+
+```python
+try:
+    # Set grant key for balance
+    notchpay.set_grant_key('YOUR_PRIVATE_KEY')
+    
+    balance = notchpay.balance.retrieve()
+    
+    print('Available balance:')
+    for currency, amount in balance.balance.available.items():
+        print(f"{currency}: {amount}")
+except Exception as e:
+    print(f"Error: {str(e)}")
+```
+
+## Django Integration
+
+### Installation
+
+```bash
+pip install notchpay
+```
+
+### Settings Configuration
+
+Add Notch Pay settings to your Django settings file:
+
+```python
+# settings.py
+
+NOTCHPAY_API_KEY = 'YOUR_API_KEY'
+NOTCHPAY_GRANT_KEY = 'YOUR_PRIVATE_KEY'
+NOTCHPAY_WEBHOOK_SECRET = 'YOUR_WEBHOOK_SECRET'
+```
+
+### Create a Payment View
+
+```python
+# views.py
+from django.shortcuts import render, redirect
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.conf import settings
+import json
+import hmac
+import hashlib
+
+from notchpay import NotchPay
+
+# Initialize the SDK
+notchpay = NotchPay(settings.NOTCHPAY_API_KEY)
+
+def create_payment(request):
+    if request.method == 'POST':
+        try:
+            amount = int(request.POST.get('amount', 0))
+            email = request.POST.get('email', '')
+            name = request.POST.get('name', '')
+            
+            if amount < 100 or not email:
+                return render(request, 'payment_form.html', {
+                    'error': 'Invalid amount or email'
+                })
+            
+            payment = notchpay.payments.create({
+                'amount': amount,
+                'currency': 'XAF',
+                'customer': {
+                    'email': email,
+                    'name': name
+                },
+                'reference': f"django_order_{int(time.time())}",
+                'callback': request.build_absolute_uri('/payment/callback/'),
+                'description': 'Payment from Django app'
+            })
+            
+            # Redirect to the payment page
+            return redirect(payment.authorization_url)
+        except Exception as e:
+            return render(request, 'payment_form.html', {
+                'error': str(e)
+            })
+    
+    return render(request, 'payment_form.html')
+
+def payment_callback(request):
+    reference = request.GET.get('reference', '')
+    
+    if not reference:
+        return render(request, 'payment_error.html', {
+            'error': 'No reference provided'
+        })
+    
+    try:
+        payment = notchpay.payments.retrieve(reference)
+        
+        if payment.transaction.status == 'complete':
+            # Payment is complete, fulfill the order
+            return render(request, 'payment_success.html', {
+                'payment': payment.transaction
+            })
+        else:
+            # Payment is not complete
+            return render(request, 'payment_failed.html', {
+                'payment': payment.transaction
+            })
+    except Exception as e:
+        return render(request, 'payment_error.html', {
+            'error': str(e)
+        })
+
+def verify_webhook_signature(payload, signature, secret):
+    computed_signature = hmac.new(
+        secret.encode('utf-8'),
+        payload.encode('utf-8'),
+        hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(computed_signature, signature)
+
+@csrf_exempt
+@require_POST
+def webhook_handler(request):
+    payload = request.body.decode('utf-8')
+    signature = request.headers.get('X-Notchpay-Signature', '')
+    
+    if not verify_webhook_signature(payload, signature, settings.NOTCHPAY_WEBHOOK_SECRET):
+        return JsonResponse({'error': 'Invalid signature'}, status=401)
+    
+    event = json.loads(payload)
+    
+    # Process the event based on its type
+    event_type = event.get('type', '')
+    
+    if event_type == 'payment.complete':
+        # Handle completed payment
+        payment = event.get('data', {})
+        # Update order status, send confirmation email, etc.
+        print(f"Payment {payment.get('reference')} completed")
+    elif event_type == 'payment.failed':
+        # Handle failed payment
+        payment = event.get('data', {})
+        # Update order status, notify customer, etc.
+        print(f"Payment {payment.get('reference')} failed")
+    # Handle other event types...
+    
+    return JsonResponse({'status': 'success'})
+```
+
+### URLs Configuration
+
+```python
+# urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('payment/create/', views.create_payment, name='create_payment'),
+    path('payment/callback/', views.payment_callback, name='payment_callback'),
+    path('webhooks/notchpay/', views.webhook_handler, name='webhook_handler'),
+]
+```
+
+### Templates
+
+Create the necessary templates:
+
+```html
+<!-- payment_form.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Make a Payment</title>
+</head>
+<body>
+    <h1>Make a Payment</h1>
+    
+    {% if error %}
+    <div class="error">
+        {{ error }}
+    </div>
+    {% endif %}
+    
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+            <label for="amount">Amount (XAF):</label>
+            <input type="number" id="amount" name="amount" min="100" required>
+        </div>
+        <button type="submit">Pay Now</button>
+    </form>
+</body>
+</html>
+
+<!-- payment_success.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Successful</title>
+</head>
+<body>
+    <h1>Payment Successful!</h1>
+    <p>Thank you for your payment of {{ payment.amount }} {{ payment.currency }}</p>
+    <p>Reference: {{ payment.reference }}</p>
+    <a href="/">Return to Home</a>
+</body>
+</html>
+
+<!-- payment_failed.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Failed</title>
+</head>
+<body>
+    <h1>Payment Failed</h1>
+    <p>Status: {{ payment.status }}</p>
+    <p>Reference: {{ payment.reference }}</p>
+    <a href="/">Return to Home</a>
+</body>
+</html>
+
+<!-- payment_error.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Error</title>
+</head>
+<body>
+    <h1>Payment Error</h1>
+    <p>{{ error }}</p>
+    <a href="/">Return to Home</a>
+</body>
+</html>
+```
+
+## Flask Integration
+
+### Installation
+
+```bash
+pip install notchpay flask
+```
+
+### Basic Flask App
+
+```python
+from flask import Flask, request, render_template, redirect, url_for, jsonify
+import time
+import hmac
+import hashlib
+import json
+from notchpay import NotchPay
+
+app = Flask(__name__)
+
+# Initialize the SDK
+notchpay = NotchPay('YOUR_API_KEY')
+WEBHOOK_SECRET = 'YOUR_WEBHOOK_SECRET'
+
+@app.route('/')
+def index():
+    return render_template('payment_form.html')
+
+@app.route('/payment/create', methods=['POST'])
+def create_payment():
+    try:
+        amount = int(request.form.get('amount', 0))
+        email = request.form.get('email', '')
+        name = request.form.get('name', '')
+        
+        if amount < 100 or not email:
+            return render_template('payment_form.html', error='Invalid amount or email')
+        
+        payment = notchpay.payments.create({
+            'amount': amount,
+            'currency': 'XAF',
+            'customer': {
+                'email': email,
+                'name': name
+            },
+            'reference': f"flask_order_{int(time.time())}",
+            'callback': url_for('payment_callback', _external=True),
+            'description': 'Payment from Flask app'
+        })
+        
+        # Redirect to the payment page
+        return redirect(payment.authorization_url)
+    except Exception as e:
+        return render_template('payment_form.html', error=str(e))
+
+@app.route('/payment/callback')
+def payment_callback():
+    reference = request.args.get('reference', '')
+    
+    if not reference:
+        return render_template('payment_error.html', error='No reference provided')
+    
+    try:
+        payment = notchpay.payments.retrieve(reference)
+        
+        if payment.transaction.status == 'complete':
+            # Payment is complete, fulfill the order
+            return render_template('payment_success.html', payment=payment.transaction)
+        else:
+            # Payment is not complete
+            return render_template('payment_failed.html', payment=payment.transaction)
+    except Exception as e:
+        return render_template('payment_error.html', error=str(e))
+
+def verify_webhook_signature(payload, signature, secret):
+    computed_signature = hmac.new(
+        secret.encode('utf-8'),
+        payload.encode('utf-8'),
+        hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(computed_signature, signature)
+
+@app.route('/webhooks/notchpay', methods=['POST'])
+def webhook_handler():
+    payload = request.data.decode('utf-8')
+    signature = request.headers.get('X-Notchpay-Signature', '')
+    
+    if not verify_webhook_signature(payload, signature, WEBHOOK_SECRET):
+        return jsonify({'error': 'Invalid signature'}), 401
+    
+    event = json.loads(payload)
+    
+    # Process the event based on its type
+    event_type = event.get('type', '')
+    
+    if event_type == 'payment.complete':
+        # Handle completed payment
+        payment = event.get('data', {})
+        # Update order status, send confirmation email, etc.
+        app.logger.info(f"Payment {payment.get('reference')} completed")
+    elif event_type == 'payment.failed':
+        # Handle failed payment
+        payment = event.get('data', {})
+        # Update order status, notify customer, etc.
+        app.logger.info(f"Payment {payment.get('reference')} failed")
+    # Handle other event types...
+    
+    return jsonify({'status': 'success'})
+
+if __name__ == '__main__':
+    app.run(debug=True)
+```
+
+### Templates
+
+Create the necessary templates in a `templates` folder:
+
+```html
+<!-- templates/payment_form.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Make a Payment</title>
+</head>
+<body>
+    <h1>Make a Payment</h1>
+    
+    {% if error %}
+    <div class="error">
+        {{ error }}
+    </div>
+    {% endif %}
+    
+    <form action="{{ url_for('create_payment') }}" method="post">
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div>
+            <label for="amount">Amount (XAF):</label>
+            <input type="number" id="amount" name="amount" min="100" required>
+        </div>
+        <button type="submit">Pay Now</button>
+    </form>
+</body>
+</html>
+```
+
+Create similar templates for `payment_success.html`, `payment_failed.html`, and `payment_error.html` as shown in the Django example.
+
+## FastAPI Integration
+
+### Installation
+
+```bash
+pip install notchpay fastapi uvicorn
+```
+
+### Basic FastAPI App
+
+```python
+from fastapi import FastAPI, Request, Form, Header, HTTPException, Depends
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+from typing import Optional
+import time
+import hmac
+import hashlib
+import json
+from notchpay import NotchPay
+
+app = FastAPI()
+templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Initialize the SDK
+notchpay = NotchPay('YOUR_API_KEY')
+WEBHOOK_SECRET = 'YOUR_WEBHOOK_SECRET'
+
+@app.get("/", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("payment_form.html", {"request": request})
+
+@app.post("/payment/create")
+async def create_payment(
+    request: Request,
+    amount: int = Form(...),
+    email: str = Form(...),
+    name: str = Form(...)
+):
+    try:
+        if amount < 100 or not email:
+            return templates.TemplateResponse(
+                "payment_form.html", 
+                {"request": request, "error": "Invalid amount or email"}
+            )
+        
+        payment = notchpay.payments.create({
+            'amount': amount,
+            'currency': 'XAF',
+            'customer': {
+                'email': email,
+                'name': name
+            },
+            'reference': f"fastapi_order_{int(time.time())}",
+            'callback': f"{request.url_for('payment_callback')}",
+            'description': 'Payment from FastAPI app'
+        })
+        
+        # Redirect to the payment page
+        return RedirectResponse(payment.authorization_url, status_code=303)
+    except Exception as e:
+        return templates.TemplateResponse(
+            "payment_form.html", 
+            {"request": request, "error": str(e)}
+        )
+
+@app.get("/payment/callback", response_class=HTMLResponse)
+async def payment_callback(request: Request, reference: Optional[str] = None):
+    if not reference:
+        return templates.TemplateResponse(
+            "payment_error.html", 
+            {"request": request, "error": "No reference provided"}
+        )
+    
+    try:
+        payment = notchpay.payments.retrieve(reference)
+        
+        if payment.transaction.status == 'complete':
+            # Payment is complete, fulfill the order
+            return templates.TemplateResponse(
+                "payment_success.html", 
+                {"request": request, "payment": payment.transaction}
+            )
+        else:
+            # Payment is not complete
+            return templates.TemplateResponse(
+                "payment_failed.html", 
+                {"request": request, "payment": payment.transaction}
+            )
+    except Exception as e:
+        return templates.TemplateResponse(
+            "payment_error.html", 
+            {"request": request, "error": str(e)}
+        )
+
+def verify_webhook_signature(payload: bytes, signature: str, secret: str):
+    computed_signature = hmac.new(
+        secret.encode('utf-8'),
+        payload,
+        hashlib.sha256
+    ).hexdigest()
+    return hmac.compare_digest(computed_signature, signature)
+
+@app.post("/webhooks/notchpay")
+async def webhook_handler(
+    request: Request,
+    x_notchpay_signature: Optional[str] = Header(None)
+):
+    payload = await request.body()
+    
+    if not x_notchpay_signature or not verify_webhook_signature(
+        payload, x_notchpay_signature, WEBHOOK_SECRET
+    ):
+        raise HTTPException(status_code=401, detail="Invalid signature")
+    
+    event = json.loads(payload)
+    
+    # Process the event based on its type
+    event_type = event.get('type', '')
+    
+    if event_type == 'payment.complete':
+        # Handle completed payment
+        payment = event.get('data', {})
+        # Update order status, send confirmation email, etc.
+        print(f"Payment {payment.get('reference')} completed")
+    elif event_type == 'payment.failed':
+        # Handle failed payment
+        payment = event.get('data', {})
+        # Update order status, notify customer, etc.
+        print(f"Payment {payment.get('reference')} failed")
+    # Handle other event types...
+    
+    return {"status": "success"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+```
+
+## API Reference
+
+The Python SDK provides access to all Notch Pay API endpoints:
+
+### Payments
+
+- `notchpay.payments.create(data)` - Create a payment
+- `notchpay.payments.retrieve(reference)` - Retrieve a payment
+- `notchpay.payments.list(params)` - List payments
+- `notchpay.payments.cancel(reference)` - Cancel a payment
+
+### Transfers
+
+- `notchpay.transfers.create(data)` - Create a transfer
+- `notchpay.transfers.retrieve(reference)` - Retrieve a transfer
+- `notchpay.transfers.list(params)` - List transfers
+- `notchpay.transfers.cancel(reference)` - Cancel a transfer
+- `notchpay.transfers.create_bulk(data)` - Create a bulk transfer
+
+### Customers
+
+- `notchpay.customers.create(data)` - Create a customer
+- `notchpay.customers.retrieve(id)` - Retrieve a customer
+- `notchpay.customers.update(id, data)` - Update a customer
+- `notchpay.customers.list(params)` - List customers
+- `notchpay.customers.delete(id)` - Delete a customer
+
+### Beneficiaries
+
+- `notchpay.beneficiaries.create(data)` - Create a beneficiary
+- `notchpay.beneficiaries.retrieve(id)` - Retrieve a beneficiary
+- `notchpay.beneficiaries.update(id, data)` - Update a beneficiary
+- `notchpay.beneficiaries.list(params)` - List beneficiaries
+- `notchpay.beneficiaries.delete(id)` - Delete a beneficiary
+
+### Balance
+
+- `notchpay.balance.retrieve()` - Check balance
+- `notchpay.balance.retrieve_currency(currency)` - Check balance for a specific currency
+- `notchpay.balance.history(params)` - List balance history
+
+### Webhooks
+
+- `notchpay.webhooks.create(data)` - Create a webhook
+- `notchpay.webhooks.retrieve(id)` - Retrieve a webhook
+- `notchpay.webhooks.update(id, data)` - Update a webhook
+- `notchpay.webhooks.list(params)` - List webhooks
+- `notchpay.webhooks.delete(id)` - Delete a webhook
+
+## Error Handling
+
+The SDK raises exceptions that you can catch and handle:
+
+```python
+from notchpay.exceptions import (
+    NotchPayError, ValidationError, AuthenticationError, APIError
+)
+
+try:
+    payment = notchpay.payments.create({
+        # Payment data
+    })
+except ValidationError as e:
+    # Handle validation errors
+    errors = e.errors
+    for field, messages in errors.items():
+        print(f"{field}: {', '.join(messages)}")
+except AuthenticationError as e:
+    # Handle authentication errors
+    print(f"Authentication error: {str(e)}")
+except APIError as e:
+    # Handle API errors
+    print(f"API error: {str(e)}")
+    print(f"Error code: {e.code}")
+except NotchPayError as e:
+    # Handle other Notch Pay errors
+    print(f"Notch Pay error: {str(e)}")
+except Exception as e:
+    # Handle other errors
+    print(f"Error: {str(e)}")
+```
+
+## Async Support
+
+The SDK also provides async support for use with async frameworks like FastAPI:
+
+```python
+from notchpay import AsyncNotchPay
+
+# Initialize the async SDK
+notchpay = AsyncNotchPay('YOUR_API_KEY')
+
+async def create_payment_async():
+    try:
+        payment = await notchpay.payments.create({
+            'amount': 5000,
+            'currency': 'XAF',
+            'customer': {
+                'email': 'customer@example.com'
+            },
+            'reference': 'order_123'
+        })
+        
+        return payment
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return None
+```
+
+## Related Resources
+
+<CardGroup cols={3}>
+  <Card title="API Reference" icon="book" href="/api-reference">
+    Complete API documentation
+  </Card>
+  <Card title="JavaScript SDK" icon="js" href="/sdks/javascript">
+    Integrate with JavaScript applications
+  </Card>
+  <Card title="PHP SDK" icon="php" href="/sdks/php">
+    Integrate with PHP applications
+  </Card>
+</CardGroup>

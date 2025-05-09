@@ -1,0 +1,187 @@
+---
+title: Managing Beneficiaries
+description: Learn how to view, edit, and delete beneficiaries in Notch Pay
+---
+
+# Managing Beneficiaries
+
+This guide explains how to manage your beneficiaries in Notch Pay, including viewing, editing, and deleting beneficiaries.
+
+## Viewing Beneficiaries
+
+### In the Dashboard
+
+1. Log in to your [Notch Pay Business suite](https://business.notchpay.co)
+2. Navigate to the "Transfers" section
+3. Click on "Beneficiaries" to see a list of all your beneficiaries
+4. Use the search and filter options to find specific beneficiaries
+
+### Using the API
+
+You can retrieve a list of beneficiaries using the [Beneficiaries API](/api-reference/beneficiaries):
+
+```bash
+GET https://api.notchpay.co/beneficiaries
+```
+
+Response:
+
+```json
+{
+  "code": 200,
+  "status": "OK",
+  "message": "Beneficiaries retrieved",
+  "totals": 15,
+  "last_page": 1,
+  "current_page": 1,
+  "selected": 15,
+  "items": [
+    {
+      "id": "ben_123456789",
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "+237600000000",
+      "country": "CM",
+      "payment_method": "pm.ndzAfIh555VCPML1",
+      "created_at": "2023-01-01T12:00:00Z"
+    },
+    // More beneficiaries...
+  ]
+}
+```
+
+## Viewing a Single Beneficiary
+
+### In the Dashboard
+
+1. Navigate to the "Beneficiaries" section
+2. Click on a beneficiary's name to view their details
+
+### Using the API
+
+To retrieve a specific beneficiary:
+
+```bash
+GET https://api.notchpay.co/beneficiaries/{id}
+```
+
+Response:
+
+```json
+{
+  "status": "Accepted",
+  "message": "Beneficiary retrieved",
+  "code": 202,
+  "beneficiary": {
+    "id": "ben_123456789",
+    "name": "John Doe",
+    "email": "john@example.com",
+    "phone": "+237600000000",
+    "country": "CM",
+    "payment_method": "pm.ndzAfIh555VCPML1",
+    "created_at": "2023-01-01T12:00:00Z"
+  }
+}
+```
+
+## Editing Beneficiaries
+
+<Note>
+  Currently, editing beneficiaries is only supported through the API. In the dashboard, you'll need to delete and recreate a beneficiary to update their information.
+</Note>
+
+### Using the API
+
+To update a beneficiary, you can use the PUT method:
+
+```bash
+PUT https://api.notchpay.co/beneficiaries/{id}
+```
+
+Request body:
+
+```json
+{
+  "name": "John Smith",
+  "email": "johnsmith@example.com",
+  "phone": "+237600000001"
+}
+```
+
+Response:
+
+```json
+{
+  "status": "Accepted",
+  "message": "Beneficiary updated successfully",
+  "code": 202,
+  "beneficiary": {
+    "id": "ben_123456789",
+    "name": "John Smith",
+    "email": "johnsmith@example.com",
+    "phone": "+237600000001",
+    "country": "CM",
+    "payment_method": "pm.ndzAfIh555VCPML1",
+    "created_at": "2023-01-01T12:00:00Z",
+    "updated_at": "2023-01-02T12:00:00Z"
+  }
+}
+```
+
+## Deleting Beneficiaries
+
+### In the Dashboard
+
+1. Navigate to the "Beneficiaries" section
+2. Find the beneficiary you want to delete
+3. Click the "Delete" or trash icon
+4. Confirm the deletion when prompted
+
+### Using the API
+
+To delete a beneficiary:
+
+```bash
+DELETE https://api.notchpay.co/beneficiaries/{id}
+```
+
+Response:
+
+```json
+{
+  "code": 202,
+  "status": "Accepted",
+  "message": "Beneficiary deleted successfully",
+  "beneficiary": []
+}
+```
+
+## Best Practices for Managing Beneficiaries
+
+1. **Regular Audits**: Periodically review your beneficiaries list to remove outdated entries
+2. **Descriptive Names**: Use clear, descriptive names for beneficiaries to easily identify them
+3. **Verification**: Verify beneficiary details before sending large transfers
+4. **Documentation**: Keep records of beneficiary changes for audit purposes
+5. **Security**: Limit access to beneficiary management to authorized personnel only
+
+## Troubleshooting
+
+### Common Issues
+
+- **Beneficiary Not Found**: Ensure you're using the correct beneficiary ID
+- **Invalid Account Number**: Verify the account number format is correct for the selected payment channel
+- **Duplicate Beneficiaries**: Check if a beneficiary with the same details already exists
+- **Permission Errors**: Ensure your API key has the necessary permissions to manage beneficiaries
+
+### Getting Help
+
+If you encounter issues managing beneficiaries:
+
+1. Check the [API Reference](/api-reference/beneficiaries) for detailed information
+2. Review the [error codes](/get-started/errors) for specific error messages
+3. Contact [Notch Pay Support](mailto:hello@notchpay.co) for assistance
+
+## Next Steps
+
+- [Making Transfers](/send-money/transfers) - Send money to your beneficiaries
+- [Beneficiaries API](/api-reference/beneficiaries) - Technical reference for the Beneficiaries API

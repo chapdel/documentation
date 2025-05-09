@@ -1,0 +1,353 @@
+---
+title: Checkout
+description: Accept payments with Notch Pay's hosted checkout page
+---
+
+# Notch Pay Checkout
+
+<Note>
+  Notch Pay Checkout is a hosted payment page that provides a secure, optimized payment experience for your customers. It's the easiest way to start accepting payments with minimal integration effort.
+</Note>
+
+## Overview
+
+Notch Pay Checkout handles the entire payment flow, including:
+
+- Displaying available payment methods
+- Securely collecting payment information
+- Processing payments
+- Handling 3D Secure authentication
+- Managing payment errors and retries
+
+<img
+  src="/images/checkout/checkout-overview.png"
+  alt="Notch Pay Checkout Overview"
+  className="rounded-lg border border-gray-200 my-6"
+/>
+
+## Integration Options
+
+<CardGroup cols={2}>
+  <Card title="Standard Checkout" icon="browser" color="#16A34A">
+    Redirect your customers to our hosted checkout page.
+    
+    **Best for**: Quick integration with minimal code.
+  </Card>
+  <Card title="Embedded Checkout" icon="code" color="#16A34A">
+    Embed the checkout directly in your website using our JavaScript SDK.
+    
+    **Best for**: Seamless user experience without leaving your site.
+  </Card>
+</CardGroup>
+
+## Standard Checkout Integration
+
+<Steps>
+  <Step title="Create a Payment">
+    Use the [Payments API](/api-reference/payments) to initialize a payment:
+
+    ```javascript
+    const response = await fetch('https://api.notchpay.co/payments', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'YOUR_API_KEY',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        amount: 5000,
+        currency: 'XAF',
+        customer: {
+          email: 'customer@example.com'
+        },
+        callback: 'https://example.com/callback',
+        reference: 'order_123'
+      })
+    });
+
+    const data = await response.json();
+    const checkoutUrl = data.authorization_url;
+    ```
+  </Step>
+  
+  <Step title="Redirect to Checkout">
+    Redirect your customer to the checkout URL:
+
+    ```javascript
+    window.location.href = checkoutUrl;
+    ```
+
+    Or use a button:
+
+    ```html
+    <a href="{{checkoutUrl}}" class="button">Pay Now</a>
+    ```
+  </Step>
+  
+  <Step title="Handle the Callback">
+    After the payment is completed, the customer will be redirected to your callback URL with the payment reference:
+
+    ```
+    https://example.com/callback?reference=order_123
+    ```
+
+    Verify the payment status using the [Retrieve a Payment](/api-reference/payments#retrieve-a-payment) endpoint:
+
+    ```javascript
+    app.get('/callback', async (req, res) => {
+      const { reference } = req.query;
+      
+      const response = await fetch(`https://api.notchpay.co/payments/${reference}`, {
+        headers: {
+          'Authorization': 'YOUR_API_KEY'
+        }
+      });
+      
+      const data = await response.json();
+      
+      if (data.transaction.status === 'complete') {
+        // Payment complete, fulfill the order
+        // ...
+        res.send('Payment complete!');
+      } else {
+        // Payment not complete
+        res.send('Payment not completed.');
+      }
+    });
+    ```
+  </Step>
+</Steps>
+
+## Embedded Checkout Integration
+
+<Steps>
+  <Step title="Include the Notch Pay JS SDK">
+    Add the Notch Pay JavaScript SDK to your page:
+
+    ```html
+    <script src="https://js.notchpay.co/v1/inline.js"></script>
+    ```
+  </Step>
+  
+  <Step title="Create a Payment">
+    Use the [Payments API](/api-reference/payments) to initialize a payment as in the standard checkout.
+  </Step>
+  
+  <Step title="Initialize the Embedded Checkout">
+    ```javascript
+    const checkout = NotchPay.initializeCheckout({
+      paymentId: data.transaction.id,
+      onSuccess: function(transaction) {
+        // Payment complete
+        console.log('Payment successful:', transaction);
+        // Redirect or show success message
+        window.location.href = '/success?reference=' + transaction.reference;
+      },
+      onError: function(error) {
+        // Payment failed
+        console.error('Payment failed:', error);
+        // Show error message
+      },
+      onClose: function() {
+        // User closed the checkout
+        console.log('Checkout closed');
+      }
+    });
+
+    // Open the checkout
+    checkout.open();
+    ```
+  </Step>
+</Steps>
+
+## Customizing the Checkout
+
+<Tabs>
+  <Tab title="Basic Customization">
+    You can customize the appearance of the checkout by passing additional parameters when creating the payment:
+
+    ```javascript
+    const payment = {
+      // Basic payment details
+      amount: 5000,
+      currency: 'XAF',
+      customer: {
+        email: 'customer@example.com'
+      },
+      
+      // Customization options
+      title: 'Payment for Order #123',
+      description: 'Your order from Example Store',
+      logo: 'https://example.com/logo.png',
+      color: '#4F46E5',
+      
+      // Other parameters
+      callback: 'https://example.com/callback',
+      reference: 'order_123'
+    };
+    ```
+  </Tab>
+  
+  <Tab title="Advanced Customization">
+    For embedded checkout, you can apply additional customization:
+
+    ```javascript
+    const checkout = NotchPay.initializeCheckout({
+      paymentId: data.transaction.id,
+      
+      // Callbacks
+      onSuccess: function(transaction) { /* ... */ },
+      onError: function(error) { /* ... */ },
+      onClose: function() { /* ... */ },
+      
+      // Advanced customization
+      theme: {
+        logo: 'https://example.com/logo.png',
+        primaryColor: '#4F46E5',
+        backgroundColor: '#F9FAFB',
+        textColor: '#1F2937',
+        borderRadius: '8px',
+        fontFamily: 'Inter, sans-serif'
+      },
+      
+      // Display options
+      displayMode: 'popup', // 'popup' or 'inline'
+      container: '#checkout-container', // Required for inline mode
+      locale: 'en', // 'en' or 'fr'
+      
+      // Payment method options
+      preferredChannels: ['cm.mtn', 'cm.orange'], // Show these channels first
+      excludedChannels: ['cm.card'] // Hide these channels
+    });
+    ```
+  </Tab>
+</Tabs>
+
+## Checkout Features
+
+<CardGroup cols={2}>
+  <Card title="Multiple Payment Methods" icon="credit-card" color="#16A34A">
+    Checkout automatically displays all available payment methods for the customer's region and currency.
+    
+    You can also restrict available methods using the `locked_channel` parameter.
+  </Card>
+  <Card title="Mobile Responsive" icon="mobile-screen" color="#16A34A">
+    The checkout page is fully responsive and optimized for all devices, from desktop to mobile.
+    
+    Payment methods are optimized for the device being used.
+  </Card>
+  <Card title="Multi-language Support" icon="language" color="#16A34A">
+    Checkout automatically detects the customer's language and displays content in their preferred language.
+    
+    Currently supports English and French.
+  </Card>
+  <Card title="Secure by Default" icon="shield-check" color="#16A34A">
+    All payment information is securely collected and processed according to PCI DSS standards.
+    
+    Supports 3D Secure authentication for card payments.
+  </Card>
+</CardGroup>
+
+## Testing the Checkout
+
+<Callout type="info">
+  You can test the checkout using our test credentials. See the [Testing Guide](/testing) for more information.
+</Callout>
+
+<Steps>
+  <Step title="Switch to Test Mode">
+    Make sure you're using your test API key that starts with `test_`.
+  </Step>
+  
+  <Step title="Create a Test Payment">
+    Create a payment as usual, but use test customer information.
+  </Step>
+  
+  <Step title="Use Test Payment Methods">
+    When testing, you can use the following test payment methods:
+    
+    - **Mobile Money**: Use the phone number `+237600000000` for successful payments
+    - **Cards**: Use the test card number `4242 4242 4242 4242` with any future expiry date and any 3-digit CVC
+  </Step>
+  
+  <Step title="Verify Webhooks">
+    Test webhooks are also sent for test payments, allowing you to verify your webhook handling.
+  </Step>
+</Steps>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Webhooks" icon="bell" color="#16A34A">
+    Don't rely solely on the callback URL for payment confirmation. Set up [webhooks](/api-reference/webhooks) to receive real-time payment notifications.
+    
+    This ensures you don't miss any payment updates, even if the customer closes their browser after payment.
+  </Card>
+  <Card title="Verify Payment Status" icon="check-double" color="#16A34A">
+    Always verify the payment status server-side before fulfilling orders.
+    
+    Never trust client-side confirmations alone.
+  </Card>
+  <Card title="Provide Clear Information" icon="circle-info" color="#16A34A">
+    Include detailed product information, order details, and your business name in the payment.
+    
+    This helps customers recognize the payment on their statements and reduces disputes.
+  </Card>
+  <Card title="Handle Errors Gracefully" icon="triangle-exclamation" color="#16A34A">
+    Implement proper error handling for cases where the customer abandons the checkout or encounters payment failures.
+    
+    Provide clear instructions for customers to retry payments if needed.
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Checkout Not Loading">
+    If the checkout page isn't loading:
+    
+    1. Check that you're using a valid API key
+    2. Verify that the payment was created successfully
+    3. Ensure the payment hasn't expired or been canceled
+    4. Check for JavaScript console errors if using embedded checkout
+  </Accordion>
+  
+  <Accordion title="Payment Methods Not Showing">
+    If certain payment methods aren't showing:
+    
+    1. Verify that the methods are available for the selected currency
+    2. Check if you've restricted methods using `locked_channel` or `locked_country`
+    3. Ensure the payment amount is within the limits for the payment method
+  </Accordion>
+  
+  <Accordion title="Callback Not Working">
+    If your callback URL isn't being called:
+    
+    1. Ensure the URL is publicly accessible
+    2. Check that the URL is correctly formatted and includes the protocol (https://)
+    3. Verify that your server is accepting GET requests
+    4. Set up webhooks as a more reliable alternative
+  </Accordion>
+  
+  <Accordion title="Embedded Checkout Issues">
+    For embedded checkout problems:
+    
+    1. Check that the Notch Pay JS SDK is properly loaded
+    2. Verify that you're initializing the checkout with a valid payment ID
+    3. Check for JavaScript errors in the browser console
+    4. Ensure your website doesn't have Content Security Policy (CSP) restrictions blocking the checkout
+  </Accordion>
+</AccordionGroup>
+
+## Related Resources
+
+<CardGroup cols={3}>
+  <Card title="Payments API" icon="credit-card" href="/api-reference/payments">
+    Create and manage payments
+  </Card>
+  <Card title="Payment Links" icon="link" href="/accept-payments/payment-links">
+    Create shareable payment links
+  </Card>
+  <Card title="Webhooks" icon="bell" href="/api-reference/webhooks">
+    Receive payment notifications
+  </Card>
+</CardGroup>

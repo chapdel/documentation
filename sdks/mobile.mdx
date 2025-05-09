@@ -1,0 +1,1753 @@
+---
+title: Mobile SDKs
+description: Integrate Notch Pay into your mobile applications
+---
+
+# Notch Pay Mobile SDKs
+
+<Note>
+  Notch Pay provides native SDKs for iOS and Android to help you integrate payment functionality into your mobile applications.
+</Note>
+
+<Tabs>
+  <Tab title="Android">
+    # Android SDK
+
+    The Notch Pay Android SDK allows you to accept payments in your Android applications with a native checkout experience.
+
+    ## Installation
+
+    Add the Notch Pay SDK to your app's `build.gradle` file:
+
+    ```groovy
+    dependencies {
+        implementation 'co.notchpay:notchpay-android:1.2.0'
+    }
+    ```
+
+    ## Initialization
+
+    Initialize the SDK in your Application class or main activity:
+
+    ```java
+    // In your Application class or main activity
+    import co.notchpay.android.NotchPay;
+
+    public class MyApplication extends Application {
+        @Override
+        public void onCreate() {
+            super.onCreate();
+            
+            // Initialize with your public key
+            NotchPay.initialize("YOUR_PUBLIC_KEY");
+            
+            // For test mode
+            NotchPay.setTestMode(true); // Set to false for production
+        }
+    }
+    ```
+
+    ## Creating a Payment
+
+    To create a payment, you'll need to make a server-side API call to initialize the payment, then use the SDK to complete it:
+
+    ```java
+    // First, create a payment on your server and get the payment ID
+    String paymentId = "pay_123456789"; // Get this from your server
+
+    // Then, launch the checkout
+    NotchPay.checkout(
+        this, // Activity context
+        paymentId,
+        new NotchPayCheckoutCallback() {
+            @Override
+            public void onSuccess(NotchPayTransaction transaction) {
+                // Payment successful
+                String reference = transaction.getReference();
+                String status = transaction.getStatus();
+                double amount = transaction.getAmount();
+                String currency = transaction.getCurrency();
+                
+                // Update your UI or navigate to a success screen
+                showSuccessScreen(reference, amount, currency);
+            }
+            
+            @Override
+            public void onError(NotchPayException error) {
+                // Payment failed
+                String errorMessage = error.getMessage();
+                
+                // Show error message to user
+                showErrorMessage(errorMessage);
+            }
+            
+            @Override
+            public void onCancel() {
+                // User canceled the payment
+                // Handle cancellation
+                showCancellationMessage();
+            }
+        }
+    );
+    ```
+
+    ## Customizing the Checkout UI
+
+    You can customize the appearance of the checkout UI:
+
+    ```java
+    NotchPayCheckoutConfig config = new NotchPayCheckoutConfig.Builder()
+        .setTitle("Payment for Order #123")
+        .setDescription("Your order from Example Store")
+        .setLogoUrl("https://example.com/logo.png")
+        .setPrimaryColor("#4F46E5")
+        .setShowReceiptPage(true)
+        .build();
+
+    NotchPay.checkout(this, paymentId, config, callback);
+    ```
+
+    ## Handling Deep Links
+
+    To handle callbacks from the payment flow, you need to set up deep linking in your app:
+
+    1. Add the following to your `AndroidManifest.xml`:
+
+    ```xml
+    <activity
+        android:name=".MainActivity"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        
+        <!-- Deep link handling -->
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data
+                android:scheme="yourapp"
+                android:host="payment" />
+        </intent-filter>
+    </activity>
+    ```
+
+    2. Handle the deep link in your activity:
+
+    ```java
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        
+        // Handle deep link
+        Intent intent = getIntent();
+        if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            Uri uri = intent.getData();
+            if (uri != null) {
+                String reference = uri.getQueryParameter("reference");
+                if (reference != null) {
+                    // Verify payment status with your server
+                    verifyPayment(reference);
+                }
+            }
+        }
+    }
+    ```
+
+    ## Complete Example
+
+    Here's a complete example of integrating the Notch Pay Android SDK:
+
+    ```java
+    public class PaymentActivity extends AppCompatActivity {
+        private Button payButton;
+        private TextView statusText;
+        private ProgressBar progressBar;
+        
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_payment);
+            
+            payButton = findViewById(R.id.pay_button);
+            statusText = findViewById(R.id.status_text);
+            progressBar = findViewById(R.id.progress_bar);
+            
+            payButton.setOnClickListener(v -> initiatePayment());
+        }
+        
+        private void initiatePayment() {
+            progressBar.setVisibility(View.VISIBLE);
+            statusText.setText("Creating payment...");
+            
+            // Make API call to your server to create a payment
+            ApiClient.createPayment(
+                5000, // Amount
+                "XAF", // Currency
+                "customer@example.com", // Customer email
+                new ApiCallback<PaymentResponse>() {
+                    @Override
+                    public void onSuccess(PaymentResponse response) {
+                        progressBar.setVisibility(View.GONE);
+                        launchCheckout(response.getPaymentId());
+                    }
+                    
+                    @Override
+                    public void onError(Exception e) {
+                        progressBar.setVisibility(View.GONE);
+                        statusText.setText("Error: " + e.getMessage());
+                    }
+                }
+            );
+        }
+        
+        private void launchCheckout(String paymentId) {
+            NotchPayCheckoutConfig config = new NotchPayCheckoutConfig.Builder()
+                .setTitle("Payment for Order #123")
+                .setDescription("Your order from Example Store")
+                .setPrimaryColor("#4F46E5")
+                .build();
+                
+            NotchPay.checkout(
+                this,
+                paymentId,
+                config,
+                new NotchPayCheckoutCallback() {
+                    @Override
+                    public void onSuccess(NotchPayTransaction transaction) {
+                        statusText.setText("Payment successful!\nReference: " + transaction.getReference());
+                    }
+                    
+                    @Override
+                    public void onError(NotchPayException error) {
+                        statusText.setText("Payment failed: " + error.getMessage());
+                    }
+                    
+                    @Override
+                    public void onCancel() {
+                        statusText.setText("Payment canceled");
+                    }
+                }
+            );
+        }
+        
+        private void verifyPayment(String reference) {
+            progressBar.setVisibility(View.VISIBLE);
+            statusText.setText("Verifying payment...");
+            
+            // Make API call to your server to verify the payment
+            ApiClient.verifyPayment(
+                reference,
+                new ApiCallback<PaymentVerificationResponse>() {
+                    @Override
+                    public void onSuccess(PaymentVerificationResponse response) {
+                        progressBar.setVisibility(View.GONE);
+                        if (response.isSuccessful()) {
+                            statusText.setText("Payment verified!\nAmount: " + response.getAmount() + " " + response.getCurrency());
+                        } else {
+                            statusText.setText("Payment verification failed: " + response.getMessage());
+                        }
+                    }
+                    
+                    @Override
+                    public void onError(Exception e) {
+                        progressBar.setVisibility(View.GONE);
+                        statusText.setText("Error verifying payment: " + e.getMessage());
+                    }
+                }
+            );
+        }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="iOS">
+    # iOS SDK
+
+    The Notch Pay iOS SDK allows you to accept payments in your iOS applications with a native checkout experience.
+
+    ## Installation
+
+    ### CocoaPods
+
+    Add the Notch Pay SDK to your `Podfile`:
+
+    ```ruby
+    pod 'NotchPaySDK', '~> 1.2.0'
+    ```
+
+    Then run:
+
+    ```bash
+    pod install
+    ```
+
+    ### Swift Package Manager
+
+    Add the Notch Pay SDK as a dependency in your `Package.swift` file:
+
+    ```swift
+    dependencies: [
+        .package(url: "https://github.com/notchafrica/notchpay-ios.git", from: "1.2.0")
+    ]
+    ```
+
+    Or add it directly in Xcode:
+    1. Go to File > Swift Packages > Add Package Dependency
+    2. Enter the repository URL: `https://github.com/notchafrica/notchpay-ios.git`
+    3. Select the version you want to use
+
+    ## Initialization
+
+    Initialize the SDK in your AppDelegate:
+
+    ```swift
+    import NotchPaySDK
+
+    @UIApplicationMain
+    class AppDelegate: UIResponder, UIApplicationDelegate {
+        func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+            // Initialize with your public key
+            NotchPay.initialize(publicKey: "YOUR_PUBLIC_KEY")
+            
+            // For test mode
+            NotchPay.setTestMode(true) // Set to false for production
+            
+            return true
+        }
+    }
+    ```
+
+    ## Creating a Payment
+
+    To create a payment, you'll need to make a server-side API call to initialize the payment, then use the SDK to complete it:
+
+    ```swift
+    import NotchPaySDK
+
+    class PaymentViewController: UIViewController {
+        // First, create a payment on your server and get the payment ID
+        let paymentId = "pay_123456789" // Get this from your server
+        
+        func initiatePayment() {
+            // Launch the checkout
+            NotchPay.checkout(
+                from: self,
+                paymentId: paymentId,
+                completion: { result in
+                    switch result {
+                    case .success(let transaction):
+                        // Payment successful
+                        let reference = transaction.reference
+                        let status = transaction.status
+                        let amount = transaction.amount
+                        let currency = transaction.currency
+                        
+                        // Update your UI or navigate to a success screen
+                        self.showSuccessScreen(reference: reference, amount: amount, currency: currency)
+                        
+                    case .failure(let error):
+                        // Payment failed
+                        let errorMessage = error.localizedDescription
+                        
+                        // Show error message to user
+                        self.showErrorMessage(errorMessage)
+                        
+                    case .cancelled:
+                        // User canceled the payment
+                        // Handle cancellation
+                        self.showCancellationMessage()
+                    }
+                }
+            )
+        }
+    }
+    ```
+
+    ## Customizing the Checkout UI
+
+    You can customize the appearance of the checkout UI:
+
+    ```swift
+    let config = NotchPayCheckoutConfig(
+        title: "Payment for Order #123",
+        description: "Your order from Example Store",
+        logoUrl: "https://example.com/logo.png",
+        primaryColor: "#4F46E5",
+        showReceiptPage: true
+    )
+
+    NotchPay.checkout(
+        from: self,
+        paymentId: paymentId,
+        config: config,
+        completion: { result in
+            // Handle result
+        }
+    )
+    ```
+
+    ## Handling URL Schemes
+
+    To handle callbacks from the payment flow, you need to set up URL schemes in your app:
+
+    1. Add a URL scheme in your `Info.plist`:
+
+    ```xml
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>co.notchpay.example</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>yourapp</string>
+            </array>
+        </dict>
+    </array>
+    ```
+
+    2. Handle the URL in your AppDelegate:
+
+    ```swift
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        // Parse the URL
+        if url.scheme == "yourapp" && url.host == "payment" {
+            if let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+               let queryItems = components.queryItems {
+                for item in queryItems {
+                    if item.name == "reference", let reference = item.value {
+                        // Verify payment status with your server
+                        verifyPayment(reference: reference)
+                        return true
+                    }
+                }
+            }
+        }
+        return false
+    }
+    
+    func verifyPayment(reference: String) {
+        // Make API call to your server to verify the payment
+        ApiClient.verifyPayment(reference: reference) { result in
+            switch result {
+            case .success(let response):
+                if response.isSuccessful {
+                    // Payment verified
+                    NotificationCenter.default.post(
+                        name: Notification.Name("PaymentVerified"),
+                        object: nil,
+                        userInfo: ["reference": reference, "amount": response.amount, "currency": response.currency]
+                    )
+                } else {
+                    // Payment verification failed
+                    NotificationCenter.default.post(
+                        name: Notification.Name("PaymentFailed"),
+                        object: nil,
+                        userInfo: ["message": response.message]
+                    )
+                }
+                
+            case .failure(let error):
+                // Error verifying payment
+                NotificationCenter.default.post(
+                    name: Notification.Name("PaymentError"),
+                    object: nil,
+                    userInfo: ["message": error.localizedDescription]
+                )
+            }
+        }
+    }
+    ```
+
+    ## Complete Example
+
+    Here's a complete example of integrating the Notch Pay iOS SDK:
+
+    ```swift
+    import UIKit
+    import NotchPaySDK
+
+    class PaymentViewController: UIViewController {
+        @IBOutlet weak var payButton: UIButton!
+        @IBOutlet weak var statusLabel: UILabel!
+        @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+        
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            
+            // Set up notification observers
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(handlePaymentVerified(_:)),
+                name: Notification.Name("PaymentVerified"),
+                object: nil
+            )
+            
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(handlePaymentFailed(_:)),
+                name: Notification.Name("PaymentFailed"),
+                object: nil
+            )
+            
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(handlePaymentError(_:)),
+                name: Notification.Name("PaymentError"),
+                object: nil
+            )
+        }
+        
+        @IBAction func payButtonTapped(_ sender: UIButton) {
+            initiatePayment()
+        }
+        
+        func initiatePayment() {
+            activityIndicator.startAnimating()
+            statusLabel.text = "Creating payment..."
+            
+            // Make API call to your server to create a payment
+            ApiClient.createPayment(
+                amount: 5000,
+                currency: "XAF",
+                email: "customer@example.com"
+            ) { result in
+                DispatchQueue.main.async {
+                    self.activityIndicator.stopAnimating()
+                    
+                    switch result {
+                    case .success(let response):
+                        self.launchCheckout(paymentId: response.paymentId)
+                        
+                    case .failure(let error):
+                        self.statusLabel.text = "Error: \(error.localizedDescription)"
+                    }
+                }
+            }
+        }
+        
+        func launchCheckout(paymentId: String) {
+            let config = NotchPayCheckoutConfig(
+                title: "Payment for Order #123",
+                description: "Your order from Example Store",
+                primaryColor: "#4F46E5"
+            )
+            
+            NotchPay.checkout(
+                from: self,
+                paymentId: paymentId,
+                config: config
+            ) { result in
+                switch result {
+                case .success(let transaction):
+                    self.statusLabel.text = "Payment successful!\nReference: \(transaction.reference)"
+                    
+                case .failure(let error):
+                    self.statusLabel.text = "Payment failed: \(error.localizedDescription)"
+                    
+                case .cancelled:
+                    self.statusLabel.text = "Payment canceled"
+                }
+            }
+        }
+        
+        @objc func handlePaymentVerified(_ notification: Notification) {
+            guard let userInfo = notification.userInfo,
+                  let reference = userInfo["reference"] as? String,
+                  let amount = userInfo["amount"] as? Double,
+                  let currency = userInfo["currency"] as? String else {
+                return
+            }
+            
+            statusLabel.text = "Payment verified!\nReference: \(reference)\nAmount: \(amount) \(currency)"
+        }
+        
+        @objc func handlePaymentFailed(_ notification: Notification) {
+            guard let userInfo = notification.userInfo,
+                  let message = userInfo["message"] as? String else {
+                return
+            }
+            
+            statusLabel.text = "Payment verification failed: \(message)"
+        }
+        
+        @objc func handlePaymentError(_ notification: Notification) {
+            guard let userInfo = notification.userInfo,
+                  let message = userInfo["message"] as? String else {
+                return
+            }
+            
+            statusLabel.text = "Error verifying payment: \(message)"
+        }
+        
+        deinit {
+            NotificationCenter.default.removeObserver(self)
+        }
+    }
+    ```
+  </Tab>
+  
+  <Tab title="React Native">
+    # React Native SDK
+
+    The Notch Pay React Native SDK allows you to accept payments in your React Native applications with a native checkout experience.
+
+    ## Installation
+
+    ```bash
+    # Using npm
+    npm install react-native-notchpay
+
+    # Using yarn
+    yarn add react-native-notchpay
+    ```
+
+    ### iOS Setup
+
+    ```bash
+    cd ios && pod install
+    ```
+
+    Add a URL scheme to your `Info.plist`:
+
+    ```xml
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>co.notchpay.example</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>yourapp</string>
+            </array>
+        </dict>
+    </array>
+    ```
+
+    ### Android Setup
+
+    Add the following to your `AndroidManifest.xml`:
+
+    ```xml
+    <activity
+        android:name=".MainActivity"
+        android:exported="true">
+        <!-- ... existing intent filters ... -->
+        
+        <!-- Deep link handling -->
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data
+                android:scheme="yourapp"
+                android:host="payment" />
+        </intent-filter>
+    </activity>
+    ```
+
+    ## Usage
+
+    ### Initialization
+
+    ```javascript
+    import { NotchPay } from 'react-native-notchpay';
+
+    // Initialize the SDK
+    NotchPay.initialize('YOUR_PUBLIC_KEY');
+
+    // For test mode
+    NotchPay.setTestMode(true); // Set to false for production
+    ```
+
+    ### Creating a Payment
+
+    ```javascript
+    import React, { useState } from 'react';
+    import { View, Button, Text, ActivityIndicator } from 'react-native';
+    import { NotchPay } from 'react-native-notchpay';
+
+    const PaymentScreen = () => {
+      const [loading, setLoading] = useState(false);
+      const [status, setStatus] = useState('');
+
+      const initiatePayment = async () => {
+        setLoading(true);
+        setStatus('Creating payment...');
+
+        try {
+          // Make API call to your server to create a payment
+          const response = await fetch('https://your-server.com/api/create-payment', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              amount: 5000,
+              currency: 'XAF',
+              email: 'customer@example.com',
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!data.success) {
+            throw new Error(data.message || 'Failed to create payment');
+          }
+
+          // Launch the checkout
+          const result = await NotchPay.checkout({
+            paymentId: data.paymentId,
+            title: 'Payment for Order #123',
+            description: 'Your order from Example Store',
+            primaryColor: '#4F46E5',
+          });
+
+          setStatus(`Payment successful!\nReference: ${result.reference}`);
+        } catch (error) {
+          if (error.code === 'USER_CANCELLED') {
+            setStatus('Payment canceled');
+          } else {
+            setStatus(`Error: ${error.message}`);
+          }
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      return (
+        <View style={{ flex: 1, justifyContent: 'center', padding: 20 }}>
+          <Text style={{ marginBottom: 20, textAlign: 'center' }}>
+            {status}
+          </Text>
+          
+          {loading ? (
+            <ActivityIndicator size="large" color="#4F46E5" />
+          ) : (
+            <Button
+              title="Pay 5,000 XAF"
+              onPress={initiatePayment}
+              color="#4F46E5"
+            />
+          )}
+        </View>
+      );
+    };
+
+    export default PaymentScreen;
+    ```
+
+    ### Handling Deep Links
+
+    ```javascript
+    import { Linking } from 'react-native';
+    import { useEffect } from 'react';
+
+    const App = () => {
+      useEffect(() => {
+        // Handle deep links
+        const handleDeepLink = async (event) => {
+          const url = event.url;
+          
+          if (url.startsWith('yourapp://payment')) {
+            const urlObj = new URL(url);
+            const reference = urlObj.searchParams.get('reference');
+            
+            if (reference) {
+              // Verify payment status with your server
+              verifyPayment(reference);
+            }
+          }
+        };
+
+        // Add event listener for deep links
+        const linkingSubscription = Linking.addEventListener('url', handleDeepLink);
+
+        // Check for initial deep link
+        Linking.getInitialURL().then((url) => {
+          if (url) {
+            handleDeepLink({ url });
+          }
+        });
+
+        return () => {
+          // Clean up
+          linkingSubscription.remove();
+        };
+      }, []);
+
+      const verifyPayment = async (reference) => {
+        try {
+          const response = await fetch(`https://your-server.com/api/verify-payment?reference=${reference}`);
+          const data = await response.json();
+          
+          if (data.success) {
+            // Payment verified
+            console.log('Payment verified:', data);
+            // Update UI or navigate to success screen
+          } else {
+            // Payment verification failed
+            console.log('Payment verification failed:', data.message);
+            // Show error message
+          }
+        } catch (error) {
+          console.error('Error verifying payment:', error);
+          // Show error message
+        }
+      };
+
+      // Rest of your app
+      return (
+        // ...
+      );
+    };
+
+    export default App;
+    ```
+
+    ## API Reference
+
+    ### Methods
+
+    - `NotchPay.initialize(publicKey: string)` - Initialize the SDK with your public key
+    - `NotchPay.setTestMode(enabled: boolean)` - Enable or disable test mode
+    - `NotchPay.checkout(options: CheckoutOptions)` - Launch the checkout flow
+
+    ### Types
+
+    ```typescript
+    interface CheckoutOptions {
+      paymentId: string;
+      title?: string;
+      description?: string;
+      logoUrl?: string;
+      primaryColor?: string;
+      showReceiptPage?: boolean;
+    }
+
+    interface CheckoutResult {
+      reference: string;
+      status: string;
+      amount: number;
+      currency: string;
+      customer: {
+        email: string;
+        name?: string;
+      };
+      created_at: string;
+      completed_at?: string;
+    }
+    ```
+
+    ## Complete Example
+
+    Here's a complete example of a React Native app with Notch Pay integration:
+
+    ```javascript
+    import React, { useState, useEffect } from 'react';
+    import { NavigationContainer } from '@react-navigation/native';
+    import { createStackNavigator } from '@react-navigation/stack';
+    import { View, Text, Button, ActivityIndicator, StyleSheet, Linking } from 'react-native';
+    import { NotchPay } from 'react-native-notchpay';
+
+    // Initialize the SDK
+    NotchPay.initialize('YOUR_PUBLIC_KEY');
+    NotchPay.setTestMode(true); // Set to false for production
+
+    const Stack = createStackNavigator();
+
+    // Home Screen
+    const HomeScreen = ({ navigation }) => {
+      return (
+        <View style={styles.container}>
+          <Text style={styles.title}>Notch Pay Demo</Text>
+          <Button
+            title="Make a Payment"
+            onPress={() => navigation.navigate('Payment')}
+            color="#4F46E5"
+          />
+        </View>
+      );
+    };
+
+    // Payment Screen
+    const PaymentScreen = ({ navigation }) => {
+      const [loading, setLoading] = useState(false);
+      const [status, setStatus] = useState('');
+
+      const initiatePayment = async () => {
+        setLoading(true);
+        setStatus('Creating payment...');
+
+        try {
+          // In a real app, make an API call to your server
+          // For demo purposes, we'll simulate a server response
+          const mockServerResponse = {
+            success: true,
+            paymentId: 'pay_' + Math.random().toString(36).substring(2, 15),
+          };
+
+          if (!mockServerResponse.success) {
+            throw new Error('Failed to create payment');
+          }
+
+          // Launch the checkout
+          const result = await NotchPay.checkout({
+            paymentId: mockServerResponse.paymentId,
+            title: 'Payment for Order #123',
+            description: 'Your order from Example Store',
+            primaryColor: '#4F46E5',
+          });
+
+          // Navigate to success screen
+          navigation.navigate('Success', { transaction: result });
+        } catch (error) {
+          if (error.code === 'USER_CANCELLED') {
+            setStatus('Payment canceled');
+          } else {
+            setStatus(`Error: ${error.message}`);
+          }
+          setLoading(false);
+        }
+      };
+
+      return (
+        <View style={styles.container}>
+          <Text style={styles.title}>Make a Payment</Text>
+          
+          {status ? (
+            <Text style={styles.status}>{status}</Text>
+          ) : null}
+          
+          {loading ? (
+            <ActivityIndicator size="large" color="#4F46E5" />
+          ) : (
+            <Button
+              title="Pay 5,000 XAF"
+              onPress={initiatePayment}
+              color="#4F46E5"
+            />
+          )}
+        </View>
+      );
+    };
+
+    // Success Screen
+    const SuccessScreen = ({ route }) => {
+      const { transaction } = route.params || {};
+
+      return (
+        <View style={styles.container}>
+          <Text style={styles.title}>Payment Successful!</Text>
+          
+          {transaction ? (
+            <View style={styles.transactionDetails}>
+              <Text style={styles.detailItem}>
+                <Text style={styles.detailLabel}>Reference:</Text> {transaction.reference}
+              </Text>
+              <Text style={styles.detailItem}>
+                <Text style={styles.detailLabel}>Amount:</Text> {transaction.amount} {transaction.currency}
+              </Text>
+              <Text style={styles.detailItem}>
+                <Text style={styles.detailLabel}>Status:</Text> {transaction.status}
+              </Text>
+              <Text style={styles.detailItem}>
+                <Text style={styles.detailLabel}>Date:</Text> {new Date(transaction.completed_at).toLocaleString()}
+              </Text>
+            </View>
+          ) : (
+            <Text style={styles.status}>Transaction details not available</Text>
+          )}
+        </View>
+      );
+    };
+
+    // App Component
+    const App = () => {
+      useEffect(() => {
+        // Handle deep links
+        const handleDeepLink = (event) => {
+          const url = event.url;
+          console.log('Deep link received:', url);
+          
+          // Process the deep link
+          // ...
+        };
+
+        // Add event listener for deep links
+        const linkingSubscription = Linking.addEventListener('url', handleDeepLink);
+
+        // Check for initial deep link
+        Linking.getInitialURL().then((url) => {
+          if (url) {
+            console.log('Initial deep link:', url);
+            // Process the deep link
+            // ...
+          }
+        });
+
+        return () => {
+          // Clean up
+          linkingSubscription.remove();
+        };
+      }, []);
+
+      return (
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Home">
+            <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Notch Pay Demo' }} />
+            <Stack.Screen name="Payment" component={PaymentScreen} options={{ title: 'Make a Payment' }} />
+            <Stack.Screen name="Success" component={SuccessScreen} options={{ title: 'Payment Successful' }} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      );
+    };
+
+    const styles = StyleSheet.create({
+      container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+      },
+      title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        textAlign: 'center',
+      },
+      status: {
+        marginVertical: 20,
+        textAlign: 'center',
+        color: '#666',
+      },
+      transactionDetails: {
+        width: '100%',
+        marginTop: 20,
+        padding: 15,
+        backgroundColor: '#f5f5f5',
+        borderRadius: 8,
+      },
+      detailItem: {
+        marginBottom: 10,
+        fontSize: 16,
+      },
+      detailLabel: {
+        fontWeight: 'bold',
+      },
+    });
+
+    export default App;
+    ```
+  </Tab>
+  
+  <Tab title="Flutter">
+    # Flutter SDK
+
+    The Notch Pay Flutter SDK allows you to accept payments in your Flutter applications with a native checkout experience.
+
+    ## Installation
+
+    Add the Notch Pay SDK to your `pubspec.yaml` file:
+
+    ```yaml
+    dependencies:
+      notchpay_flutter: ^1.2.0
+    ```
+
+    Then run:
+
+    ```bash
+    flutter pub get
+    ```
+
+    ## Platform-Specific Setup
+
+    ### iOS
+
+    Add a URL scheme to your `ios/Runner/Info.plist`:
+
+    ```xml
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>co.notchpay.example</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>yourapp</string>
+            </array>
+        </dict>
+    </array>
+    ```
+
+    ### Android
+
+    Add the following to your `android/app/src/main/AndroidManifest.xml`:
+
+    ```xml
+    <activity
+        android:name=".MainActivity"
+        android:exported="true">
+        <!-- ... existing intent filters ... -->
+        
+        <!-- Deep link handling -->
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data
+                android:scheme="yourapp"
+                android:host="payment" />
+        </intent-filter>
+    </activity>
+    ```
+
+    ## Usage
+
+    ### Initialization
+
+    ```dart
+    import 'package:notchpay_flutter/notchpay_flutter.dart';
+
+    // Initialize the SDK
+    await NotchPay.initialize('YOUR_PUBLIC_KEY');
+
+    // For test mode
+    await NotchPay.setTestMode(true); // Set to false for production
+    ```
+
+    ### Creating a Payment
+
+    ```dart
+    import 'package:flutter/material.dart';
+    import 'package:notchpay_flutter/notchpay_flutter.dart';
+
+    class PaymentScreen extends StatefulWidget {
+      @override
+      _PaymentScreenState createState() => _PaymentScreenState();
+    }
+
+    class _PaymentScreenState extends State<PaymentScreen> {
+      bool _loading = false;
+      String _status = '';
+
+      @override
+      void initState() {
+        super.initState();
+        _initializeNotchPay();
+      }
+
+      Future<void> _initializeNotchPay() async {
+        await NotchPay.initialize('YOUR_PUBLIC_KEY');
+        await NotchPay.setTestMode(true); // Set to false for production
+      }
+
+      Future<void> _initiatePayment() async {
+        setState(() {
+          _loading = true;
+          _status = 'Creating payment...';
+        });
+
+        try {
+          // Make API call to your server to create a payment
+          // For demo purposes, we'll simulate a server response
+          await Future.delayed(Duration(seconds: 1));
+          final mockServerResponse = {
+            'success': true,
+            'paymentId': 'pay_${DateTime.now().millisecondsSinceEpoch}',
+          };
+
+          if (!mockServerResponse['success']) {
+            throw Exception('Failed to create payment');
+          }
+
+          // Launch the checkout
+          final result = await NotchPay.checkout(
+            paymentId: mockServerResponse['paymentId'],
+            title: 'Payment for Order #123',
+            description: 'Your order from Example Store',
+            primaryColor: '#4F46E5',
+          );
+
+          setState(() {
+            _status = 'Payment successful!\nReference: ${result.reference}';
+          });
+        } catch (e) {
+          if (e is NotchPayException && e.code == 'USER_CANCELLED') {
+            setState(() {
+              _status = 'Payment canceled';
+            });
+          } else {
+            setState(() {
+              _status = 'Error: ${e.toString()}';
+            });
+          }
+        } finally {
+          setState(() {
+            _loading = false;
+          });
+        }
+      }
+
+      @override
+      Widget build(BuildContext context) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Make a Payment'),
+          ),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (_status.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: Text(
+                        _status,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  _loading
+                      ? CircularProgressIndicator()
+                      : ElevatedButton(
+                          onPressed: _initiatePayment,
+                          child: Text('Pay 5,000 XAF'),
+                          style: ElevatedButton.styleFrom(
+                            primary: Color(0xFF4F46E5),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 16,
+                            ),
+                          ),
+                        ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+    }
+    ```
+
+    ### Handling Deep Links
+
+    ```dart
+    import 'package:flutter/material.dart';
+    import 'package:uni_links/uni_links.dart';
+    import 'dart:async';
+
+    class App extends StatefulWidget {
+      @override
+      _AppState createState() => _AppState();
+    }
+
+    class _AppState extends State<App> {
+      StreamSubscription? _linkSubscription;
+
+      @override
+      void initState() {
+        super.initState();
+        _initDeepLinks();
+      }
+
+      Future<void> _initDeepLinks() async {
+        // Handle initial deep link
+        try {
+          final initialLink = await getInitialLink();
+          if (initialLink != null) {
+            _handleDeepLink(initialLink);
+          }
+        } catch (e) {
+          print('Error handling initial deep link: $e');
+        }
+
+        // Handle deep links when app is already running
+        _linkSubscription = linkStream.listen((String? link) {
+          if (link != null) {
+            _handleDeepLink(link);
+          }
+        }, onError: (e) {
+          print('Error handling deep link: $e');
+        });
+      }
+
+      void _handleDeepLink(String link) {
+        print('Deep link received: $link');
+        
+        if (link.startsWith('yourapp://payment')) {
+          final uri = Uri.parse(link);
+          final reference = uri.queryParameters['reference'];
+          
+          if (reference != null) {
+            // Verify payment status with your server
+            _verifyPayment(reference);
+          }
+        }
+      }
+
+      Future<void> _verifyPayment(String reference) async {
+        try {
+          // Make API call to your server to verify the payment
+          // For demo purposes, we'll simulate a server response
+          await Future.delayed(Duration(seconds: 1));
+          final mockServerResponse = {
+            'success': true,
+            'amount': 5000,
+            'currency': 'XAF',
+          };
+          
+          if (mockServerResponse['success']) {
+            // Payment verified
+            print('Payment verified: $mockServerResponse');
+            // Update UI or navigate to success screen
+          } else {
+            // Payment verification failed
+            print('Payment verification failed');
+            // Show error message
+          }
+        } catch (e) {
+          print('Error verifying payment: $e');
+          // Show error message
+        }
+      }
+
+      @override
+      void dispose() {
+        _linkSubscription?.cancel();
+        super.dispose();
+      }
+
+      @override
+      Widget build(BuildContext context) {
+        return MaterialApp(
+          title: 'Notch Pay Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          home: PaymentScreen(),
+        );
+      }
+    }
+    ```
+
+    ## API Reference
+
+    ### Methods
+
+    - `NotchPay.initialize(String publicKey)` - Initialize the SDK with your public key
+    - `NotchPay.setTestMode(bool enabled)` - Enable or disable test mode
+    - `NotchPay.checkout({required String paymentId, String? title, String? description, String? logoUrl, String? primaryColor, bool? showReceiptPage})` - Launch the checkout flow
+
+    ### Classes
+
+    ```dart
+    class NotchPayTransaction {
+      final String reference;
+      final String status;
+      final double amount;
+      final String currency;
+      final NotchPayCustomer customer;
+      final String createdAt;
+      final String? completedAt;
+      
+      // Constructor and methods...
+    }
+
+    class NotchPayCustomer {
+      final String email;
+      final String? name;
+      
+      // Constructor and methods...
+    }
+
+    class NotchPayException implements Exception {
+      final String code;
+      final String message;
+      
+      // Constructor and methods...
+    }
+    ```
+
+    ## Complete Example
+
+    Here's a complete example of a Flutter app with Notch Pay integration:
+
+    ```dart
+    import 'package:flutter/material.dart';
+    import 'package:notchpay_flutter/notchpay_flutter.dart';
+    import 'package:uni_links/uni_links.dart';
+    import 'dart:async';
+
+    void main() {
+      runApp(MyApp());
+    }
+
+    class MyApp extends StatefulWidget {
+      @override
+      _MyAppState createState() => _MyAppState();
+    }
+
+    class _MyAppState extends State<MyApp> {
+      StreamSubscription? _linkSubscription;
+
+      @override
+      void initState() {
+        super.initState();
+        _initDeepLinks();
+      }
+
+      Future<void> _initDeepLinks() async {
+        // Handle initial deep link
+        try {
+          final initialLink = await getInitialLink();
+          if (initialLink != null) {
+            _handleDeepLink(initialLink);
+          }
+        } catch (e) {
+          print('Error handling initial deep link: $e');
+        }
+
+        // Handle deep links when app is already running
+        _linkSubscription = linkStream.listen((String? link) {
+          if (link != null) {
+            _handleDeepLink(link);
+          }
+        }, onError: (e) {
+          print('Error handling deep link: $e');
+        });
+      }
+
+      void _handleDeepLink(String link) {
+        print('Deep link received: $link');
+        
+        if (link.startsWith('yourapp://payment')) {
+          final uri = Uri.parse(link);
+          final reference = uri.queryParameters['reference'];
+          
+          if (reference != null) {
+            // Verify payment status with your server
+            _verifyPayment(reference);
+          }
+        }
+      }
+
+      Future<void> _verifyPayment(String reference) async {
+        try {
+          // Make API call to your server to verify the payment
+          // For demo purposes, we'll simulate a server response
+          await Future.delayed(Duration(seconds: 1));
+          final mockServerResponse = {
+            'success': true,
+            'amount': 5000,
+            'currency': 'XAF',
+          };
+          
+          if (mockServerResponse['success']) {
+            // Payment verified
+            print('Payment verified: $mockServerResponse');
+            // Update UI or navigate to success screen
+          } else {
+            // Payment verification failed
+            print('Payment verification failed');
+            // Show error message
+          }
+        } catch (e) {
+          print('Error verifying payment: $e');
+          // Show error message
+        }
+      }
+
+      @override
+      void dispose() {
+        _linkSubscription?.cancel();
+        super.dispose();
+      }
+
+      @override
+      Widget build(BuildContext context) {
+        return MaterialApp(
+          title: 'Notch Pay Demo',
+          theme: ThemeData(
+            primarySwatch: Colors.indigo,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          home: HomeScreen(),
+          routes: {
+            '/payment': (context) => PaymentScreen(),
+            '/success': (context) => SuccessScreen(),
+          },
+        );
+      }
+    }
+
+    class HomeScreen extends StatelessWidget {
+      @override
+      Widget build(BuildContext context) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Notch Pay Demo'),
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Welcome to Notch Pay Demo',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 30),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/payment');
+                  },
+                  child: Text('Make a Payment'),
+                  style: ElevatedButton.styleFrom(
+                    primary: Color(0xFF4F46E5),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    }
+
+    class PaymentScreen extends StatefulWidget {
+      @override
+      _PaymentScreenState createState() => _PaymentScreenState();
+    }
+
+    class _PaymentScreenState extends State<PaymentScreen> {
+      bool _loading = false;
+      String _status = '';
+
+      @override
+      void initState() {
+        super.initState();
+        _initializeNotchPay();
+      }
+
+      Future<void> _initializeNotchPay() async {
+        await NotchPay.initialize('YOUR_PUBLIC_KEY');
+        await NotchPay.setTestMode(true); // Set to false for production
+      }
+
+      Future<void> _initiatePayment() async {
+        setState(() {
+          _loading = true;
+          _status = 'Creating payment...';
+        });
+
+        try {
+          // Make API call to your server to create a payment
+          // For demo purposes, we'll simulate a server response
+          await Future.delayed(Duration(seconds: 1));
+          final mockServerResponse = {
+            'success': true,
+            'paymentId': 'pay_${DateTime.now().millisecondsSinceEpoch}',
+          };
+
+          if (!mockServerResponse['success']) {
+            throw Exception('Failed to create payment');
+          }
+
+          // Launch the checkout
+          final result = await NotchPay.checkout(
+            paymentId: mockServerResponse['paymentId'],
+            title: 'Payment for Order #123',
+            description: 'Your order from Example Store',
+            primaryColor: '#4F46E5',
+          );
+
+          // Navigate to success screen
+          Navigator.pushReplacementNamed(
+            context,
+            '/success',
+            arguments: result,
+          );
+        } catch (e) {
+          if (e is NotchPayException && e.code == 'USER_CANCELLED') {
+            setState(() {
+              _status = 'Payment canceled';
+            });
+          } else {
+            setState(() {
+              _status = 'Error: ${e.toString()}';
+            });
+          }
+          setState(() {
+            _loading = false;
+          });
+        }
+      }
+
+      @override
+      Widget build(BuildContext context) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Make a Payment'),
+          ),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (_status.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20.0),
+                      child: Text(
+                        _status,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  _loading
+                      ? CircularProgressIndicator()
+                      : ElevatedButton(
+                          onPressed: _initiatePayment,
+                          child: Text('Pay 5,000 XAF'),
+                          style: ElevatedButton.styleFrom(
+                            primary: Color(0xFF4F46E5),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 32,
+                              vertical: 16,
+                            ),
+                          ),
+                        ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+    }
+
+    class SuccessScreen extends StatelessWidget {
+      @override
+      Widget build(BuildContext context) {
+        final NotchPayTransaction? transaction =
+            ModalRoute.of(context)?.settings.arguments as NotchPayTransaction?;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Payment Successful'),
+          ),
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.check_circle,
+                    color: Colors.green,
+                    size: 80,
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Payment Successful!',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  if (transaction != null) ...[
+                    _buildDetailItem('Reference', transaction.reference),
+                    _buildDetailItem(
+                        'Amount', '${transaction.amount} ${transaction.currency}'),
+                    _buildDetailItem('Status', transaction.status),
+                    _buildDetailItem(
+                        'Date',
+                        transaction.completedAt != null
+                            ? DateTime.parse(transaction.completedAt!)
+                                .toString()
+                            : 'N/A'),
+                  ] else
+                    Text(
+                      'Transaction details not available',
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        '/',
+                        (route) => false,
+                      );
+                    },
+                    child: Text('Back to Home'),
+                    style: ElevatedButton.styleFrom(
+                      primary: Color(0xFF4F46E5),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+
+      Widget _buildDetailItem(String label, String value) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Row(
+            children: [
+              Text(
+                '$label: ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              Text(
+                value,
+                style: TextStyle(fontSize: 16),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+## Related Resources
+
+<CardGroup cols={3}>
+  <Card title="API Reference" icon="book" href="/api-reference">
+    Complete API documentation
+  </Card>
+  <Card title="JavaScript SDK" icon="js" href="/sdks/javascript">
+    Integrate with web applications
+  </Card>
+  <Card title="Checkout" icon="browser" href="/accept-payments/checkout">
+    Learn about the hosted checkout solution
+  </Card>
+</CardGroup>
