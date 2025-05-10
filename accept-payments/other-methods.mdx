@@ -52,7 +52,7 @@ Notch Pay supports payments from various digital wallets across Africa:
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -100,7 +100,7 @@ Notch Pay supports USSD payments through various mobile operators:
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -120,7 +120,7 @@ fetch('https://api.notchpay.co/payments', {
   fetch(`https://api.notchpay.co/payments/${data.transaction.reference}`, {
     method: 'POST',
     headers: {
-      'Authorization': 'YOUR_API_KEY',
+      'Authorization': 'YOUR_PUBLIC_KEY',
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
@@ -164,7 +164,7 @@ Notch Pay supports various QR code payment standards depending on the region:
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -183,7 +183,7 @@ fetch('https://api.notchpay.co/payments', {
   / Process with QR Code
   fetch(`https://api.notchpay.co/payments/${data.transaction.reference}/qrcode`, {
     headers: {
-      'Authorization': 'YOUR_API_KEY'
+      'Authorization': 'YOUR_PUBLIC_KEY'
     }
   })
   .then(response => response.json())

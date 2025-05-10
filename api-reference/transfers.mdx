@@ -13,7 +13,7 @@ description: Send money to beneficiaries with the Notch Pay Transfers API
   All transfer-related endpoints require both standard API key authentication and additional authentication using the `X-Grant` header for enhanced security.
   
   ```bash
-  Authorization: YOUR_API_KEY
+  Authorization: YOUR_PUBLIC_KEY
   X-Grant: YOUR_PRIVATE_KEY
   ```
 </Callout>
@@ -710,7 +710,7 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
                 reference: 'salary_jan_2023'
               }, {
                 headers: {
-                  'Authorization': 'YOUR_API_KEY',
+                  'Authorization': 'YOUR_PUBLIC_KEY',
                   'X-Grant': 'YOUR_PRIVATE_KEY',
                   'Content-Type': 'application/json'
                 }
@@ -745,7 +745,7 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
               CURLOPT_POST => true,
               CURLOPT_POSTFIELDS => json_encode($data),
               CURLOPT_HTTPHEADER => [
-                'Authorization: YOUR_API_KEY',
+                'Authorization: YOUR_PUBLIC_KEY',
                 'X-Grant: YOUR_PRIVATE_KEY',
                 'Content-Type: application/json'
               ]
@@ -774,7 +774,7 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
             try {
               const response = await axios.get(`https://api.notchpay.co/transfers/${transferId}`, {
                 headers: {
-                  'Authorization': 'YOUR_API_KEY',
+                  'Authorization': 'YOUR_PUBLIC_KEY',
                   'X-Grant': 'YOUR_PRIVATE_KEY'
                 }
               });
@@ -796,7 +796,7 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
               CURLOPT_URL => "https://api.notchpay.co/transfers/{$transferId}",
               CURLOPT_RETURNTRANSFER => true,
               CURLOPT_HTTPHEADER => [
-                'Authorization: YOUR_API_KEY',
+                'Authorization: YOUR_PUBLIC_KEY',
                 'X-Grant: YOUR_PRIVATE_KEY'
               ]
             ]);
@@ -849,7 +849,7 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
                 ]
               }, {
                 headers: {
-                  'Authorization': 'YOUR_API_KEY',
+                  'Authorization': 'YOUR_PUBLIC_KEY',
                   'X-Grant': 'YOUR_PRIVATE_KEY',
                   'Content-Type': 'application/json'
                 }
@@ -873,7 +873,7 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
             try {
               const response = await axios.get(`https://api.notchpay.co/transfers/bulk/${bulkTransferId}`, {
                 headers: {
-                  'Authorization': 'YOUR_API_KEY',
+                  'Authorization': 'YOUR_PUBLIC_KEY',
                   'X-Grant': 'YOUR_PRIVATE_KEY'
                 }
               });

@@ -62,7 +62,7 @@ description: Check your account balance and transaction history with the Notch P
       <CodeGroup>
         ```bash cURL
         curl https://api.notchpay.co/balance \
-          -H "Authorization: YOUR_API_KEY" \
+          -H "Authorization: YOUR_PUBLIC_KEY" \
           -H "X-Grant: YOUR_PRIVATE_KEY"
         ```
 
@@ -70,7 +70,7 @@ description: Check your account balance and transaction history with the Notch P
         fetch('https://api.notchpay.co/balance', {
           method: 'GET',
           headers: {
-            'Authorization': 'YOUR_API_KEY',
+            'Authorization': 'YOUR_PUBLIC_KEY',
             'X-Grant': 'YOUR_PRIVATE_KEY'
           }
         })
@@ -86,7 +86,7 @@ description: Check your account balance and transaction history with the Notch P
           CURLOPT_URL => "https://api.notchpay.co/balance",
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_HTTPHEADER => [
-            "Authorization: YOUR_API_KEY",
+            "Authorization: YOUR_PUBLIC_KEY",
             "X-Grant: YOUR_PRIVATE_KEY"
           ]
         ]);

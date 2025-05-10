@@ -52,7 +52,7 @@ For more control over the payment flow, you can use the Notch Pay API to process
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -81,7 +81,7 @@ fetch('https://api.notchpay.co/payments', {
 fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_API_KEY',
+    'Authorization': 'YOUR_PUBLIC_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -104,7 +104,7 @@ fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
 // Check the payment status
 fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
   headers: {
-    'Authorization': 'YOUR_API_KEY'
+    'Authorization': 'YOUR_PUBLIC_KEY'
   }
 })
 .then(response => response.json())

@@ -33,7 +33,7 @@ description: Learn how to authenticate with the Notch Pay API
     For most API requests, you need to include your API key in the `Authorization` header:
 
     ```
-    Authorization: YOUR_API_KEY
+    Authorization: YOUR_PUBLIC_KEY
     ```
 
     ### Example Request
@@ -41,7 +41,7 @@ description: Learn how to authenticate with the Notch Pay API
     <CodeGroup>
       ```bash cURL
       curl https://api.notchpay.co/payments \
-        -H "Authorization: YOUR_API_KEY" \
+        -H "Authorization: YOUR_PUBLIC_KEY" \
         -H "Content-Type: application/json" \
         -d '{
           "amount": 5000,
@@ -56,7 +56,7 @@ description: Learn how to authenticate with the Notch Pay API
       fetch('https://api.notchpay.co/payments', {
         method: 'POST',
         headers: {
-          'Authorization': 'YOUR_API_KEY',
+          'Authorization': 'YOUR_PUBLIC_KEY',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -79,7 +79,7 @@ description: Learn how to authenticate with the Notch Pay API
         CURLOPT_URL => "https://api.notchpay.co/payments",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER => [
-          "Authorization: YOUR_API_KEY",
+          "Authorization: YOUR_PUBLIC_KEY",
           "Content-Type: application/json"
         ],
         CURLOPT_POSTFIELDS => json_encode([
@@ -103,7 +103,7 @@ description: Learn how to authenticate with the Notch Pay API
 
       url = "https://api.notchpay.co/payments"
       headers = {
-          "Authorization": "YOUR_API_KEY",
+          "Authorization": "YOUR_PUBLIC_KEY",
           "Content-Type": "application/json"
       }
       payload = {
@@ -145,7 +145,7 @@ description: Learn how to authenticate with the Notch Pay API
     <CodeGroup>
       ```bash cURL
       curl https://api.notchpay.co/balance \
-        -H "Authorization: YOUR_API_KEY" \
+        -H "Authorization: YOUR_PUBLIC_KEY" \
         -H "X-Grant: YOUR_PRIVATE_KEY"
       ```
 
@@ -153,7 +153,7 @@ description: Learn how to authenticate with the Notch Pay API
       fetch('https://api.notchpay.co/balance', {
         method: 'GET',
         headers: {
-          'Authorization': 'YOUR_API_KEY',
+          'Authorization': 'YOUR_PUBLIC_KEY',
           'X-Grant': 'YOUR_PRIVATE_KEY'
         }
       })
@@ -183,7 +183,7 @@ description: Learn how to authenticate with the Notch Pay API
     <CodeGroup>
       ```bash cURL
       curl https://api.notchpay.co/payments \
-        -H "Authorization: YOUR_API_KEY" \
+        -H "Authorization: YOUR_PUBLIC_KEY" \
         -H "X-Sync: sync_123456789" \
         -H "Content-Type: application/json" \
         -d '{
@@ -199,7 +199,7 @@ description: Learn how to authenticate with the Notch Pay API
       fetch('https://api.notchpay.co/payments', {
         method: 'POST',
         headers: {
-          'Authorization': 'YOUR_API_KEY',
+          'Authorization': 'YOUR_PUBLIC_KEY',
           'X-Sync': 'sync_123456789',
           'Content-Type': 'application/json'
         },

@@ -39,7 +39,7 @@ require_once 'vendor/autoload.php';
 use NotchPay\NotchPay;
 
 // Initialize with your API key
-$notchpay = new NotchPay('YOUR_API_KEY');
+$notchpay = new NotchPay('YOUR_PUBLIC_KEY');
 
 // For endpoints requiring advanced authentication
 $notchpay->setGrantKey('YOUR_PRIVATE_KEY');
@@ -319,7 +319,7 @@ require_once 'vendor/autoload.php';
 use NotchPay\NotchPay;
 
 // Initialize the SDK
-$notchpay = new NotchPay('YOUR_API_KEY');
+$notchpay = new NotchPay('YOUR_PUBLIC_KEY');
 
 // Create a shortcode for the payment form
 function notchpay_payment_form_shortcode($atts) {

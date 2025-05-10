@@ -37,7 +37,7 @@ description: Integrate Notch Pay into your Python applications
 from notchpay import NotchPay
 
 # Initialize with your API key
-notchpay = NotchPay('YOUR_API_KEY')
+notchpay = NotchPay('YOUR_PUBLIC_KEY')
 
 # For endpoints requiring advanced authentication
 notchpay.set_grant_key('YOUR_PRIVATE_KEY')
@@ -152,7 +152,7 @@ Add Notch Pay settings to your Django settings file:
 ```python
 # settings.py
 
-NOTCHPAY_API_KEY = 'YOUR_API_KEY'
+NOTCHPAY_API_KEY = 'YOUR_PUBLIC_KEY'
 NOTCHPAY_GRANT_KEY = 'YOUR_PRIVATE_KEY'
 NOTCHPAY_WEBHOOK_SECRET = 'YOUR_WEBHOOK_SECRET'
 ```
@@ -387,7 +387,7 @@ from notchpay import NotchPay
 app = Flask(__name__)
 
 # Initialize the SDK
-notchpay = NotchPay('YOUR_API_KEY')
+notchpay = NotchPay('YOUR_PUBLIC_KEY')
 WEBHOOK_SECRET = 'YOUR_WEBHOOK_SECRET'
 
 @app.route('/')
@@ -547,7 +547,7 @@ templates = Jinja2Templates(directory="templates")
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Initialize the SDK
-notchpay = NotchPay('YOUR_API_KEY')
+notchpay = NotchPay('YOUR_PUBLIC_KEY')
 WEBHOOK_SECRET = 'YOUR_WEBHOOK_SECRET'
 
 @app.get("/", response_class=HTMLResponse)
@@ -751,7 +751,7 @@ The SDK also provides async support for use with async frameworks like FastAPI:
 from notchpay import AsyncNotchPay
 
 # Initialize the async SDK
-notchpay = AsyncNotchPay('YOUR_API_KEY')
+notchpay = AsyncNotchPay('YOUR_PUBLIC_KEY')
 
 async def create_payment_async():
     try:

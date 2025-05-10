@@ -3,8 +3,6 @@ title: Quickstart Guide
 description: Get up and running with Notch Pay in minutes
 ---
 
-# Quickstart Guide
-
 <Note>
   This guide will help you integrate Notch Pay into your application or website quickly. We'll walk through the basic steps to accept your first payment.
 </Note>
@@ -35,16 +33,13 @@ description: Get up and running with Notch Pay in minutes
         2. Navigate to Settings > API Keys
         3. Copy your API key (use your test key for development and testing)
 
-        ```
-        YOUR_API_KEY
-        ```
       </Tab>
       <Tab title="Test vs Live">
         <Callout type="warning">
           Always use **test keys** during development and testing. Only switch to **live keys** when you're ready to process real transactions.
         </Callout>
         
-        Test keys start with `test_` while live keys start with `live_`.
+        Test keys contains `test_` while live keys doesn't.
       </Tab>
     </Tabs>
   </Step>
@@ -58,7 +53,7 @@ description: Get up and running with Notch Pay in minutes
       fetch('https://api.notchpay.co/payments', {
         method: 'POST',
         headers: {
-          'Authorization': 'YOUR_API_KEY',
+          'Authorization': 'YOUR_PUBLIC_KEY',
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -90,7 +85,7 @@ description: Get up and running with Notch Pay in minutes
         CURLOPT_URL => "https://api.notchpay.co/payments",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER => [
-          "Authorization: YOUR_API_KEY",
+          "Authorization: YOUR_PUBLIC_KEY",
           "Content-Type: application/json"
         ],
         CURLOPT_POSTFIELDS => json_encode([
@@ -123,7 +118,7 @@ description: Get up and running with Notch Pay in minutes
 
       url = "https://api.notchpay.co/payments"
       headers = {
-          "Authorization": "YOUR_API_KEY",
+          "Authorization": "YOUR_PUBLIC_KEY",
           "Content-Type": "application/json"
       }
       payload = {
@@ -200,9 +195,7 @@ description: Get up and running with Notch Pay in minutes
       ```
     </CodeGroup>
 
-    <Frame>
-      <img src="/images/payment-page-example.png" alt="Notch Pay Payment Page" />
-    </Frame>
+      ![Notch Pay Collect Payment Page](/images/screenshots/payment-page.png)
   </Step>
 
   <Step title="Handle the Callback">
@@ -217,7 +210,7 @@ description: Get up and running with Notch Pay in minutes
         // Verify the payment status
         fetch(`https://api.notchpay.co/payments/${reference}`, {
           headers: {
-            'Authorization': 'YOUR_API_KEY'
+            'Authorization': 'YOUR_PUBLIC_KEY'
           }
         })
         .then(response => response.json())
@@ -247,7 +240,7 @@ description: Get up and running with Notch Pay in minutes
         CURLOPT_URL => "https://api.notchpay.co/payments/{$reference}",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_HTTPHEADER => [
-          "Authorization: YOUR_API_KEY"
+          "Authorization: YOUR_PUBLIC_KEY"
         ]
       ]);
 
@@ -270,7 +263,7 @@ description: Get up and running with Notch Pay in minutes
           reference = request.args.get('reference')
           
           headers = {
-              "Authorization": "YOUR_API_KEY"
+              "Authorization": "YOUR_PUBLIC_KEY"
           }
           
           response = requests.get(f"https://api.notchpay.co/payments/{reference}", headers=headers)
@@ -413,7 +406,7 @@ Check out these sample applications to see Notch Pay in action:
 
 <Accordion title="Support Resources">
   <CardGroup cols={1}>
-    <Card title="API Reference" icon="book" href="/api">
+    <Card title="API Reference" icon="book" href="/api-reference">
       Detailed endpoint documentation
     </Card>
     <Card title="Support Team" icon="headset" href="mailto:hello@notchpay.co">

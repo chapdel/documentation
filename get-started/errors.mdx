@@ -3,8 +3,6 @@ title: Error Handling
 description: Learn how to handle errors in the Notch Pay API
 ---
 
-# Error Handling
-
 Proper error handling is essential for building robust applications with Notch Pay. This guide explains the key concepts of error handling and best practices for implementing it in your applications.
 
 <Callout type="info">
@@ -148,15 +146,21 @@ When an error occurs, the Notch Pay API returns:
     ```
   </Step>
   
-  <Step title="Use Idempotency Keys">
-    For operations that shouldn't be repeated accidentally (like creating a payment), use idempotency keys.
-    
-    ```
-    Idempotency-Key: a-unique-string-for-this-request
-    ```
-    
-    This ensures that if you retry a failed request, the operation won't be performed twice.
-  </Step>
+  [//]: # (<Step title="Use Idempotency Keys">)
+
+[//]: # (  For operations that shouldn't be repeated accidentally &#40;like creating a payment&#41;, use idempotency keys.)
+
+[//]: # (  )
+  [//]: # (  ```)
+
+[//]: # (  Idempotency-Key: a-unique-string-for-this-request)
+
+[//]: # (  ```)
+
+[//]: # (  )
+  [//]: # (  This ensures that if you retry a failed request, the operation won't be performed twice.)
+
+[//]: # (</Step>)
   
   <Step title="Provide User-Friendly Messages">
     Translate technical error messages into user-friendly messages that help users understand what went wrong and how to fix it.
@@ -164,13 +168,11 @@ When an error occurs, the Notch Pay API returns:
     ```javascript
     // Map API errors to user-friendly messages
     const errorMessages = {
-      'invalid_card': 'Your card information is incorrect. Please check and try again.',
       'insufficient_funds': 'Your card has insufficient funds. Please use a different card.',
-      'expired_card': 'Your card has expired. Please use a different card.'
     };
     
     // Display appropriate message
-    const userMessage = errorMessages[error.code] || 'An error occurred. Please try again.';
+    const userMessage = errorMessages[error.message] || 'An error occurred. Please try again.';
     ```
   </Step>
 </Steps>

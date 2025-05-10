@@ -158,7 +158,7 @@ All SDKs follow a similar pattern for basic operations. Here's a quick example o
 
 ```javascript
 const Notch Pay = require('notchpay-js');
-const notchpay = new Notch Pay('YOUR_API_KEY');
+const notchpay = new Notch Pay('YOUR_PUBLIC_KEY');
 
 notchpay.payments.create({
   amount: 5000,
@@ -185,7 +185,7 @@ notchpay.payments.create({
 <?php
 require_once 'vendor/autoload.php';
 
-$notchpay = new \Notch Pay\Notch Pay('YOUR_API_KEY');
+$notchpay = new \Notch Pay\Notch Pay('YOUR_PUBLIC_KEY');
 
 try {
     $payment = $notchpay->payments->create([
@@ -212,7 +212,7 @@ try {
 ```python
 import notchpay
 
-notchpay.api_key = 'YOUR_API_KEY'
+notchpay.api_key = 'YOUR_PUBLIC_KEY'
 
 try:
     payment = notchpay.Payment.create(
