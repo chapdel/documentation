@@ -1,86 +1,474 @@
 ---
-title: Overview
+title: Security Overview
 description: Learn about Notch Pay's security features and best practices for secure integration
 ---
 
-# Security
+<div className="bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/30 dark:to-orange-900/30 p-6 rounded-lg mb-8 border border-red-100 dark:border-red-900/50">
+  <h1 className="text-3xl font-bold text-red-800 dark:text-red-400 mb-2">Security at Notch Pay</h1>
+  <p className="text-lg text-gray-700 dark:text-gray-300">Comprehensive security measures to protect your business and customers</p>
+</div>
 
-Security is a top priority at Notch Pay. We implement industry-standard security measures to protect your data and transactions, and we provide tools and guidelines to help you build secure integrations.
+<div className="flex flex-col md:flex-row gap-6 mb-8">
+  <div className="flex-1">
+    <p className="mb-4">
+      Security is a top priority at Notch Pay. We implement industry-standard security measures to protect your data and transactions, and we provide tools and guidelines to help you build secure integrations.
+    </p>
+    
+    <p className="mb-4">
+      Our security approach is built on multiple layers of protection, from encryption and authentication to fraud prevention and compliance with international standards.
+    </p>
+  </div>
+  
+  <div className="flex-1 border rounded-lg p-5 bg-white dark:bg-gray-800">
+    <h3 className="text-lg font-semibold mb-3">Security Highlights</h3>
+    <ul className="space-y-2">
+      <li className="flex items-start">
+        <svg className="h-5 w-5 text-red-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+        <span><strong>PCI DSS compliant</strong> infrastructure</span>
+      </li>
+      <li className="flex items-start">
+        <svg className="h-5 w-5 text-red-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+        <span><strong>End-to-end encryption</strong> for all data</span>
+      </li>
+      <li className="flex items-start">
+        <svg className="h-5 w-5 text-red-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span><strong>Advanced fraud detection</strong> systems</span>
+      </li>
+      <li className="flex items-start">
+        <svg className="h-5 w-5 text-red-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+        </svg>
+        <span><strong>Multi-factor authentication</strong> for account access</span>
+      </li>
+    </ul>
+  </div>
+</div>
 
 ## Notch Pay Security Features
 
-### Data Encryption
-
-All data transmitted between your systems and Notch Pay is encrypted using TLS (Transport Layer Security). This ensures that sensitive information like API keys, payment details, and customer data cannot be intercepted by malicious actors.
-
-### PCI Compliance
-
-Notch Pay is PCI DSS (Payment Card Industry Data Security Standard) compliant, which means we adhere to strict security standards for handling card data. By using Notch Pay, you can accept card payments without having to worry about PCI compliance yourself.
-
-### Fraud Prevention
-
-We employ advanced fraud detection systems to identify and prevent fraudulent transactions. Our systems analyze various risk factors and patterns to flag suspicious activities and protect both merchants and customers.
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+  <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-800 hover:shadow-md transition-shadow">
+    <div className="h-2 bg-gradient-to-r from-red-400 to-orange-500"></div>
+    <div className="p-6">
+      <div className="flex items-center mb-4">
+        <div className="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900 flex items-center justify-center mr-3">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-600 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-semibold">Data Encryption</h3>
+      </div>
+      <p className="mb-4 text-gray-600 dark:text-gray-400">
+        All data transmitted between your systems and Notch Pay is encrypted using TLS (Transport Layer Security). This ensures that sensitive information like API keys, payment details, and customer data cannot be intercepted by malicious actors.
+      </p>
+      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <span className="inline-block px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded mr-2 mb-2">TLS 1.2+</span>
+        <span className="inline-block px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded mr-2 mb-2">HTTPS</span>
+        <span className="inline-block px-2 py-1 text-xs font-medium bg-red-100 text-red-800 rounded mr-2 mb-2">End-to-End</span>
+      </div>
+    </div>
+  </div>
+  
+  <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-800 hover:shadow-md transition-shadow">
+    <div className="h-2 bg-gradient-to-r from-blue-400 to-indigo-500"></div>
+    <div className="p-6">
+      <div className="flex items-center mb-4">
+        <div className="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mr-3">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-semibold">PCI Compliance</h3>
+      </div>
+      <p className="mb-4 text-gray-600 dark:text-gray-400">
+        Notch Pay is PCI DSS (Payment Card Industry Data Security Standard) compliant, which means we adhere to strict security standards for handling card data. By using Notch Pay, you can accept card payments without having to worry about PCI compliance yourself.
+      </p>
+      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded mr-2 mb-2">PCI DSS</span>
+        <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded mr-2 mb-2">Secure Storage</span>
+        <span className="inline-block px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded mr-2 mb-2">Compliance</span>
+      </div>
+    </div>
+  </div>
+  
+  <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-800 hover:shadow-md transition-shadow">
+    <div className="h-2 bg-gradient-to-r from-purple-400 to-pink-500"></div>
+    <div className="p-6">
+      <div className="flex items-center mb-4">
+        <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center mr-3">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-semibold">Fraud Prevention</h3>
+      </div>
+      <p className="mb-4 text-gray-600 dark:text-gray-400">
+        We employ advanced fraud detection systems to identify and prevent fraudulent transactions. Our systems analyze various risk factors and patterns to flag suspicious activities and protect both merchants and customers.
+      </p>
+      <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <span className="inline-block px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded mr-2 mb-2">AI Detection</span>
+        <span className="inline-block px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded mr-2 mb-2">Risk Scoring</span>
+        <span className="inline-block px-2 py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded mr-2 mb-2">Real-time</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 ### Authentication and Authorization
 
-Notch Pay implements robust authentication mechanisms to ensure that only authorized users and systems can access your account and data:
-
-- API key authentication for all API requests
-- Two-factor authentication (2FA) for dashboard access
-- Role-based access control for team members
-- IP whitelisting for API access
+<div className="bg-white dark:bg-gray-800 border rounded-lg p-6 mb-8">
+  <div className="flex items-center mb-4">
+    <div className="w-12 h-12 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
+      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+      </svg>
+    </div>
+    <h3 className="text-xl font-semibold">Robust Authentication Systems</h3>
+  </div>
+  
+  <p className="mb-6 text-gray-600 dark:text-gray-400">
+    Notch Pay implements robust authentication mechanisms to ensure that only authorized users and systems can access your account and data.
+  </p>
+  
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="flex items-start p-4 border rounded-lg bg-gray-50 dark:bg-gray-900">
+      <div className="flex-shrink-0 h-8 w-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+        </svg>
+      </div>
+      <div>
+        <h4 className="font-semibold mb-1">API Key Authentication</h4>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Secure API keys for all API requests with different keys for test and live environments.</p>
+      </div>
+    </div>
+    
+    <div className="flex items-start p-4 border rounded-lg bg-gray-50 dark:bg-gray-900">
+      <div className="flex-shrink-0 h-8 w-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+        </svg>
+      </div>
+      <div>
+        <h4 className="font-semibold mb-1">Two-Factor Authentication (2FA)</h4>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Additional security layer for dashboard access to prevent unauthorized access.</p>
+      </div>
+    </div>
+    
+    <div className="flex items-start p-4 border rounded-lg bg-gray-50 dark:bg-gray-900">
+      <div className="flex-shrink-0 h-8 w-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      </div>
+      <div>
+        <h4 className="font-semibold mb-1">Role-Based Access Control</h4>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Granular permissions for team members to limit access based on roles and responsibilities.</p>
+      </div>
+    </div>
+    
+    <div className="flex items-start p-4 border rounded-lg bg-gray-50 dark:bg-gray-900">
+      <div className="flex-shrink-0 h-8 w-8 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      </div>
+      <div>
+        <h4 className="font-semibold mb-1">IP Whitelisting</h4>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Restrict API access to specific IP addresses for enhanced security.</p>
+      </div>
+    </div>
+  </div>
+</div>
 
 ### Regular Security Audits
 
-We conduct regular security audits and penetration testing to identify and address potential vulnerabilities. Our security team works continuously to improve our security posture and respond to emerging threats.
+<div className="p-6 border rounded-lg bg-gradient-to-r from-gray-50 to-slate-50 dark:from-gray-900/30 dark:to-slate-900/30 mb-8">
+  <div className="flex items-start">
+    <div className="mr-4 text-slate-600">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+      </svg>
+    </div>
+    <div>
+      <h3 className="font-semibold text-lg mb-2">Continuous Security Improvement</h3>
+      <p className="mb-4">We conduct regular security audits and penetration testing to identify and address potential vulnerabilities. Our security team works continuously to improve our security posture and respond to emerging threats.</p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-white dark:bg-gray-800 p-3 rounded-lg border">
+          <h4 className="font-medium text-slate-800 dark:text-slate-200">Penetration Testing</h4>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Regular testing by security experts</p>
+        </div>
+        <div className="bg-white dark:bg-gray-800 p-3 rounded-lg border">
+          <h4 className="font-medium text-slate-800 dark:text-slate-200">Vulnerability Scanning</h4>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Automated scanning for vulnerabilities</p>
+        </div>
+        <div className="bg-white dark:bg-gray-800 p-3 rounded-lg border">
+          <h4 className="font-medium text-slate-800 dark:text-slate-200">Security Patching</h4>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Prompt application of security updates</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 ## Secure Integration Guidelines
 
-### Protecting Your API Keys
+<div className="mb-6">
+  <p className="mb-4">
+    Implementing secure integration practices is essential to protect your business and customers. Follow these guidelines to ensure your Notch Pay integration is secure.
+  </p>
+</div>
 
-Your API keys are the keys to your Notch Pay account. To keep them secure:
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+  <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-800">
+    <div className="h-2 bg-gradient-to-r from-amber-400 to-yellow-500"></div>
+    <div className="p-6">
+      <div className="flex items-center mb-4">
+        <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900 flex items-center justify-center mr-3">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-semibold">Protecting Your API Keys</h3>
+      </div>
+      
+      <p className="mb-4 text-gray-600 dark:text-gray-400">
+        Your API keys are the keys to your Notch Pay account. To keep them secure:
+      </p>
+      
+      <ul className="space-y-3">
+        <li className="flex items-start">
+          <div className="flex-shrink-0 h-6 w-6 rounded-full bg-amber-100 dark:bg-amber-900 flex items-center justify-center mr-2 mt-0.5">
+            <span className="text-sm font-bold text-amber-600 dark:text-amber-400">1</span>
+          </div>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Never expose API keys</strong> in client-side code or public repositories</span>
+        </li>
+        <li className="flex items-start">
+          <div className="flex-shrink-0 h-6 w-6 rounded-full bg-amber-100 dark:bg-amber-900 flex items-center justify-center mr-2 mt-0.5">
+            <span className="text-sm font-bold text-amber-600 dark:text-amber-400">2</span>
+          </div>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Store API keys securely</strong> using environment variables or secure vaults</span>
+        </li>
+        <li className="flex items-start">
+          <div className="flex-shrink-0 h-6 w-6 rounded-full bg-amber-100 dark:bg-amber-900 flex items-center justify-center mr-2 mt-0.5">
+            <span className="text-sm font-bold text-amber-600 dark:text-amber-400">3</span>
+          </div>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Use different API keys</strong> for different environments (development, staging, production)</span>
+        </li>
+        <li className="flex items-start">
+          <div className="flex-shrink-0 h-6 w-6 rounded-full bg-amber-100 dark:bg-amber-900 flex items-center justify-center mr-2 mt-0.5">
+            <span className="text-sm font-bold text-amber-600 dark:text-amber-400">4</span>
+          </div>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Rotate API keys periodically</strong>, especially if you suspect they may have been compromised</span>
+        </li>
+        <li className="flex items-start">
+          <div className="flex-shrink-0 h-6 w-6 rounded-full bg-amber-100 dark:bg-amber-900 flex items-center justify-center mr-2 mt-0.5">
+            <span className="text-sm font-bold text-amber-600 dark:text-amber-400">5</span>
+          </div>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Implement proper access controls</strong> to limit who can access your API keys</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  
+  <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-800">
+    <div className="h-2 bg-gradient-to-r from-cyan-400 to-blue-500"></div>
+    <div className="p-6">
+      <div className="flex items-center mb-4">
+        <div className="w-12 h-12 rounded-full bg-cyan-100 dark:bg-cyan-900 flex items-center justify-center mr-3">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-cyan-600 dark:text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-semibold">Secure Communication</h3>
+      </div>
+      
+      <p className="mb-4 text-gray-600 dark:text-gray-400">
+        To ensure secure communication with Notch Pay:
+      </p>
+      
+      <ul className="space-y-3">
+        <li className="flex items-start">
+          <div className="flex-shrink-0 h-6 w-6 rounded-full bg-cyan-100 dark:bg-cyan-900 flex items-center justify-center mr-2 mt-0.5">
+            <span className="text-sm font-bold text-cyan-600 dark:text-cyan-400">1</span>
+          </div>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Always use HTTPS</strong> for all API requests and webhook endpoints</span>
+        </li>
+        <li className="flex items-start">
+          <div className="flex-shrink-0 h-6 w-6 rounded-full bg-cyan-100 dark:bg-cyan-900 flex items-center justify-center mr-2 mt-0.5">
+            <span className="text-sm font-bold text-cyan-600 dark:text-cyan-400">2</span>
+          </div>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Validate SSL certificates</strong> to prevent man-in-the-middle attacks</span>
+        </li>
+        <li className="flex items-start">
+          <div className="flex-shrink-0 h-6 w-6 rounded-full bg-cyan-100 dark:bg-cyan-900 flex items-center justify-center mr-2 mt-0.5">
+            <span className="text-sm font-bold text-cyan-600 dark:text-cyan-400">3</span>
+          </div>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Implement certificate pinning</strong> in mobile applications for added security</span>
+        </li>
+      </ul>
+      
+      <div className="mt-6 p-4 bg-cyan-50 dark:bg-cyan-900/30 rounded-lg">
+        <div className="flex items-start">
+          <div className="mr-2 text-cyan-600">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <p className="text-sm text-gray-700 dark:text-gray-300">
+            <strong>Pro Tip:</strong> Use TLS 1.2 or higher for all communications with Notch Pay API.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-1. **Never expose API keys in client-side code** or public repositories
-2. **Store API keys securely** using environment variables or secure vaults
-3. **Use different API keys** for different environments (development, staging, production)
-4. **Rotate API keys periodically**, especially if you suspect they may have been compromised
-5. **Implement proper access controls** to limit who can access your API keys
-
-### Secure Communication
-
-To ensure secure communication with Notch Pay:
-
-1. **Always use HTTPS** for all API requests and webhook endpoints
-2. **Validate SSL certificates** to prevent man-in-the-middle attacks
-3. **Implement certificate pinning** in mobile applications for added security
-
-### Webhook Security
-
-When using webhooks:
-
-1. **Verify webhook signatures** to ensure notifications are coming from Notch Pay
-2. **Use HTTPS** for your webhook endpoints
-3. **Implement access controls** to restrict access to your webhook endpoints
-4. **Process webhooks idempotently** to handle duplicate notifications safely
-
-### User Data Protection
-
-When handling customer data:
-
-1. **Collect only necessary information** to minimize data exposure
-2. **Implement proper data sanitization** to prevent injection attacks
-3. **Follow data protection regulations** like GDPR, CCPA, or local regulations
-4. **Implement secure data storage** with encryption at rest
-5. **Establish data retention policies** to limit how long you store sensitive data
-
-### Error Handling
-
-Proper error handling is crucial for security:
-
-1. **Don't expose sensitive information** in error messages
-2. **Log errors securely** without including sensitive data
-3. **Implement rate limiting** to prevent brute force attacks
-4. **Monitor for unusual error patterns** that might indicate an attack
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+  <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-800">
+    <div className="h-2 bg-gradient-to-r from-purple-400 to-indigo-500"></div>
+    <div className="p-6">
+      <div className="flex items-center mb-4">
+        <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center mr-3">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+          </svg>
+        </div>
+        <h3 className="text-lg font-semibold">Webhook Security</h3>
+      </div>
+      
+      <p className="mb-3 text-gray-600 dark:text-gray-400">
+        When using webhooks:
+      </p>
+      
+      <ul className="space-y-2 mb-4">
+        <li className="flex items-start">
+          <svg className="h-5 w-5 text-purple-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Verify webhook signatures</strong> to ensure authenticity</span>
+        </li>
+        <li className="flex items-start">
+          <svg className="h-5 w-5 text-purple-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Use HTTPS</strong> for webhook endpoints</span>
+        </li>
+        <li className="flex items-start">
+          <svg className="h-5 w-5 text-purple-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Process webhooks idempotently</strong> for safety</span>
+        </li>
+      </ul>
+      
+      <a href="/get-started/webhooks/verify" className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium flex items-center text-sm">
+        Learn more about webhook security
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </div>
+  
+  <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-800">
+    <div className="h-2 bg-gradient-to-r from-green-400 to-emerald-500"></div>
+    <div className="p-6">
+      <div className="flex items-center mb-4">
+        <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        </div>
+        <h3 className="text-lg font-semibold">User Data Protection</h3>
+      </div>
+      
+      <p className="mb-3 text-gray-600 dark:text-gray-400">
+        When handling customer data:
+      </p>
+      
+      <ul className="space-y-2 mb-4">
+        <li className="flex items-start">
+          <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Collect only necessary information</strong></span>
+        </li>
+        <li className="flex items-start">
+          <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Implement data sanitization</strong></span>
+        </li>
+        <li className="flex items-start">
+          <svg className="h-5 w-5 text-green-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Follow data protection regulations</strong></span>
+        </li>
+      </ul>
+      
+      <a href="/security/compliance" className="text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium flex items-center text-sm">
+        Learn more about compliance
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </div>
+  
+  <div className="border rounded-lg overflow-hidden bg-white dark:bg-gray-800">
+    <div className="h-2 bg-gradient-to-r from-rose-400 to-red-500"></div>
+    <div className="p-6">
+      <div className="flex items-center mb-4">
+        <div className="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-900 flex items-center justify-center mr-3">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-rose-600 dark:text-rose-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h3 className="text-lg font-semibold">Error Handling</h3>
+      </div>
+      
+      <p className="mb-3 text-gray-600 dark:text-gray-400">
+        Proper error handling is crucial for security:
+      </p>
+      
+      <ul className="space-y-2 mb-4">
+        <li className="flex items-start">
+          <svg className="h-5 w-5 text-rose-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Don't expose sensitive information</strong> in errors</span>
+        </li>
+        <li className="flex items-start">
+          <svg className="h-5 w-5 text-rose-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Log errors securely</strong> without sensitive data</span>
+        </li>
+        <li className="flex items-start">
+          <svg className="h-5 w-5 text-rose-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span className="text-gray-700 dark:text-gray-300"><strong>Implement rate limiting</strong> for protection</span>
+        </li>
+      </ul>
+      
+      <a href="/get-started/errors" className="text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300 font-medium flex items-center text-sm">
+        Learn more about error handling
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</div>
 
 ## Security Best Practices
 
@@ -105,4 +493,4 @@ If you discover a security vulnerability in Notch Pay, please report it to our s
 - [Security Best Practices](/security/best-practices) - Detailed guidelines for secure integration
 - [Compliance](/security/compliance) - Information about regulatory compliance
 - [API Authentication](/api-reference/authentication) - How to authenticate with the Notch Pay API
-- [Webhook Security](/webhooks/security) - How to secure your webhook endpoints
+- [Webhook Verification](/get-started/webhooks/verify) - How to secure your webhook endpoints

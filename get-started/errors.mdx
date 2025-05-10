@@ -5,13 +5,20 @@ description: Learn how to handle errors in the Notch Pay API
 
 # Error Handling
 
-Proper error handling is essential for building robust applications with Notch Pay. This guide explains the different types of errors you might encounter, how to interpret them, and best practices for handling them in your code.
+Proper error handling is essential for building robust applications with Notch Pay. This guide explains the key concepts of error handling and best practices for implementing it in your applications.
 
-## Error Response Format
+<Callout type="info">
+  For detailed error codes, examples, and troubleshooting tips, see the [API Errors Reference](/api-reference/errors).
+</Callout>
 
-When an error occurs, the Notch Pay API returns an appropriate HTTP status code and a JSON response with details about the error:
+## Understanding API Errors
 
-```json
+When an error occurs, the Notch Pay API returns:
+1. An appropriate HTTP status code
+2. A JSON response with details about what went wrong
+
+<CodeGroup>
+```json Error Response Format
 {
   "code": 400,
   "status": "Bad Request",
@@ -21,332 +28,169 @@ When an error occurs, the Notch Pay API returns an appropriate HTTP status code 
   }
 }
 ```
+</CodeGroup>
 
-### Error Response Properties
+## Common Error Categories
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `code` | number | HTTP status code indicating the type of error |
-| `status` | string | Text representation of the HTTP status code |
-| `message` | string | Human-readable description of the error |
-| `errors` | object | Optional field-specific validation errors |
-
-## HTTP Status Codes
-
-Notch Pay uses standard HTTP status codes to indicate the success or failure of an API request:
-
-| Code | Status | Description |
-|------|--------|-------------|
-| 200 | OK | The request was successful |
-| 201 | Created | A new resource was successfully created |
-| 202 | Accepted | The request has been accepted for processing |
-| 400 | Bad Request | The request was invalid or could not be understood |
-| 401 | Unauthorized | Authentication failed or was not provided |
-| 403 | Forbidden | The authenticated user doesn't have permission |
-| 404 | Not Found | The requested resource was not found |
-| 409 | Conflict | The request conflicts with the current state |
-| 422 | Unprocessable Entity | Validation failed |
-| 429 | Too Many Requests | Rate limit exceeded |
-| 500 | Internal Server Error | An error occurred on the server |
-| 503 | Service Unavailable | The service is temporarily unavailable |
-
-## Common Error Types
-
-### Authentication Errors (401, 403)
-
-Authentication errors occur when there's an issue with your API keys or authentication headers:
-
-```json
-{
-  "code": 401,
-  "status": "Unauthorized",
-  "message": "Invalid API key"
-}
-```
-
-```json
-{
-  "code": 403,
-  "status": "Forbidden",
-  "message": "This endpoint requires additional authentication"
-}
-```
-
-### Validation Errors (400, 422)
-
-Validation errors occur when the request data doesn't meet the required format or constraints:
-
-```json
-{
-  "code": 422,
-  "status": "Unprocessable Entity",
-  "message": "Validation failed",
-  "errors": {
-    "amount": ["Amount must be greater than 0"],
-    "currency": ["Currency is required"],
-    "customer.email": ["Invalid email format"]
-  }
-}
-```
-
-### Resource Not Found Errors (404)
-
-Resource not found errors occur when you try to access a resource that doesn't exist:
-
-```json
-{
-  "code": 404,
-  "status": "Not Found",
-  "message": "Payment with reference 'order_123' not found"
-}
-```
-
-### Rate Limit Errors (429)
-
-Rate limit errors occur when you exceed the allowed number of requests in a given time period:
-
-```json
-{
-  "code": 429,
-  "status": "Too Many Requests",
-  "message": "Rate limit exceeded. Try again in 30 seconds",
-  "retry_after": 30
-}
-```
-
-### Server Errors (500, 503)
-
-Server errors occur when something goes wrong on the Notch Pay servers:
-
-```json
-{
-  "code": 500,
-  "status": "Internal Server Error",
-  "message": "An unexpected error occurred"
-}
-```
-
-## Error Codes
-
-In addition to HTTP status codes, some error responses include specific error codes that provide more detailed information about what went wrong:
-
-| Error Code | Description |
-|------------|-------------|
-| `authentication_failed` | Authentication failed due to invalid credentials |
-| `invalid_request` | The request was invalid or malformed |
-| `resource_not_found` | The requested resource was not found |
-| `rate_limit_exceeded` | You've exceeded the rate limit for API requests |
-| `insufficient_balance` | Insufficient balance to complete the operation |
-| `payment_failed` | The payment could not be processed |
-| `transfer_failed` | The transfer could not be processed |
-| `validation_failed` | The request data failed validation |
-| `duplicate_reference` | A resource with the same reference already exists |
-| `account_disabled` | The account is disabled or suspended |
-
-## Handling Errors in Different Programming Languages
-
-### JavaScript
-
-```javascript
-fetch('https://api.notchpay.co/payments', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'YOUR_PUBLIC_KEY',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    amount: 5000,
-    currency: 'XAF',
-    customer: {
-      email: 'customer@example.com'
-    }
-  })
-})
-.then(response => {
-  if (!response.ok) {
-    return response.json().then(error => {
-      throw error;
-    });
-  }
-  return response.json();
-})
-.then(data => {
-  console.log('Success:', data);
-})
-.catch(error => {
-  console.error('Error:', error);
+<CardGroup cols={2}>
+  <Card title="Authentication Errors" icon="key" color="#dc2626">
+    **Status Codes**: 401, 403
+    
+    Occur when there's an issue with your API keys or permissions.
+    
+    **Common causes**:
+    - Missing API key
+    - Invalid API key
+    - Insufficient permissions
+    - Missing required headers
+  </Card>
   
-  / Handle specific error types
-  if (error.code === 401) {
-    console.error('Authentication failed. Check your API key.');
-  } else if (error.code === 422) {
-    console.error('Validation failed:', error.errors);
-  } else if (error.code === 429) {
-    console.error(`Rate limit exceeded. Try again in ${error.retry_after} seconds.`);
-  }
-});
-```
-
-### PHP
-
-```php
-<?php
-$ch = curl_init();
-
-curl_setopt($ch, CURLOPT_URL, 'https://api.notchpay.co/payments');
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
-    'amount' => 5000,
-    'currency' => 'XAF',
-    'customer' => [
-        'email' => 'customer@example.com'
-    ]
-]));
-
-$headers = [
-    'Authorization: YOUR_PUBLIC_KEY',
-    'Content-Type: application/json'
-];
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-$response = curl_exec($ch);
-$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-curl_close($ch);
-
-$data = json_decode($response, true);
-
-if ($httpCode >= 400) {
-    echo "Error: " . $data['message'] . "\n";
+  <Card title="Validation Errors" icon="triangle-exclamation" color="#dc2626">
+    **Status Codes**: 400, 422
     
-    / Handle specific error types
-    if ($httpCode === 401) {
-        echo "Authentication failed. Check your API key.\n";
-    } elseif ($httpCode === 422 && isset($data['errors'])) {
-        echo "Validation failed:\n";
-        foreach ($data['errors'] as $field => $errors) {
-            echo "- $field: " . implode(', ', $errors) . "\n";
-        }
-    } elseif ($httpCode === 429 && isset($data['retry_after'])) {
-        echo "Rate limit exceeded. Try again in " . $data['retry_after'] . " seconds.\n";
-    }
-} else {
-    echo "Success: " . $response . "\n";
-}
-```
-
-### Python
-
-```python
-import requests
-import json
-
-url = "https://api.notchpay.co/payments"
-payload = {
-    "amount": 5000,
-    "currency": "XAF",
-    "customer": {
-        "email": "customer@example.com"
-    }
-}
-headers = {
-    "Authorization": "YOUR_PUBLIC_KEY",
-    "Content-Type": "application/json"
-}
-
-try:
-    response = requests.post(url, json=payload, headers=headers)
-    response.raise_for_status()  # Raise an exception for 4XX/5XX responses
-    data = response.json()
-    print("Success:", data)
-except requests.exceptions.HTTPError as e:
-    error = e.response.json()
-    print("Error:", error["message"])
+    Occur when the request data doesn't meet the required format or constraints.
     
-    # Handle specific error types
-    if e.response.status_code == 401:
-        print("Authentication failed. Check your API key.")
-    elif e.response.status_code == 422 and "errors" in error:
-        print("Validation failed:")
-        for field, errors in error["errors"].items():
-            print(f"- {field}: {', '.join(errors)}")
-    elif e.response.status_code == 429 and "retry_after" in error:
-        print(f"Rate limit exceeded. Try again in {error['retry_after']} seconds.")
-except requests.exceptions.RequestException as e:
-    print("Request failed:", e)
-```
+    **Common causes**:
+    - Missing required fields
+    - Invalid field formats
+    - Values outside allowed ranges
+    - Incompatible parameter combinations
+  </Card>
+  
+  <Card title="Resource Errors" icon="circle-exclamation" color="#dc2626">
+    **Status Codes**: 404, 409
+    
+    Occur when the requested resource doesn't exist or there's a conflict.
+    
+    **Common causes**:
+    - Resource not found
+    - Resource already exists
+    - Resource in incompatible state
+  </Card>
+  
+  <Card title="System Errors" icon="server" color="#dc2626">
+    **Status Codes**: 429, 500, 503
+    
+    Occur due to rate limiting or server-side issues.
+    
+    **Common causes**:
+    - Rate limit exceeded
+    - Server error
+    - Service unavailable
+  </Card>
+</CardGroup>
 
 ## Best Practices for Error Handling
 
-1. **Always Check for Errors**: Don't assume API requests will always succeed. Check for errors in all API responses.
-
-2. **Handle Different Error Types**: Implement specific handling for different types of errors (authentication, validation, rate limiting, etc.).
-
-3. **Retry with Backoff**: For transient errors (like rate limiting or temporary server issues), implement retry logic with exponential backoff.
-
-```javascript
-/ Example of retry with exponential backoff in JavaScript
-async function makeRequestWithRetry(url, options, maxRetries = 3) {
-  let retries = 0;
+<Steps>
+  <Step title="Always Check for Errors">
+    Don't assume API requests will always succeed. Check for errors in all API responses.
+    
+    ```javascript
+    // Example in JavaScript
+    if (!response.ok) {
+      const error = await response.json();
+      // Handle error
+      console.error(`Error: ${error.message}`);
+    }
+    ```
+  </Step>
   
-  while (retries < maxRetries) {
-    try {
-      const response = await fetch(url, options);
+  <Step title="Handle Different Error Types">
+    Implement specific handling for different types of errors.
+    
+    ```javascript
+    // Example in JavaScript
+    if (error.code === 401) {
+      // Handle authentication errors
+      redirectToLogin();
+    } else if (error.code === 422) {
+      // Handle validation errors
+      showValidationErrors(error.errors);
+    } else if (error.code === 429) {
+      // Handle rate limiting
+      retryWithBackoff(request);
+    }
+    ```
+  </Step>
+  
+  <Step title="Implement Retry Logic">
+    For transient errors like rate limiting or temporary server issues, implement retry logic with exponential backoff.
+    
+    ```javascript
+    // Simplified example
+    async function makeRequestWithRetry(url, options, maxRetries = 3) {
+      let retries = 0;
       
-      if (response.status === 429) {
-        const error = await response.json();
-        const retryAfter = error.retry_after || Math.pow(2, retries);
-        console.log(`Rate limited. Retrying in ${retryAfter} seconds...`);
-        await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
-        retries++;
-        continue;
-      }
-      
-      if (!response.ok) {
-        const error = await response.json();
-        throw error;
-      }
-      
-      return await response.json();
-    } catch (error) {
-      if (retries === maxRetries - 1) {
-        throw error;
-      }
-      
-      / Only retry on certain errors
-      if (error.code >= 500) {
-        const delay = Math.pow(2, retries);
-        console.log(`Request failed. Retrying in ${delay} seconds...`);
-        await new Promise(resolve => setTimeout(resolve, delay * 1000));
-        retries++;
-      } else {
-        throw error;
+      while (retries < maxRetries) {
+        try {
+          const response = await fetch(url, options);
+          if (response.status === 429) {
+            // Rate limited, wait and retry
+            const retryAfter = Math.pow(2, retries);
+            await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+            retries++;
+            continue;
+          }
+          
+          return await response.json();
+        } catch (error) {
+          if (retries === maxRetries - 1 || error.code < 500) {
+            throw error; // Don't retry client errors or if max retries reached
+          }
+          
+          const delay = Math.pow(2, retries);
+          await new Promise(resolve => setTimeout(resolve, delay * 1000));
+          retries++;
+        }
       }
     }
-  }
-}
-```
+    ```
+  </Step>
+  
+  <Step title="Use Idempotency Keys">
+    For operations that shouldn't be repeated accidentally (like creating a payment), use idempotency keys.
+    
+    ```
+    Idempotency-Key: a-unique-string-for-this-request
+    ```
+    
+    This ensures that if you retry a failed request, the operation won't be performed twice.
+  </Step>
+  
+  <Step title="Provide User-Friendly Messages">
+    Translate technical error messages into user-friendly messages that help users understand what went wrong and how to fix it.
+    
+    ```javascript
+    // Map API errors to user-friendly messages
+    const errorMessages = {
+      'invalid_card': 'Your card information is incorrect. Please check and try again.',
+      'insufficient_funds': 'Your card has insufficient funds. Please use a different card.',
+      'expired_card': 'Your card has expired. Please use a different card.'
+    };
+    
+    // Display appropriate message
+    const userMessage = errorMessages[error.code] || 'An error occurred. Please try again.';
+    ```
+  </Step>
+</Steps>
 
-4. **Log Errors**: Log errors for debugging and monitoring purposes, but be careful not to log sensitive information.
+## Logging and Monitoring
 
-5. **Provide User-Friendly Messages**: Translate API error messages into user-friendly messages that help users understand what went wrong and how to fix it.
+<Callout type="warning">
+  Always log errors for debugging and monitoring purposes, but be careful not to log sensitive information like card details or API keys.
+</Callout>
 
-6. **Validate Before Submitting**: Validate data on the client side before submitting to the API to catch common errors early.
+Implement a robust logging system that captures:
+- Error codes and messages
+- Request IDs for correlation
+- Timestamps
+- Contextual information (without sensitive data)
 
-7. **Check for Idempotency**: When retrying failed requests, use idempotency keys to prevent duplicate operations.
-
-## Idempotency
-
-For operations that shouldn't be repeated accidentally (like creating a payment), Notch Pay supports idempotency keys. Include an `Idempotency-Key` header with a unique value for each request:
-
-```
-Idempotency-Key: a-unique-string-for-this-request
-```
-
-If you retry a request with the same idempotency key, Notch Pay will return the result of the original request instead of processing the request again.
+Regularly review your error logs to identify patterns and improve your integration.
 
 ## Next Steps
 
-- [API Reference](/api-reference/index) - Explore the complete API documentation
+- [API Errors Reference](/api-reference/errors) - Detailed error codes and troubleshooting
 - [Authentication](/get-started/authentication) - Learn about authentication methods
 - [API Response Format](/get-started/responses) - Understand the structure of API responses

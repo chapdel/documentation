@@ -5,9 +5,82 @@ description: Complete reference documentation for the Notch Pay API
 
 # API Reference
 
-<Note>
-  Welcome to the Notch Pay API reference. This documentation provides detailed information about the endpoints, request parameters, and response formats for the Notch Pay API.
-</Note>
+<div className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-green-900/30 dark:to-teal-900/30 p-6 rounded-lg mb-8 border border-green-100 dark:border-green-900/50">
+  <h2 className="text-xl font-bold text-green-800 dark:text-green-400 mb-2">Complete Notch Pay API Documentation</h2>
+  <p className="text-gray-700 dark:text-gray-300">This reference provides detailed information about all endpoints, request parameters, and response formats for the Notch Pay API.</p>
+</div>
+
+<Tabs>
+  <Tab title="Overview">
+    <p className="text-gray-700 dark:text-gray-300 mb-4">
+      The Notch Pay API is organized around REST principles. It uses standard HTTP verbs, returns JSON-encoded responses, and uses standard HTTP response codes to indicate API errors.
+    </p>
+    <p className="text-gray-700 dark:text-gray-300 mb-4">
+      Our API is designed to have predictable, resource-oriented URLs and to use HTTP response codes to indicate API errors. We use built-in HTTP features, like HTTP authentication and HTTP verbs, which can be understood by off-the-shelf HTTP clients.
+    </p>
+  </Tab>
+  <Tab title="Features">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+      <div className="flex items-start">
+        <div className="mt-1 mr-3 text-green-600">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <div>
+          <p className="font-medium">RESTful Design</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Predictable resource-oriented URLs</p>
+        </div>
+      </div>
+      <div className="flex items-start">
+        <div className="mt-1 mr-3 text-green-600">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <div>
+          <p className="font-medium">JSON Responses</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">All responses are in JSON format</p>
+        </div>
+      </div>
+      <div className="flex items-start">
+        <div className="mt-1 mr-3 text-green-600">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <div>
+          <p className="font-medium">Comprehensive Error Handling</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Detailed error messages and codes</p>
+        </div>
+      </div>
+      <div className="flex items-start">
+        <div className="mt-1 mr-3 text-green-600">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <div>
+          <p className="font-medium">Webhooks Support</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Real-time event notifications</p>
+        </div>
+      </div>
+    </div>
+  </Tab>
+  <Tab title="Getting Started">
+    <Steps>
+      <Step title="Create an Account">
+        Sign up for a Notch Pay account at <a href="https://business.notchpay.co/register" className="text-green-600 hover:underline">business.notchpay.co</a>
+      </Step>
+      <Step title="Get Your API Keys">
+        Find your API keys in your dashboard under Settings > API Keys
+      </Step>
+      <Step title="Make Your First API Call">
+        Follow our <a href="/get-started/quickstart" className="text-green-600 hover:underline">Quickstart Guide</a> to make your first API call
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
 
 ## Getting Started
 
@@ -46,7 +119,7 @@ description: Complete reference documentation for the Notch Pay API
         <p className="mt-1">Use test API keys that start with <code>test_</code></p>
         <p className="mt-2">Test transactions don't affect real money and are only visible in test mode.</p>
         <Callout type="info" className="mt-3">
-          Test cards and accounts are available in the <a href="/testing" className="text-blue-500 hover:underline">Testing Guide</a>.
+          Test cards and accounts are available in the <a href="/get-started/testing" className="text-blue-500 hover:underline">Testing Guide</a>.
         </Callout>
       </div>
     </div>
@@ -259,5 +332,5 @@ description: Complete reference documentation for the Notch Pay API
 </CardGroup>
 
 <Callout type="success">
-  Ready to start building? Check out our [Quickstart Guide](/get-started/quickstart) to make your first API request.
+  Ready to start building? Check out our [Getting Started Guide](/get-started/index) to make your first API request.
 </Callout>

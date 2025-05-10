@@ -5,14 +5,27 @@ description: Learn how to authenticate with the Notch Pay API and secure your in
 
 # Authentication
 
-Proper authentication is essential for securing your Notch Pay integration. This guide explains the authentication methods available and how to implement them correctly in your applications.
+Proper authentication is essential for securing your Notch Pay integration. This guide explains the key concepts of authentication and how to get started with implementing it in your applications.
 
-## API Keys
+<Callout type="info">
+  For detailed API specifications and code examples in multiple languages, see the [Authentication API Reference](/api-reference/authentication).
+</Callout>
+
+## API Keys Overview
 
 Notch Pay uses API keys to authenticate requests to our API. When you create a Notch Pay account, you'll receive two sets of API keys:
 
-1. **Test API Keys**: Used for development and testing. These keys contains `test_`.
-2. **Live API Keys**: Used for production.
+<CardGroup cols={2}>
+  <Card title="Test API Keys" icon="vial" color="#16A34A">
+    Used for development and testing. These keys contain the `test_` prefix.
+    
+    All transactions made with test API keys don't affect your live data and are only visible in test mode.
+  </Card>
+  
+  <Card title="Live API Keys" icon="rocket" color="#16A34A">
+    Used for production environments. Only use these keys when your application is ready for real transactions.
+  </Card>
+</CardGroup>
 
 You can find your API keys in your [Notch Pay Business suite](https://business.notchpay.co) under Settings > API Keys.
 
@@ -20,266 +33,90 @@ You can find your API keys in your [Notch Pay Business suite](https://business.n
 
 Notch Pay provides two types of API keys for different purposes:
 
-### Public Keys
+<Tabs>
+  <Tab title="Public Keys">
+    Public keys (starting with `pk_`) are used for client-side operations that don't require access to sensitive data. These keys can be safely included in your frontend code.
+    
+    Example: `pk_test_123456789abcdef`
+    
+    **Use for**: Creating payment sessions, initializing the Notch Pay SDK in client-side code
+  </Tab>
+  
+  <Tab title="Private Keys">
+    Private keys (starting with `sk_`) are used for server-side operations that require access to sensitive data. These keys should never be exposed in your frontend code or public repositories.
+    
+    Example: `sk_test_123456789abcdef`
+    
+    **Use for**: Accessing account information, creating transfers, managing webhooks
+  </Tab>
+</Tabs>
 
-Public keys (starting with `pk_`) are used for client-side operations that don't require access to sensitive data. These keys can be safely included in your frontend code.
+## Authentication Methods
 
-Example of a public key:
-```
-pk_test_123456789abcdef
-```
-
-### Private Keys
-
-Private keys (starting with `sk_`) are used for server-side operations that require access to sensitive data. These keys should never be exposed in your frontend code or public repositories.
-
-Example of a secret key:
-```
-sk_test_123456789abcdef
-```
-
-## Using API Keys
+Notch Pay supports several authentication methods depending on the type of operation:
 
 ### Standard Authentication
 
-For most API requests, you need to include your API key in the `Authorization` header:
+For most API requests, include your API key in the `Authorization` header:
 
 ```
-Authorization: YOUR_PUBLIC_KEY
+Authorization: YOUR_API_KEY
 ```
 
-Example request using cURL:
+### Advanced Authentication
 
-```bash
-curl https://api.notchpay.co/payments \
-  -H "Authorization: pk_test_123456789abcdef" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "amount": 5000,
-    "currency": "XAF",
-    "customer": {
-      "email": "customer@example.com"
-    }
-  }'
-```
-
-### Client-Side Authentication
-
-For client-side operations, you can use your public key:
-
-```javascript
-/ JavaScript example
-const notchpay = new NotchPay('pk_test_123456789abcdef');
-
-notchpay.createPayment({
-  amount: 5000,
-  currency: 'XAF',
-  customer: {
-    email: 'customer@example.com'
-  }
-});
-```
-
-## Advanced Authentication
-
-Some endpoints that perform sensitive operations require additional authentication beyond the standard API key. These endpoints are protected by the `GrantedMiddleware` and require a private key to be passed in the `X-Grant` header.
+Some sensitive operations require additional authentication using the `X-Grant` header with your private key:
 
 ```
 X-Grant: YOUR_PRIVATE_KEY
 ```
 
-### Endpoints Requiring Advanced Authentication
+### Sync Account Authentication
 
-The following endpoints require the `X-Grant` header:
-
-- `/balance` - Check your account balance
-- `/transfers/*` - All transfer-related endpoints
-- `/beneficiaries/*` - All beneficiary-related endpoints
-- `/webhooks/*` - All webhook-related endpoints
-
-Example request with advanced authentication:
-
-```bash
-curl https://api.notchpay.co/balance \
-  -H "Authorization: pk_test_123456789abcdef" \
-  -H "X-Grant: your_private_key"
-```
-
-## Authentication for Sync Accounts
-
-If you're using Notch Pay Sync to manage multiple connected accounts, you need to specify which account you're acting on behalf of by including the `X-Sync` header:
+When working with connected accounts, specify the account using the `X-Sync` header:
 
 ```
 X-Sync: SYNC_ACCOUNT_ID
 ```
 
-Example request for a sync account:
-
-```bash
-curl https://api.notchpay.co/payments \
-  -H "Authorization: pk_test_123456789abcdef" \
-  -H "X-Sync: sync_123456789" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "amount": 5000,
-    "currency": "XAF",
-    "customer": {
-      "email": "customer@example.com"
-    }
-  }'
-```
-
-## Authentication in Different Programming Languages
-
-### PHP
-
-```php
-<?php
-$ch = curl_init();
-
-curl_setopt($ch, CURLOPT_URL, 'https://api.notchpay.co/payments');
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
-    'amount' => 5000,
-    'currency' => 'XAF',
-    'customer' => [
-        'email' => 'customer@example.com'
-    ]
-]));
-
-$headers = [
-    'Authorization: pk_test_123456789abcdef',
-    'Content-Type: application/json'
-];
-curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-$response = curl_exec($ch);
-curl_close($ch);
-```
-
-### Python
-
-```python
-import requests
-import json
-
-url = "https://api.notchpay.co/payments"
-payload = {
-    "amount": 5000,
-    "currency": "XAF",
-    "customer": {
-        "email": "customer@example.com"
-    }
-}
-headers = {
-    "Authorization": "pk_test_123456789abcdef",
-    "Content-Type": "application/json"
-}
-
-response = requests.post(url, json=payload, headers=headers)
-print(response.json())
-```
-
-### Node.js
-
-```javascript
-const axios = require('axios');
-
-axios.post('https://api.notchpay.co/payments', {
-  amount: 5000,
-  currency: 'XAF',
-  customer: {
-    email: 'customer@example.com'
-  }
-}, {
-  headers: {
-    'Authorization': 'pk_test_123456789abcdef',
-    'Content-Type': 'application/json'
-  }
-})
-.then(response => {
-  console.log(response.data);
-})
-.catch(error => {
-  console.error('Error:', error);
-});
-```
-
 ## API Key Security
 
-Your API keys carry significant privileges, so it's crucial to keep them secure:
+<Steps>
+  <Step title="Keep Keys Secure">
+    Never share your private keys in publicly accessible areas such as GitHub, client-side code, or social media.
+  </Step>
+  
+  <Step title="Use Environment Variables">
+    Store API keys in environment variables or secure vaults, not in your application code.
+  </Step>
+  
+  <Step title="Implement Access Controls">
+    Limit who can access your API keys within your organization.
+  </Step>
+  
+  <Step title="Rotate Keys Regularly">
+    Periodically rotate your API keys, especially if you suspect they may have been compromised.
+  </Step>
+  
+  <Step title="Use Test Keys for Development">
+    Always use test API keys for development and testing to avoid accidental charges.
+  </Step>
+</Steps>
 
-1. **Never share your Private keys** in publicly accessible areas such as GitHub, client-side code, or social media.
-2. **Use environment variables** or secure vaults to store API keys in your applications.
-3. **Implement proper access controls** to limit who can access your API keys.
-4. **Rotate your API keys** periodically, especially if you suspect they may have been compromised.
-5. **Use test API keys** for development and testing to avoid accidental charges.
+## Common Authentication Errors
 
-## Authentication Errors
+The API returns specific error codes and messages when authentication fails:
 
-If authentication fails, the API will return one of the following error responses:
-
-### Missing API Key
-
-```json
-{
-  "code": 401,
-  "status": "Unauthorized",
-  "message": "API key is missing"
-}
-```
-
-### Invalid API Key
-
-```json
-{
-  "code": 401,
-  "status": "Unauthorized",
-  "message": "Invalid API key"
-}
-```
-
-### Missing Grant Key
-
-```json
-{
-  "code": 403,
-  "status": "Forbidden",
-  "message": "This endpoint requires additional authentication"
-}
-```
-
-### Invalid Grant Key
-
-```json
-{
-  "code": 403,
-  "status": "Forbidden",
-  "message": "Invalid grant key"
-}
-```
-
-### Invalid Sync Account
-
-```json
-{
-  "code": 404,
-  "status": "Not Found",
-  "message": "Sync account not found"
-}
-```
-
-## Best Practices
-
-1. **Use HTTPS**: Always use HTTPS to encrypt your API requests and prevent man-in-the-middle attacks.
-2. **Implement Proper Error Handling**: Handle authentication errors gracefully in your application.
-3. **Limit API Key Exposure**: Only share API keys with trusted systems and developers.
-4. **Monitor API Usage**: Regularly review your API logs to detect unauthorized access.
-5. **Implement Rate Limiting**: Protect your API endpoints from brute force attacks by implementing rate limiting.
+| Error | Description | Solution |
+|-------|-------------|----------|
+| 401 - API key missing | No API key was provided | Include your API key in the `Authorization` header |
+| 401 - Invalid API key | The API key is incorrect or revoked | Check that you're using the correct API key |
+| 403 - Missing grant key | Advanced authentication required | Include your private key in the `X-Grant` header |
+| 403 - Invalid grant key | The private key is incorrect | Verify your private key is correct |
+| 404 - Sync account not found | Invalid sync account ID | Check that the sync account exists and you have access to it |
 
 ## Next Steps
 
-- [API Reference](/api-reference) - Explore the complete API documentation
+- [Authentication API Reference](/api-reference/authentication) - Detailed API specifications and code examples
 - [Error Handling](/get-started/errors) - Learn about error handling in the Notch Pay API
 - [Security Best Practices](/security/best-practices) - Discover more ways to secure your integration

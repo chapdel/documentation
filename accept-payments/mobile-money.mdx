@@ -48,11 +48,11 @@ For more control over the payment flow, you can use the Notch Pay API to process
 #### 1. Initialize a Payment
 
 ```javascript
-/ Create a payment
+// Create a payment
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_PUBLIC_KEY',
+    'Authorization': 'YOUR_API_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -69,7 +69,7 @@ fetch('https://api.notchpay.co/payments', {
 })
 .then(response => response.json())
 .then(data => {
-  / Store the payment reference for the next step
+  // Store the payment reference for the next step
   const paymentReference = data.transaction.reference;
 })
 ```
@@ -77,44 +77,44 @@ fetch('https://api.notchpay.co/payments', {
 #### 2. Process the Payment with Mobile Money
 
 ```javascript
-/ Process the payment with Mobile Money
+// Process the payment with Mobile Money
 fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
   method: 'POST',
   headers: {
-    'Authorization': 'YOUR_PUBLIC_KEY',
+    'Authorization': 'YOUR_API_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    channel: 'cm.mtn', / or 'cm.orange' for Orange Money
+    channel: 'cm.mtn', // or 'cm.orange' for Orange Money
     data: {
-      phone: '+237680000000' / Customer's Mobile Money phone number
+      phone: '+237680000000' // Customer's Mobile Money phone number
     }
   })
 })
 .then(response => response.json())
 .then(data => {
-  / Payment is now processing
-  / The customer will receive a prompt on their phone
+  // Payment is now processing
+  // The customer will receive a prompt on their phone
 })
 ```
 
 #### 3. Verify the Payment Status
 
 ```javascript
-/ Check the payment status
+// Check the payment status
 fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
   headers: {
-    'Authorization': 'YOUR_PUBLIC_KEY'
+    'Authorization': 'YOUR_API_KEY'
   }
 })
 .then(response => response.json())
 .then(data => {
   if (data.transaction.status === 'complete') {
-    / Payment successful
+    // Payment successful
   } else if (data.transaction.status === 'failed') {
-    / Payment failed
+    // Payment failed
   } else {
-    / Payment still processing
+    // Payment still processing
   }
 })
 ```
@@ -132,7 +132,7 @@ When processing a payment with Mobile Money, you need to specify the correct cha
 | Wave | Senegal | `sn.wave` |
 | Orange | Senegal | `sn.orange` |
 
-For a complete list of supported channels, use the [Channels API](/api/resources#list-payment-channels).
+For a complete list of supported channels, use the [Channels API](/api-reference/resources).
 
 ## Best Practices
 
@@ -161,11 +161,11 @@ To test Mobile Money payments in the sandbox environment:
    - Orange: `+237690000000`
 3. The test payments will be automatically approved or declined based on the test scenario
 
-For more information on testing, see the [Testing Guide](/testing).
+For more information on testing, see the [Testing Guide](/get-started/testing).
 
 ## Next Steps
 
 - [Collect](/accept-payments/collect) - Use our hosted payment page for a quick integration
-- [API Integration](/accept-payments/api-integration) - Build a custom payment experience
+- [Direct Charge](/accept-payments/charge) - Build a custom payment experience
 - [Invoices](/accept-payments/invoices) - Create and manage professional invoices
-- [Webhooks](/webhooks) - Set up webhooks for payment notifications
+- [Webhooks](/get-started/webhooks/index) - Set up webhooks for payment notifications

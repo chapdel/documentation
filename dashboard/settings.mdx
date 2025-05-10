@@ -1,0 +1,382 @@
+---
+title: Dashboard Settings
+description: Learn how to configure your Notch Pay account settings
+---
+
+# Dashboard Settings
+
+The Settings section of the Notch Pay dashboard allows you to configure your account, manage team members, set up integrations, and customize your payment experience. This guide will walk you through the various settings available and how to configure them.
+
+## Accessing Settings
+
+To access the Settings section:
+
+1. Log in to your [Notch Pay Business suite](https://business.notchpay.co)
+2. Click on **Settings** in the main navigation menu
+
+## Business Profile
+
+<Tabs>
+  <Tab title="Company Information">
+    The Company Information section allows you to update your business details:
+    
+    1. Navigate to **Settings > Business Profile > Company Information**
+    2. Update your business information:
+       - Business name
+       - Business type
+       - Registration number
+       - Tax ID
+       - Business address
+       - Contact information
+    3. Click **Save Changes**
+    
+    Keeping your business information up-to-date is important for compliance and verification purposes.
+  </Tab>
+  
+  <Tab title="Branding">
+    The Branding section allows you to customize your payment pages and customer communications:
+    
+    1. Navigate to **Settings > Business Profile > Branding**
+    2. Customize your branding:
+       - Upload your logo
+       - Set your brand colors
+       - Customize email templates
+       - Set up a custom domain for payment pages
+    3. Click **Save Changes**
+    
+    Consistent branding helps build trust with your customers and provides a seamless payment experience.
+  </Tab>
+  
+  <Tab title="Bank Accounts">
+    The Bank Accounts section allows you to manage where your funds are settled:
+    
+    1. Navigate to **Settings > Business Profile > Bank Accounts**
+    2. View your existing bank accounts
+    3. Add a new bank account:
+       - Bank name
+       - Account number
+       - Account name
+       - Branch code (if applicable)
+       - Currency
+    4. Set a default bank account for settlements
+    
+    You can add multiple bank accounts for different currencies or purposes.
+  </Tab>
+</Tabs>
+
+## Team Management
+
+<AccordionGroup>
+  <Accordion title="Team Members">
+    The Team Members section allows you to invite and manage users who have access to your Notch Pay account:
+    
+    1. Navigate to **Settings > Team Management > Team Members**
+    2. View existing team members and their roles
+    3. Invite a new team member:
+       - Email address
+       - Name
+       - Role (Admin, Manager, Viewer, etc.)
+       - Access permissions
+    4. Click **Send Invitation**
+    
+    Team members will receive an email invitation to join your Notch Pay account.
+  </Accordion>
+  
+  <Accordion title="Roles and Permissions">
+    The Roles and Permissions section allows you to define what different team members can do:
+    
+    1. Navigate to **Settings > Team Management > Roles and Permissions**
+    2. View existing roles
+    3. Create a new role:
+       - Role name
+       - Description
+       - Permissions:
+         - View transactions
+         - Create payments
+         - Process refunds
+         - Create transfers
+         - Manage customers
+         - Manage beneficiaries
+         - Access reports
+         - Manage settings
+    4. Click **Create Role**
+    
+    Custom roles help you implement the principle of least privilege, giving team members only the access they need.
+  </Accordion>
+  
+  <Accordion title="Activity Logs">
+    The Activity Logs section shows actions taken by team members:
+    
+    1. Navigate to **Settings > Team Management > Activity Logs**
+    2. View a chronological list of actions:
+       - User who performed the action
+       - Action type
+       - Date and time
+       - IP address
+       - Additional details
+    
+    Activity logs help you monitor account usage and investigate any unauthorized actions.
+  </Accordion>
+</AccordionGroup>
+
+## Developer Settings
+
+<div id="developer-settings"></div>
+
+<Tabs>
+  <Tab title="API Keys">
+    The API Keys section allows you to manage your API credentials:
+    
+    1. Navigate to **Settings > Developer Settings > API Keys**
+    2. View your existing API keys
+    3. Generate a new API key:
+       - Key name or description
+       - Environment (Test or Live)
+       - Permissions
+    4. Click **Generate Key**
+    
+    Remember to keep your API keys secure and never share them publicly.
+  </Tab>
+  
+  <Tab title="Webhooks">
+    The Webhooks section allows you to configure endpoints to receive real-time notifications:
+    
+    1. Navigate to **Settings > Developer Settings > Webhooks**
+    2. View existing webhook endpoints
+    3. Add a new webhook endpoint:
+       - Endpoint URL
+       - Description
+       - Events to subscribe to
+       - Secret key for signature verification
+    4. Click **Add Endpoint**
+    
+    You can test webhook endpoints directly from this section to ensure they're working correctly.
+  </Tab>
+  
+  <Tab title="Checkout Settings">
+    The Checkout Settings section allows you to customize the payment experience:
+    
+    1. Navigate to **Settings > Developer Settings > Checkout Settings**
+    2. Configure checkout options:
+       - Default currency
+       - Payment methods to display
+       - Checkout page appearance
+       - Success and cancel URLs
+       - Custom fields
+    3. Click **Save Settings**
+    
+    These settings apply to payment pages created through the API or dashboard.
+  </Tab>
+</Tabs>
+
+## Security Settings
+
+<AccordionGroup>
+  <Accordion title="Authentication">
+    The Authentication section allows you to configure login security:
+    
+    1. Navigate to **Settings > Security Settings > Authentication**
+    2. Configure authentication options:
+       - Password requirements
+       - Two-factor authentication
+       - Session timeout
+       - Login attempt limits
+    3. Click **Save Settings**
+    
+    Strong authentication settings help protect your account from unauthorized access.
+  </Accordion>
+  
+  <Accordion title="IP Restrictions">
+    The IP Restrictions section allows you to control which IP addresses can access your account:
+    
+    1. Navigate to **Settings > Security Settings > IP Restrictions**
+    2. Enable IP restrictions
+    3. Add allowed IP addresses or ranges
+    4. Set exceptions for specific users or actions
+    5. Click **Save Settings**
+    
+    IP restrictions add an extra layer of security by limiting account access to trusted networks.
+  </Accordion>
+  
+  <Accordion title="Fraud Prevention">
+    The Fraud Prevention section allows you to configure fraud detection settings:
+    
+    1. Navigate to **Settings > Security Settings > Fraud Prevention**
+    2. Configure fraud prevention options:
+       - Transaction limits
+       - Velocity checks
+       - High-risk country restrictions
+       - Card verification requirements
+       - 3D Secure settings
+    3. Click **Save Settings**
+    
+    Effective fraud prevention settings help protect your business from fraudulent transactions.
+  </Accordion>
+</AccordionGroup>
+
+## Notification Settings
+
+<Tabs>
+  <Tab title="Email Notifications">
+    The Email Notifications section allows you to configure which events trigger email notifications:
+    
+    1. Navigate to **Settings > Notification Settings > Email Notifications**
+    2. Configure email notification preferences:
+       - Transaction notifications
+       - Account notifications
+       - Security notifications
+       - System notifications
+    3. Specify recipients for different notification types
+    4. Click **Save Settings**
+    
+    Email notifications help you stay informed about important account activities.
+  </Tab>
+  
+  <Tab title="SMS Notifications">
+    The SMS Notifications section allows you to configure text message alerts:
+    
+    1. Navigate to **Settings > Notification Settings > SMS Notifications**
+    2. Add and verify phone numbers
+    3. Configure SMS notification preferences:
+       - High-value transactions
+       - Failed transactions
+       - Security alerts
+       - Balance updates
+    4. Click **Save Settings**
+    
+    SMS notifications provide immediate alerts for critical events.
+  </Tab>
+  
+  <Tab title="In-App Notifications">
+    The In-App Notifications section allows you to configure dashboard alerts:
+    
+    1. Navigate to **Settings > Notification Settings > In-App Notifications**
+    2. Configure in-app notification preferences:
+       - Transaction notifications
+       - Account notifications
+       - Security notifications
+       - System notifications
+    3. Set notification display duration
+    4. Click **Save Settings**
+    
+    In-app notifications keep you informed while using the dashboard.
+  </Tab>
+</Tabs>
+
+## Integration Settings
+
+<AccordionGroup>
+  <Accordion title="Payment Integrations">
+    The Payment Integrations section allows you to connect with third-party services:
+    
+    1. Navigate to **Settings > Integration Settings > Payment Integrations**
+    2. Browse available integrations:
+       - E-commerce platforms
+       - Accounting software
+       - CRM systems
+       - Inventory management
+    3. Click on an integration to configure it
+    4. Follow the integration-specific setup instructions
+    
+    Integrations help you connect Notch Pay with your existing business tools.
+  </Accordion>
+  
+  <Accordion title="Custom Integration">
+    The Custom Integration section provides resources for building your own integrations:
+    
+    1. Navigate to **Settings > Integration Settings > Custom Integration**
+    2. Access integration resources:
+       - API documentation
+       - SDKs and libraries
+       - Sample code
+       - Testing tools
+    
+    Custom integrations give you maximum flexibility to tailor Notch Pay to your specific needs.
+  </Accordion>
+</AccordionGroup>
+
+## Account Preferences
+
+<Tabs>
+  <Tab title="General Preferences">
+    The General Preferences section allows you to set basic account settings:
+    
+    1. Navigate to **Settings > Account Preferences > General Preferences**
+    2. Configure general settings:
+       - Default currency
+       - Date and time format
+       - Language preference
+       - Timezone
+    3. Click **Save Preferences**
+    
+    These settings affect how information is displayed throughout your dashboard.
+  </Tab>
+  
+  <Tab title="Dashboard Customization">
+    The Dashboard Customization section allows you to personalize your dashboard view:
+    
+    1. Navigate to **Settings > Account Preferences > Dashboard Customization**
+    2. Configure dashboard settings:
+       - Default landing page
+       - Widgets to display
+       - Widget arrangement
+       - Data refresh rate
+    3. Click **Save Preferences**
+    
+    A customized dashboard helps you focus on the information that matters most to your business.
+  </Tab>
+</Tabs>
+
+## Billing and Subscription
+
+<AccordionGroup>
+  <Accordion title="Billing Information">
+    The Billing Information section shows your payment details for Notch Pay services:
+    
+    1. Navigate to **Settings > Billing and Subscription > Billing Information**
+    2. View and update billing information:
+       - Billing contact
+       - Billing address
+       - Tax information
+       - Payment method
+    
+    Keeping your billing information up-to-date ensures uninterrupted service.
+  </Accordion>
+  
+  <Accordion title="Subscription Plan">
+    The Subscription Plan section shows your current plan and allows you to upgrade:
+    
+    1. Navigate to **Settings > Billing and Subscription > Subscription Plan**
+    2. View your current plan details:
+       - Plan name
+       - Monthly/annual fee
+       - Transaction fees
+       - Feature limitations
+    3. Compare available plans
+    4. Upgrade or change your plan if needed
+    
+    Choosing the right plan helps you optimize costs while getting the features you need.
+  </Accordion>
+  
+  <Accordion title="Billing History">
+    The Billing History section shows your past invoices and payments:
+    
+    1. Navigate to **Settings > Billing and Subscription > Billing History**
+    2. View a list of invoices:
+       - Invoice date
+       - Amount
+       - Status
+       - Payment method
+    3. Download or print invoices
+    
+    Billing history provides a record of your Notch Pay service payments.
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+Now that you know how to configure your account settings, explore these related guides:
+
+- [Dashboard Overview](/dashboard/overview) - Learn about the main dashboard interface
+- [Transactions](/dashboard/transactions) - Manage payments and transfers
+- [Reports](/dashboard/reports) - Generate and analyze financial reports

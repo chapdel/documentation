@@ -7,8 +7,13 @@
     "light": "#07C983",
     "dark": "#15803D"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.png",
   "navigation": {
+    "announcement": {
+      "text": "📢 We've updated our documentation! Check out what's new",
+      "href": "/transition",
+      "dismissible": false
+    },
     "tabs": [
       {
         "tab": "Guides",
@@ -17,7 +22,9 @@
             "group": "Get Started",
             "pages": [
               "index",
+              "transition",
               "get-started/index",
+              "get-started/quickstart",
               "get-started/authentication",
               "get-started/responses",
               "get-started/errors",
@@ -45,7 +52,10 @@
             "group": "Dashboard",
             "pages": [
               "dashboard/index",
-              "dashboard/overview"
+              "dashboard/overview",
+              "dashboard/transactions",
+              "dashboard/reports",
+              "dashboard/settings"
             ]
           }
         ]
