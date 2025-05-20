@@ -56,19 +56,20 @@ The easiest way to process a refund is through your Notch Pay dashboard:
 You can also process refunds programmatically using the API:
 
 ```javascript
-/ Process a refund
+// Process a refund
 fetch('https://api.notchpay.co/refunds', {
   method: 'POST',
   headers: {
     'Authorization': 'YOUR_PUBLIC_KEY',
+    'X-Grant': 'YOUR_PRIVATE_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
-    payment: 'pay_123456789', / Payment ID or reference
-    amount: 5000, / For partial refunds (in the smallest currency unit)
-    / Omit amount for full refunds
+    payment: 'pay_123456789', // Payment ID or reference
+    amount: 5000, // For partial refunds (in the smallest currency unit)
+    // Omit amount for full refunds
     reason: 'Customer requested cancellation',
-    metadata: { / Optional
+    metadata: { // Optional
       order_id: '12345',
       customer_service_rep: 'jane_doe'
     }
@@ -76,8 +77,8 @@ fetch('https://api.notchpay.co/refunds', {
 })
 .then(response => response.json())
 .then(data => {
-  console.log(data.refund.id); / The refund ID
-  console.log(data.refund.status); / The refund status
+  console.log(data.refund.id); // The refund ID
+  console.log(data.refund.status); // The refund status
 })
 ```
 
@@ -92,6 +93,7 @@ fetch('https://api.notchpay.co/refunds', {
   method: 'POST',
   headers: {
     'Authorization': 'YOUR_PUBLIC_KEY',
+    'X-Grant': 'YOUR_PRIVATE_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
@@ -110,11 +112,12 @@ fetch('https://api.notchpay.co/refunds', {
   method: 'POST',
   headers: {
     'Authorization': 'YOUR_PUBLIC_KEY',
+    'X-Grant': 'YOUR_PRIVATE_KEY',
     'Content-Type': 'application/json'
   },
   body: JSON.stringify({
     payment: 'pay_123456789',
-    amount: 2500, / Refund half of a 5000 payment
+    amount: 2500, // Refund half of a 5000 payment
     reason: 'Partial order cancellation'
   })
 })
@@ -193,14 +196,14 @@ Example webhook payload for a refund event:
 
 ```json
 {
-  "type": "refund.succeeded",
+  "type": "refund.complete",
   "data": {
     "id": "ref_123456789",
     "amount": 5000,
     "currency": "XAF",
     "payment": "pay_123456789",
     "reason": "Customer requested cancellation",
-    "status": "succeeded",
+    "status": "complete",
     "created_at": "2023-01-01T12:00:00Z",
     "metadata": {
       "order_id": "12345",

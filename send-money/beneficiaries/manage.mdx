@@ -22,6 +22,8 @@ You can retrieve a list of beneficiaries using the [Beneficiaries API](/api-refe
 
 ```bash
 GET https://api.notchpay.co/beneficiaries
+Authorization: YOUR_PUBLIC_KEY
+X-Grant: YOUR_PRIVATE_KEY
 ```
 
 Response:
@@ -63,6 +65,8 @@ To retrieve a specific beneficiary:
 
 ```bash
 GET https://api.notchpay.co/beneficiaries/{id}
+Authorization: YOUR_PUBLIC_KEY
+X-Grant: YOUR_PRIVATE_KEY
 ```
 
 Response:
@@ -96,6 +100,9 @@ To update a beneficiary, you can use the PUT method:
 
 ```bash
 PUT https://api.notchpay.co/beneficiaries/{id}
+Authorization: YOUR_PUBLIC_KEY
+X-Grant: YOUR_PRIVATE_KEY
+Content-Type: application/json
 ```
 
 Request body:
@@ -143,6 +150,8 @@ To delete a beneficiary:
 
 ```bash
 DELETE https://api.notchpay.co/beneficiaries/{id}
+Authorization: YOUR_PUBLIC_KEY
+X-Grant: YOUR_PRIVATE_KEY
 ```
 
 Response:

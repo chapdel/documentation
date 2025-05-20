@@ -3,7 +3,6 @@ title: SDKs & Libraries
 description: Official Notch Pay libraries for various programming languages
 ---
 
-# SDKs & Libraries
 
 <div className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-green-900/30 dark:to-teal-900/30 p-6 rounded-lg mb-8 border border-green-100 dark:border-green-900/50">
   <h2 className="text-xl font-bold text-green-800 dark:text-green-400 mb-2">Accelerate Your Integration</h2>
@@ -40,7 +39,7 @@ description: Official Notch Pay libraries for various programming languages
       </li>
     </ul>
   </div>
-  
+
   <div className="flex-1 p-5 border rounded-lg bg-white dark:bg-gray-800">
     <h3 className="text-lg font-semibold mb-3">SDK Features</h3>
     <ul className="space-y-2">
@@ -128,27 +127,31 @@ description: Official Notch Pay libraries for various programming languages
 
 Each SDK has its own installation instructions. Please refer to the specific SDK documentation for detailed installation steps.
 
-### JavaScript
 
-```bash
-# Using npm
-npm install notchpay-js
+<Tabs>
+    <Tab title="Javascript">
+        ```bash
+        # Using npm
+        npm install notchpay-js
+        ```
 
-# Using yarn
-yarn add notchpay-js
-```
+        ```bash
+        # Using yarn
+        yarn add notchpay-js
+        ```
+    </Tab>
+    <Tab title="PHP">
+        ```bash
+        composer require notchpay/notchpay-php
+        ```
+    </Tab>
+    <Tab title="Python">
+        ```bash
+        pip install notchpay
+        ```
+    </Tab>
+</Tabs>
 
-### PHP
-
-```bash
-composer require notchpay/notchpay-php
-```
-
-### Python
-
-```bash
-pip install notchpay
-```
 
 ## Basic Usage
 
@@ -171,7 +174,7 @@ notchpay.payments.create({
   callback: 'https://example.com/callback'
 })
 .then(response => {
-  / Redirect to payment page
+  // Redirect to payment page
   window.location.href = response.authorization_url;
 })
 .catch(error => {
@@ -198,8 +201,8 @@ try {
         'description' => 'Payment for Order #123',
         'callback' => 'https://example.com/callback'
     ]);
-    
-    / Redirect to payment page
+
+    // Redirect to payment page
     header('Location: ' . $payment->authorization_url);
     exit;
 } catch (\Notch Pay\Exception\ApiException $e) {
@@ -225,7 +228,7 @@ try:
         description='Payment for Order #123',
         callback='https://example.com/callback'
     )
-    
+
     # Redirect to payment page
     print(payment.authorization_url)
 except notchpay.error.Notch PayError as e:
@@ -264,7 +267,7 @@ In addition to our official SDKs, there are community-maintained libraries for o
       <a href="/sdks/mobile" className="block text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300">Mobile SDKs Documentation</a>
     </div>
   </div>
-  
+
   <div className="border rounded-lg p-6 hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
     <div className="flex items-center mb-4">
       <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
@@ -299,7 +302,7 @@ In addition to our official SDKs, there are community-maintained libraries for o
       Contact Support
     </a>
   </div>
-  
+
   <div className="border rounded-lg p-6 hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
     <div className="flex items-center mb-4">
       <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
@@ -320,7 +323,7 @@ In addition to our official SDKs, there are community-maintained libraries for o
 
 <div className="p-6 border rounded-lg bg-gradient-to-r from-green-50 to-teal-50 dark:from-green-900/30 dark:to-teal-900/30 mb-8">
   <h3 className="text-xl font-semibold mb-4">Choose Your SDK & Start Building</h3>
-  
+
   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
     <a href="/sdks/javascript" className="block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700">
       <div className="flex items-center mb-3">
@@ -333,7 +336,7 @@ In addition to our official SDKs, there are community-maintained libraries for o
       </div>
       <p className="text-sm text-gray-600 dark:text-gray-400">For web applications, Node.js backends, and React Native apps</p>
     </a>
-    
+
     <a href="/sdks/php" className="block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700">
       <div className="flex items-center mb-3">
         <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center mr-2">
@@ -345,7 +348,7 @@ In addition to our official SDKs, there are community-maintained libraries for o
       </div>
       <p className="text-sm text-gray-600 dark:text-gray-400">For PHP applications and frameworks like Laravel, Symfony, or WordPress</p>
     </a>
-    
+
     <a href="/sdks/python" className="block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700">
       <div className="flex items-center mb-3">
         <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-2">
@@ -357,7 +360,7 @@ In addition to our official SDKs, there are community-maintained libraries for o
       </div>
       <p className="text-sm text-gray-600 dark:text-gray-400">For Python applications and frameworks like Django or Flask</p>
     </a>
-    
+
     <a href="/sdks/mobile" className="block p-4 bg-white dark:bg-gray-800 rounded-lg hover:shadow-md transition-shadow border border-gray-200 dark:border-gray-700">
       <div className="flex items-center mb-3">
         <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mr-2">
@@ -370,7 +373,7 @@ In addition to our official SDKs, there are community-maintained libraries for o
       <p className="text-sm text-gray-600 dark:text-gray-400">For iOS and Android applications, including React Native and Flutter</p>
     </a>
   </div>
-  
+
   <div className="mt-6 flex justify-center">
     <a href="/get-started/quickstart" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
       Follow our Quickstart Guide

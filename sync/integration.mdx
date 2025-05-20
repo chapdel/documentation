@@ -42,12 +42,12 @@ const headers = {
 To create a connected account for a seller or service provider on your platform:
 
 ```javascript
-/ Create a connected account
+// Create a connected account
 fetch('https://api.notchpay.co/accounts', {
   method: 'POST',
   headers: headers,
   body: JSON.stringify({
-    type: 'standard', / or 'express', 'custom'
+    type: 'standard', // or 'express', 'custom'
     business_profile: {
       name: 'Seller Store',
       url: 'https://sellerstore.com',
@@ -64,7 +64,7 @@ fetch('https://api.notchpay.co/accounts', {
 .then(response => response.json())
 .then(data => {
   const accountId = data.account.id;
-  / Store the account ID for future reference
+  // Store the account ID for future reference
 })
 .catch(error => console.error('Error creating account:', error));
 ```
@@ -74,7 +74,7 @@ fetch('https://api.notchpay.co/accounts', {
 After creating a connected account, you need to onboard the account holder to collect their business and payment information:
 
 ```javascript
-/ Generate an onboarding link
+// Generate an onboarding link
 fetch(`https://api.notchpay.co/accounts/${accountId}/onboarding`, {
   method: 'POST',
   headers: headers,
@@ -85,7 +85,7 @@ fetch(`https://api.notchpay.co/accounts/${accountId}/onboarding`, {
 .then(response => response.json())
 .then(data => {
   const onboardingUrl = data.url;
-  / Redirect the account holder to the onboarding URL
+  // Redirect the account holder to the onboarding URL
   window.location.href = onboardingUrl;
 })
 .catch(error => console.error('Error generating onboarding link:', error));
@@ -96,7 +96,7 @@ fetch(`https://api.notchpay.co/accounts/${accountId}/onboarding`, {
 To process a payment and automatically split the funds between your platform and a connected account:
 
 ```javascript
-/ Create a payment with automatic splitting
+// Create a payment with automatic splitting
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: headers,
@@ -109,16 +109,16 @@ fetch('https://api.notchpay.co/payments', {
     },
     description: 'Payment for Order #123',
     reference: 'order_123',
-    application_fee: 1000, / Your platform fee (10%)
+    application_fee: 1000, // Your platform fee (10%)
     destination: {
-      account: accountId, / The connected account ID
-      amount: 9000 / Amount to transfer to the connected account
+      account: accountId, // The connected account ID
+      amount: 9000 // Amount to transfer to the connected account
     }
   })
 })
 .then(response => response.json())
 .then(data => {
-  / Redirect the customer to the payment page
+  // Redirect the customer to the payment page
   window.location.href = data.authorization_url;
 })
 .catch(error => console.error('Error creating payment:', error));
@@ -150,22 +150,22 @@ const crypto = require('crypto');
 
 const app = express();
 
-/ Parse JSON request body
+// Parse JSON request body
 app.use(bodyParser.json());
 
-/ Your webhook endpoint
+// Your webhook endpoint
 app.post('/webhook', (req, res) => {
   const payload = req.body;
   const signature = req.headers['notchpay-signature'];
-  
-  / Verify the webhook signature
+
+  // Verify the webhook signature
   const isValid = verifySignature(payload, signature, 'YOUR_WEBHOOK_SECRET');
-  
+
   if (!isValid) {
     return res.status(400).send('Invalid signature');
   }
-  
-  / Handle the event based on its type
+
+  // Handle the event based on its type
   switch (payload.type) {
     case 'account.updated':
       handleAccountUpdated(payload.data);
@@ -176,16 +176,16 @@ app.post('/webhook', (req, res) => {
     case 'transfer.created':
       handlePayoutCreated(payload.data);
       break;
-    / Handle other event types
+    // Handle other event types
     default:
       console.log(`Unhandled event type: ${payload.type}`);
   }
-  
-  / Acknowledge receipt of the event
+
+  // Acknowledge receipt of the event
   res.status(200).send('Webhook received');
 });
 
-/ Function to verify webhook signature
+// Function to verify webhook signature
 function verifySignature(payload, signature, secret) {
   const hmac = crypto.createHmac('sha256', secret);
   const expectedSignature = hmac.update(JSON.stringify(payload)).digest('hex');
@@ -195,7 +195,7 @@ function verifySignature(payload, signature, secret) {
   );
 }
 
-/ Start the server
+// Start the server
 app.listen(3000, () => {
   console.log('Webhook server running on port 3000');
 });
@@ -224,10 +224,10 @@ Set a fixed fee amount for each transaction:
 
 ```javascript
 {
-  application_fee: 500, / 500 XAF fixed fee
+  application_fee: 500, // 500 XAF fixed fee
   destination: {
     account: accountId,
-    amount: 9500 / Remaining amount after fee
+    amount: 9500 // Remaining amount after fee
   }
 }
 ```
@@ -238,10 +238,10 @@ Take a percentage of each transaction:
 
 ```javascript
 {
-  application_fee_percent: 10, / 10% fee
+  application_fee_percent: 10, // 10% fee
   destination: {
     account: accountId
-    / No need to specify amount, it will be calculated automatically
+    // No need to specify amount, it will be calculated automatically
   }
 }
 ```
@@ -252,11 +252,11 @@ Combine fixed and percentage fees:
 
 ```javascript
 {
-  application_fee: 300, / 300 XAF fixed fee
-  application_fee_percent: 5, / 5% fee
+  application_fee: 300, // 300 XAF fixed fee
+  application_fee_percent: 5, // 5% fee
   destination: {
     account: accountId
-    / No need to specify amount, it will be calculated automatically
+    // No need to specify amount, it will be calculated automatically
   }
 }
 ```
@@ -312,7 +312,7 @@ Providing sellers with dashboard access also benefits your platform:
 To provide a seller with access to their dashboard:
 
 ```javascript
-/ Generate a dashboard link
+// Generate a dashboard link
 fetch(`https://api.notchpay.co/sync/accounts/${accountId}/dashboard`, {
   method: 'POST',
   headers: {
@@ -325,7 +325,7 @@ fetch(`https://api.notchpay.co/sync/accounts/${accountId}/dashboard`, {
 })
 .then(response => response.json())
 .then(data => {
-  / Redirect the seller to their dashboard
+  // Redirect the seller to their dashboard
   const dashboardUrl = data.url;
   window.location.href = dashboardUrl;
 })

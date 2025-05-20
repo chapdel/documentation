@@ -6,7 +6,7 @@ description: Accept payments on your WooCommerce store with Notch Pay
 # Notch Pay WooCommerce Plugin
 
 <Note>
-  The Notch Pay WooCommerce plugin allows you to accept payments on your WooCommerce store using various payment methods including Mobile Money, Cards, and Bank Transfers.
+  The Notch Pay WooCommerce plugin allows you to accept payments on your WooCommerce store using various payment methods including Mobile Money and Bank Transfers.
 </Note>
 
 ## Installation
@@ -15,7 +15,7 @@ description: Accept payments on your WooCommerce store with Notch Pay
   <Step title="Download the Plugin">
     Download the Notch Pay WooCommerce plugin from the [WordPress Plugin Directory](https://wordpress.org/plugins/notchpay-woocommerce/) or directly from your WordPress admin dashboard.
   </Step>
-  
+
   <Step title="Install the Plugin">
     1. Log in to your WordPress admin dashboard
     2. Go to **Plugins > Add New**
@@ -23,7 +23,7 @@ description: Accept payments on your WooCommerce store with Notch Pay
     4. Click **Install Now**
     5. After installation, click **Activate Plugin**
   </Step>
-  
+
   <Step title="Configure the Plugin">
     1. Go to **WooCommerce > Settings > Payments**
     2. Find "Notch Pay" in the list of payment gateways
@@ -75,7 +75,6 @@ description: Accept payments on your WooCommerce store with Notch Pay
 <ParamField name="Payment Methods" type="array">
   The payment methods to enable:
   - Mobile Money
-  - Cards
   - Bank Transfers
   - USSD
   - QR Code
@@ -119,23 +118,23 @@ The plugin adds Notch Pay as a payment option at checkout:
   <Step title="Customer Selects Notch Pay">
     At checkout, the customer selects Notch Pay as their payment method.
   </Step>
-  
+
   <Step title="Customer Completes Order">
     The customer fills in their billing and shipping information and clicks "Place Order".
   </Step>
-  
+
   <Step title="Redirect to Payment Page">
     The customer is redirected to the Notch Pay checkout page to complete the payment.
   </Step>
-  
+
   <Step title="Customer Selects Payment Method">
-    On the Notch Pay checkout page, the customer selects their preferred payment method (Mobile Money, Card, etc.).
+    On the Notch Pay checkout page, the customer selects their preferred payment method (Mobile Money, Bank Transfer, etc.).
   </Step>
-  
+
   <Step title="Customer Completes Payment">
     The customer completes the payment using their selected method.
   </Step>
-  
+
   <Step title="Redirect Back to Store">
     After payment, the customer is redirected back to your store's thank you page.
   </Step>
@@ -178,15 +177,15 @@ The plugin supports refunds directly from the WooCommerce order page:
   <Step title="Go to the Order">
     Navigate to **WooCommerce > Orders** and click on the order you want to refund.
   </Step>
-  
+
   <Step title="Initiate Refund">
     Click the "Refund" button at the top of the order page.
   </Step>
-  
+
   <Step title="Enter Refund Details">
     Enter the amount to refund and any refund reason.
   </Step>
-  
+
   <Step title="Process Refund">
     Check the "Refund via Notch Pay" checkbox and click "Refund".
   </Step>
@@ -201,7 +200,7 @@ The plugin supports refunds directly from the WooCommerce order page:
 The plugin integrates with WooCommerce Subscriptions to support recurring payments:
 
 <Callout type="warning">
-  Recurring payments are currently only supported for card payments. Mobile Money and other payment methods can only be used for initial subscription payments.
+  Recurring payments are currently not supported. Mobile Money and other payment methods can only be used for initial subscription payments.
 </Callout>
 
 ### Subscription Settings
@@ -256,7 +255,7 @@ The plugin provides hooks and filters for developers to extend its functionality
 add_filter('wc_notchpay_payment_params', function($params, $order) {
     // Add custom metadata
     $params['metadata']['custom_field'] = 'custom_value';
-    
+
     return $params;
 }, 10, 2);
 
@@ -285,35 +284,35 @@ The plugin integrates with the Currency Switcher for WooCommerce plugin to suppo
 <AccordionGroup>
   <Accordion title="Payment Gateway Not Showing at Checkout">
     If the Notch Pay payment gateway is not showing at checkout:
-    
+
     1. Check that the plugin is activated
     2. Verify that the gateway is enabled in WooCommerce settings
     3. Check if there are any currency restrictions (Notch Pay supports XAF, NGN, USD, etc.)
     4. Ensure that your customer's billing country is supported by Notch Pay
   </Accordion>
-  
+
   <Accordion title="Payments Not Being Processed">
     If payments are not being processed:
-    
+
     1. Verify that your API keys are correct
     2. Check that you're using the right keys for test/live mode
     3. Check the Notch Pay dashboard for any failed payments
     4. Ensure your server can make outgoing HTTP requests
   </Accordion>
-  
+
   <Accordion title="Webhooks Not Working">
     If webhooks are not being received:
-    
+
     1. Verify that the webhook URL is correctly added in the Notch Pay dashboard
     2. Check that your webhook secret is correct
     3. Ensure your server is accessible from the internet
     4. Check your server logs for any errors
     5. Try enabling WooCommerce logging (WooCommerce > Status > Logs)
   </Accordion>
-  
+
   <Accordion title="Order Status Not Updating">
     If order statuses are not updating after payment:
-    
+
     1. Check that webhooks are properly configured
     2. Verify that the order exists in your WooCommerce store
     3. Check if there are any conflicts with other plugins that might be modifying order statuses
@@ -326,34 +325,33 @@ The plugin integrates with the Currency Switcher for WooCommerce plugin to suppo
 <AccordionGroup>
   <Accordion title="Which payment methods are supported?">
     The plugin supports all payment methods available on Notch Pay, including:
-    
+
     - Mobile Money (MTN, Orange, Airtel, etc.)
-    - Cards (Visa, Mastercard, etc.)
     - Bank Transfers
     - USSD
     - QR Code
-    
+
     The available methods depend on your Notch Pay account and the countries you operate in.
   </Accordion>
-  
+
   <Accordion title="Which currencies are supported?">
     Notch Pay primarily supports:
-    
+
     - XAF (Central African CFA Franc)
     - NGN (Nigerian Naira)
     - USD (United States Dollar)
-    
+
     If your store uses a different currency, you can enable currency conversion in the plugin settings.
   </Accordion>
-  
+
   <Accordion title="Can I use the plugin in test mode?">
     Yes, you can enable test mode in the plugin settings. In test mode, the plugin will use your test API keys and process test payments.
   </Accordion>
-  
+
   <Accordion title="Does the plugin support subscriptions?">
-    Yes, the plugin integrates with WooCommerce Subscriptions to support recurring payments. However, recurring payments are currently only supported for card payments.
+    Yes, the plugin integrates with WooCommerce Subscriptions to support initial subscription payments. However, recurring payments are currently not supported.
   </Accordion>
-  
+
   <Accordion title="Can I offer multiple payment methods?">
     Yes, you can enable multiple payment methods in the plugin settings. Customers will be able to choose their preferred payment method at the Notch Pay checkout page.
   </Accordion>

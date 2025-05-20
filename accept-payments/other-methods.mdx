@@ -48,7 +48,7 @@ Notch Pay supports payments from various digital wallets across Africa:
 ### Integration Example
 
 ```javascript
-/ Create a payment
+// Create a payment
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
@@ -68,7 +68,7 @@ fetch('https://api.notchpay.co/payments', {
 })
 .then(response => response.json())
 .then(data => {
-  / Redirect to checkout where digital wallets will be an option
+  // Redirect to checkout where digital wallets will be an option
   window.location.href = data.authorization_url;
 })
 ```
@@ -96,7 +96,7 @@ Notch Pay supports USSD payments through various mobile operators:
 ### Integration Example
 
 ```javascript
-/ Create a payment
+// Create a payment
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
@@ -116,7 +116,7 @@ fetch('https://api.notchpay.co/payments', {
 })
 .then(response => response.json())
 .then(data => {
-  / Process with USSD
+  // Process with USSD
   fetch(`https://api.notchpay.co/payments/${data.transaction.reference}`, {
     method: 'POST',
     headers: {
@@ -132,7 +132,7 @@ fetch('https://api.notchpay.co/payments', {
   })
   .then(response => response.json())
   .then(ussdData => {
-    / Display USSD code to customer
+    // Display USSD code to customer
     console.log(`Dial ${ussdData.ussd_code} to complete payment`);
   })
 })
@@ -160,7 +160,7 @@ Notch Pay supports various QR code payment standards depending on the region:
 ### Integration Example
 
 ```javascript
-/ Create a payment
+// Create a payment
 fetch('https://api.notchpay.co/payments', {
   method: 'POST',
   headers: {
@@ -180,7 +180,7 @@ fetch('https://api.notchpay.co/payments', {
 })
 .then(response => response.json())
 .then(data => {
-  / Process with QR Code
+  // Process with QR Code
   fetch(`https://api.notchpay.co/payments/${data.transaction.reference}/qrcode`, {
     headers: {
       'Authorization': 'YOUR_PUBLIC_KEY'
@@ -188,7 +188,7 @@ fetch('https://api.notchpay.co/payments', {
   })
   .then(response => response.json())
   .then(qrData => {
-    / Display QR code to customer
+    // Display QR code to customer
     document.getElementById('qrcode-container').innerHTML = `<img src="${qrData.qr_code_url}" alt="Scan to pay">`;
   })
 })
@@ -209,7 +209,6 @@ fetch('https://api.notchpay.co/payments', {
 - **Bank Transfer Delays**: Bank transfers may take longer to process, especially during non-business hours
 - **USSD Network Issues**: USSD payments may fail due to mobile network issues
 - **QR Code Scanning Problems**: Ensure QR codes are displayed clearly and with sufficient size
-- **Cryptocurrency Price Fluctuations**: Be aware that cryptocurrency prices can fluctuate during the payment process
 
 ### Support
 

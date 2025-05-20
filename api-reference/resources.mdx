@@ -31,7 +31,7 @@ description: Get information about payment channels, countries, currencies, and 
       </ParamField>
 
       <ParamField query="type" type="string">
-        Filter by channel type: `mobile_money`, `card`, `bank`, `ussd`, `qr`
+        Filter by channel type: `mobile_money`, `bank`, `ussd`, `qr`
       </ParamField>
     </Tab>
     <Tab title="Response">
@@ -385,9 +385,6 @@ description: Get information about payment channels, countries, currencies, and 
   <Card title="mobile_money" icon="mobile-screen" color="#16A34A">
     Mobile money payment channels like MTN Mobile Money, Orange Money, etc.
   </Card>
-  <Card title="card" icon="credit-card" color="#16A34A">
-    Card payment channels for debit and credit cards
-  </Card>
   <Card title="bank" icon="building-columns" color="#16A34A">
     Bank transfer payment channels
   </Card>
@@ -407,22 +404,22 @@ description: Get information about payment channels, countries, currencies, and 
 <CardGroup cols={2}>
   <Card title="Cache Resource Data" icon="database" color="#16A34A">
     Cache resource data like countries, currencies, and banks to reduce API calls.
-    
+
     Refresh your cache periodically (e.g., daily) to ensure you have the latest information.
   </Card>
   <Card title="Dynamic Channel Selection" icon="list-check" color="#16A34A">
     Use the channels endpoint to dynamically populate payment method options in your checkout.
-    
+
     Filter channels based on the customer's country and currency for a better user experience.
   </Card>
   <Card title="Validate Input Data" icon="check-double" color="#16A34A">
     Use the resources API to validate input data like country codes, currency codes, and bank codes.
-    
+
     This helps prevent errors when creating payments or transfers.
   </Card>
   <Card title="Check Limits" icon="ruler" color="#16A34A">
     Check the minimum and maximum amounts for each payment channel to ensure your payment requests are within the allowed limits.
-    
+
     Display appropriate error messages to users when amounts are outside these limits.
   </Card>
 </CardGroup>
@@ -446,7 +443,7 @@ Notch Pay is designed specifically for the African market, with support for mult
           <span className="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400 rounded">USSD</span>
         </div>
       </div>
-      
+
       <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
         <div className="flex items-center mb-2">
           <img src="https://assets.notchpay.co/flags/gh.png" alt="Ghana Flag" className="w-6 h-4 mr-2" />
@@ -458,7 +455,7 @@ Notch Pay is designed specifically for the African market, with support for mult
           <span className="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400 rounded">Cards</span>
         </div>
       </div>
-      
+
       <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
         <div className="flex items-center mb-2">
           <img src="https://assets.notchpay.co/flags/ci.png" alt="Côte d'Ivoire Flag" className="w-6 h-4 mr-2" />
@@ -470,7 +467,7 @@ Notch Pay is designed specifically for the African market, with support for mult
           <span className="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400 rounded">Cards</span>
         </div>
       </div>
-      
+
       <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
         <div className="flex items-center mb-2">
           <img src="https://assets.notchpay.co/flags/sn.png" alt="Senegal Flag" className="w-6 h-4 mr-2" />
@@ -484,7 +481,7 @@ Notch Pay is designed specifically for the African market, with support for mult
       </div>
     </div>
   </Tab>
-  
+
   <Tab title="Central Africa">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
       <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -499,7 +496,7 @@ Notch Pay is designed specifically for the African market, with support for mult
           <span className="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400 rounded">Cards</span>
         </div>
       </div>
-      
+
       <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
         <div className="flex items-center mb-2">
           <img src="https://assets.notchpay.co/flags/ga.png" alt="Gabon Flag" className="w-6 h-4 mr-2" />
@@ -513,7 +510,7 @@ Notch Pay is designed specifically for the African market, with support for mult
       </div>
     </div>
   </Tab>
-  
+
   <Tab title="East Africa">
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
       <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
@@ -527,7 +524,7 @@ Notch Pay is designed specifically for the African market, with support for mult
           <span className="inline-block px-2 py-1 text-xs bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-400 rounded">Cards</span>
         </div>
       </div>
-      
+
       <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
         <div className="flex items-center mb-2">
           <img src="https://assets.notchpay.co/flags/ug.png" alt="Uganda Flag" className="w-6 h-4 mr-2" />
