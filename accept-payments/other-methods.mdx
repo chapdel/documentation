@@ -192,25 +192,268 @@ fetch('https://api.notchpay.co/payments', {
 })
 ```
 
+## Country-Specific Information
+
+Different payment methods have varying levels of adoption and success rates across African countries. Here's a breakdown of the most effective payment methods by country:
+
+<Tabs>
+  <Tab title="Cameroon">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3>Market Overview</h3>
+        <ul className="mt-2">
+          <li>Population: ~27 million</li>
+          <li>Digital Wallet Penetration: ~25%</li>
+          <li>USSD Usage: High (60% of mobile users)</li>
+          <li>QR Code Adoption: Low-Medium</li>
+          <li>Currency: CFA Franc (XAF)</li>
+        </ul>
+
+        <h3 className="mt-4">Popular Payment Methods</h3>
+        <ul className="mt-2">
+          <li>Digital Wallets: Assoh, Kudi</li>
+          <li>USSD: MTN USSD, Orange USSD</li>
+          <li>QR Codes: Limited to urban areas</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Success Rates</h3>
+        <ul className="mt-2">
+          <li>Digital Wallets: 85-90%</li>
+          <li>USSD Payments: 80-85%</li>
+          <li>QR Code Payments: 75-80%</li>
+        </ul>
+
+        <h3 className="mt-4">Best Practices</h3>
+        <ul className="mt-2">
+          <li>Prioritize USSD for wider reach</li>
+          <li>Offer digital wallets in urban areas</li>
+          <li>Provide clear instructions in French and English</li>
+          <li>Consider network reliability when implementing USSD</li>
+        </ul>
+      </div>
+    </div>
+  </Tab>
+
+  <Tab title="Côte d'Ivoire">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <h3>Market Overview</h3>
+        <ul className="mt-2">
+          <li>Population: ~26 million</li>
+          <li>Digital Wallet Penetration: ~30%</li>
+          <li>USSD Usage: Medium-High (50% of mobile users)</li>
+          <li>QR Code Adoption: Medium</li>
+          <li>Currency: CFA Franc (XOF)</li>
+        </ul>
+
+        <h3 className="mt-4">Popular Payment Methods</h3>
+        <ul className="mt-2">
+          <li>Digital Wallets: Wave, Kudi</li>
+          <li>USSD: MTN USSD, Orange USSD</li>
+          <li>QR Codes: Growing in urban centers</li>
+        </ul>
+      </div>
+
+      <div>
+        <h3>Success Rates</h3>
+        <ul className="mt-2">
+          <li>Digital Wallets: 88-92%</li>
+          <li>USSD Payments: 82-87%</li>
+          <li>QR Code Payments: 80-85%</li>
+        </ul>
+
+        <h3 className="mt-4">Best Practices</h3>
+        <ul className="mt-2">
+          <li>Wave digital wallet is increasingly popular</li>
+          <li>French language support is essential</li>
+          <li>QR codes are effective in Abidjan and other major cities</li>
+          <li>USSD works well for reaching rural customers</li>
+        </ul>
+      </div>
+    </div>
+  </Tab>
+
+  <Tab title="Other Countries">
+    <p>
+      Notch Pay supports alternative payment methods in many other African countries. For detailed information about a specific country not listed here, please contact our support team or refer to our <a href="/api-reference/resources">Resources API</a> for the most up-to-date information.
+    </p>
+
+    <div className="mt-4">
+      <h3>General Considerations for All Countries</h3>
+      <ul className="mt-2">
+        <li>Always use the international phone number format with country code for USSD payments</li>
+        <li>Be aware of local regulations and transaction limits</li>
+        <li>Consider local language support for customer communications</li>
+        <li>Monitor transaction success rates by payment method and adjust your implementation accordingly</li>
+        <li>Stay informed about new payment methods entering the market</li>
+      </ul>
+    </div>
+  </Tab>
+</Tabs>
+
 ## Best Practices
 
-1. **Offer Multiple Payment Methods**: Provide customers with various payment options to increase conversion rates
-2. **Clear Instructions**: Provide clear instructions for each payment method, especially for methods that require additional steps
-3. **Handle Timeouts**: Some payment methods may take longer to complete, so implement proper timeout handling
-4. **Implement Webhooks**: Set up webhooks to receive real-time notifications when payment statuses change
-5. **Test Thoroughly**: Test all payment methods in the sandbox environment before going live
+<Note>
+  For general integration best practices, security recommendations, and operational guidelines that apply to all payment methods, please refer to our [Mobile Money Best Practices](/accept-payments/mobile-money#best-practices) section, which covers these topics in detail.
+</Note>
+
+### Method-Specific Best Practices
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div>
+    <h4 className="font-semibold">Digital Wallets</h4>
+    <ul className="mt-2">
+      <li>**Verify Wallet Support**: Confirm the wallet is supported in the customer's country</li>
+      <li>**Handle Authentication Flows**: Implement proper handling of wallet authentication redirects</li>
+      <li>**Optimize for Mobile**: Ensure your wallet integration works well on mobile devices</li>
+      <li>**Track Wallet Performance**: Monitor success rates for different wallet providers</li>
+    </ul>
+  </div>
+
+  <div>
+    <h4 className="font-semibold">USSD Payments</h4>
+    <ul className="mt-2">
+      <li>**Clear USSD Instructions**: Provide clear guidance on how to complete USSD flows</li>
+      <li>**Keep USSD Flows Simple**: Minimize the number of steps in USSD payment flows</li>
+      <li>**Handle Network Issues**: Implement fallbacks for areas with poor network coverage</li>
+      <li>**Session Timeout Handling**: Provide easy ways to restart expired USSD sessions</li>
+    </ul>
+  </div>
+</div>
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+  <div>
+    <h4 className="font-semibold">QR Code Payments</h4>
+    <ul className="mt-2">
+      <li>**QR Code Quality**: Generate high-quality, easily scannable QR codes</li>
+      <li>**Display Guidelines**: Ensure QR codes are displayed with sufficient size and contrast</li>
+      <li>**Scanning Instructions**: Provide clear instructions on how to scan the QR code</li>
+      <li>**Dynamic Updates**: Implement status updates while waiting for QR code scans</li>
+    </ul>
+  </div>
+
+  <div>
+    <h4 className="font-semibold">Multi-Method Strategy</h4>
+    <ul className="mt-2">
+      <li>**Offer Multiple Methods**: Provide customers with various payment options to increase conversion rates</li>
+      <li>**Smart Default Selection**: Automatically suggest the most appropriate payment method based on location</li>
+      <li>**Seamless Fallbacks**: Allow easy switching between payment methods if one fails</li>
+      <li>**Remember Preferences**: Store customer's preferred payment method for future transactions</li>
+    </ul>
+  </div>
+</div>
 
 ## Troubleshooting
 
-### Common Issues
+### Common Issues and Solutions
 
-- **Bank Transfer Delays**: Bank transfers may take longer to process, especially during non-business hours
-- **USSD Network Issues**: USSD payments may fail due to mobile network issues
-- **QR Code Scanning Problems**: Ensure QR codes are displayed clearly and with sufficient size
+<AccordionGroup>
+  <Accordion title="Digital Wallet Connection Issues">
+    <h4>Symptoms</h4>
+    <ul>
+      <li>Error message: "Unable to connect to wallet" or "Wallet service unavailable"</li>
+      <li>Payment fails during the wallet authentication step</li>
+    </ul>
 
-### Support
+    <h4>Solutions</h4>
+    <ul>
+      <li>Verify that the wallet service is operational (check status pages)</li>
+      <li>Ensure the customer has an active account with the selected wallet provider</li>
+      <li>Check that your integration is using the correct wallet API endpoints</li>
+      <li>Implement automatic retries with exponential backoff</li>
+    </ul>
+
+    <h4>Prevention</h4>
+    <ul>
+      <li>Monitor wallet provider status and avoid initiating payments during known outages</li>
+      <li>Implement circuit breakers to prevent cascading failures</li>
+      <li>Have fallback payment methods ready</li>
+    </ul>
+  </Accordion>
+
+  <Accordion title="USSD Session Timeouts">
+    <h4>Symptoms</h4>
+    <ul>
+      <li>Customer reports that the USSD session closed before they could complete the payment</li>
+      <li>Error message: "Session expired" or "USSD session timeout"</li>
+    </ul>
+
+    <h4>Solutions</h4>
+    <ul>
+      <li>Advise customers to respond quickly to USSD prompts</li>
+      <li>Provide a way for customers to restart the USSD session</li>
+      <li>Implement a status check endpoint that polls the payment status</li>
+    </ul>
+
+    <h4>Prevention</h4>
+    <ul>
+      <li>Clearly communicate to customers that they need to respond promptly to USSD prompts</li>
+      <li>Keep USSD flows as simple as possible</li>
+      <li>Consider using SMS fallbacks for USSD failures</li>
+    </ul>
+  </Accordion>
+
+  <Accordion title="QR Code Scanning Problems">
+    <h4>Symptoms</h4>
+    <ul>
+      <li>Customer reports inability to scan the QR code</li>
+      <li>QR code scanner app returns errors or doesn't recognize the code</li>
+    </ul>
+
+    <h4>Solutions</h4>
+    <ul>
+      <li>Ensure QR codes are displayed with sufficient size and contrast</li>
+      <li>Verify that the QR code is generated correctly and contains valid data</li>
+      <li>Provide instructions on which apps can be used to scan the QR code</li>
+      <li>Offer alternative payment methods if QR scanning fails</li>
+    </ul>
+
+    <h4>Prevention</h4>
+    <ul>
+      <li>Test QR codes on various devices and in different lighting conditions</li>
+      <li>Use error correction in QR code generation</li>
+      <li>Implement analytics to track QR code scan success rates</li>
+    </ul>
+  </Accordion>
+</AccordionGroup>
+
+### Error Codes
+
+Here are some common error codes you might encounter when processing alternative payment methods:
+
+| Error Code | Description | Recommended Action |
+|------------|-------------|-------------------|
+| `WALLET_CONNECTION_ERROR` | Unable to connect to the wallet service | Check wallet service status and retry |
+| `USSD_SESSION_TIMEOUT` | USSD session expired before completion | Advise customer to restart the process |
+| `QR_GENERATION_FAILED` | Failed to generate QR code | Check parameters and retry |
+| `INVALID_WALLET_ACCOUNT` | Wallet account not found or invalid | Verify wallet account details |
+| `PAYMENT_REJECTED` | Customer rejected the payment | Ask customer if they want to try again |
+| `PROVIDER_ERROR` | Error from payment provider | Retry after a few minutes |
+| `DUPLICATE_TRANSACTION` | Same transaction attempted multiple times | Check if previous transaction was successful |
+
+## Testing
+
+Testing is a critical part of implementing alternative payment methods. Notch Pay provides a comprehensive sandbox environment that allows you to simulate various payment scenarios without processing real transactions.
+
+<Note>
+  For detailed information on testing all payment methods, including test credentials, test scenarios for digital wallets, USSD payments, and QR code payments, webhook testing, and best practices, please refer to our comprehensive [Testing Guide](/get-started/testing).
+</Note>
+
+The Testing Guide includes everything you need to thoroughly test your integration with alternative payment methods, including test credentials, test scenarios, webhook testing, fraud detection information, and steps for going to production.
+
+## Support
 
 If you encounter issues with any payment method:
 
 - Check the [API Reference](/api-reference/payments) for detailed parameter documentation
+- Review our [Troubleshooting Guide](/faq) for common issues and solutions
 - Contact our [support team](mailto:hello@notchpay.co) for assistance
+
+## Next Steps
+
+- [Mobile Money](/accept-payments/mobile-money) - Learn about our Mobile Money integration
+- [Collect](/accept-payments/collect) - Use our hosted payment page for a quick integration
+- [Webhooks](/get-started/webhooks) - Set up webhooks for payment notifications
+- [Dashboard](/dashboard) - Learn how to use the Notch Pay Dashboard to manage transactions

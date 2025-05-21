@@ -14,6 +14,7 @@
       "href": "/transition",
       "dismissible": false
     },
+    "breadcrumbs": true,
     "tabs": [
       {
         "tab": "Guides",
@@ -70,9 +71,19 @@
               "accept-payments/collect",
               "accept-payments/payment-links",
               "accept-payments/charge",
-              "accept-payments/invoices",
+              "accept-payments/invoices"
+            ]
+          },
+          {
+            "group": "Payment Methods",
+            "pages": [
               "accept-payments/mobile-money",
-              "accept-payments/other-methods",
+              "accept-payments/other-methods"
+            ]
+          },
+          {
+            "group": "Payment Management",
+            "pages": [
               "accept-payments/refunds",
               "accept-payments/disputes"
             ]
@@ -204,6 +215,7 @@
         "href": "mailto:hello@notchpay.co"
       }
     ],
+    "darkMode": true,
     "primary": {
       "type": "button",
       "label": "Dashboard",
@@ -217,5 +229,18 @@
       "linkedin": "https://linkedin.com/company/notchpay",
       "facebook": "https://facebook.com/notchpay"
     }
+  },
+  "feedback": {
+    "suggestEdit": true,
+    "raiseIssue": true,
+    "thumbsRating": true
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude"
+    ]
   }
 }

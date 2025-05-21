@@ -1,168 +1,593 @@
 ---
 title: Mobile Money Payments
-description: Accept payments via Mobile Money services across Africa
+description: Accept payments via Mobile Money services across Africa with high success rates and reliable processing
 ---
 
-Mobile Money is one of the most popular payment methods in Africa, allowing customers to pay using their mobile phone accounts. Notch Pay supports various Mobile Money providers across multiple African countries.
+# Introduction to Mobile Money
+
+Mobile Money is one of the most popular payment methods in Africa, allowing customers to pay using their mobile phone accounts. With over 500 million registered accounts across the continent, Mobile Money has revolutionized financial inclusion and digital payments in regions with limited banking infrastructure.
+
+## What is Mobile Money?
+
+Mobile Money is a service that allows users to store, send, and receive money using their mobile phones. Unlike traditional banking, Mobile Money doesn't require a bank account, making it accessible to the unbanked population. Users can deposit cash at agent locations and convert it to digital currency stored in their mobile wallet.
+
+<Note>
+    Mobile Money has a **higher adoption rate** than credit cards in many African countries, making it essential for
+    businesses targeting African markets.
+</Note>
+
+## Why Choose Mobile Money for Your Business?
+
+- **Wide Reach**: Access millions of customers who primarily use Mobile Money
+- **High Success Rates**: Typically 85-95% success rates for properly formatted transactions
+- **Lower Fees**: Often more cost-effective than card payments
+- **Instant Confirmation**: Real-time payment notifications
+- **Reduced Fraud**: Two-factor authentication built into the payment flow
 
 ## Supported Mobile Money Providers
 
-Notch Pay supports the following Mobile Money providers:
+Notch Pay supports the following Mobile Money providers across Africa:
 
 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-    <h3 className="text-md font-semibold mb-2">MTN Mobile Money</h3>
-    <p className="text-sm">Available in Cameroon, Côte d'Ivoire, and other countries where MTN operates.</p>
-  </div>
-  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-    <h3 className="text-md font-semibold mb-2">Orange Money</h3>
-    <p className="text-sm">Available in Cameroon, Senegal, Côte d'Ivoire, and other countries where Orange operates.</p>
-  </div>
-  <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-    <h3 className="text-md font-semibold mb-2">Other Providers</h3>
-    <p className="text-sm">We also support other local Mobile Money providers depending on the country.</p>
-  </div>
+    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+        <h3 className="text-md font-semibold mb-2">MTN Mobile Money</h3>
+        <p className="text-sm">Available in Cameroon, Côte d'Ivoire, Ghana, Rwanda, Uganda, and other countries where
+            MTN operates.</p>
+        <p className="text-xs mt-2 text-gray-500">Average success rate: 92%</p>
+    </div>
+    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+        <h3 className="text-md font-semibold mb-2">Orange Money</h3>
+        <p className="text-sm">Available in Cameroon, Senegal, Côte d'Ivoire, Mali, and other countries where Orange
+            operates.</p>
+        <p className="text-xs mt-2 text-gray-500">Average success rate: 90%</p>
+    </div>
+    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+        <h3 className="text-md font-semibold mb-2">Wave</h3>
+        <p className="text-sm">Available in Senegal and Côte d'Ivoire with rapid expansion to other West African
+            countries.</p>
+        <p className="text-xs mt-2 text-gray-500">Average success rate: 94%</p>
+    </div>
+</div>
+
+<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+        <h3 className="text-md font-semibold mb-2">Airtel Money</h3>
+        <p className="text-sm">Available in multiple East African countries including Kenya, Tanzania, and Uganda.</p>
+        <p className="text-xs mt-2 text-gray-500">Average success rate: 89%</p>
+    </div>
+    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+        <h3 className="text-md font-semibold mb-2">M-Pesa</h3>
+        <p className="text-sm">Available in Kenya, Tanzania, and other East African countries.</p>
+        <p className="text-xs mt-2 text-gray-500">Average success rate: 95%</p>
+    </div>
+    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
+        <h3 className="text-md font-semibold mb-2">Other Providers</h3>
+        <p className="text-sm">We also support other local Mobile Money providers depending on the country.</p>
+        <p className="text-xs mt-2 text-gray-500">Contact us for specific provider details</p>
+    </div>
 </div>
 
 ## How Mobile Money Payments Work
 
+<img src="/images/mobile-money-flow.png" alt="Mobile Money Payment Flow" />
+
 The Mobile Money payment flow with Notch Pay works as follows:
 
-1. **Initialize Payment**: Create a payment with customer and transaction details
-2. **Customer Enters Phone Number**: The customer enters their Mobile Money phone number
-3. **Payment Request**: Notch Pay sends a payment request to the Mobile Money provider
-4. **Customer Confirmation**: The customer receives a prompt on their phone to confirm the payment
-5. **Payment Processing**: The Mobile Money provider processes the payment
-6. **Confirmation**: Notch Pay confirms the payment status and notifies your application
+<Steps>
+  <Step title="Initialize Payment">
+    Create a payment with customer and transaction details
+  </Step>
+  <Step title="Customer Enters Phone Number">
+    The customer enters their Mobile Money phone number
+  </Step>
+  <Step title="Payment Request">
+    Notch Pay sends a payment request to the Mobile Money provider
+  </Step>
+  <Step title="Customer Confirmation">
+    The customer receives a prompt on their phone to confirm the payment (USSD or app-based)
+  </Step>
+  <Step title="Payment Processing">
+    The Mobile Money provider processes the payment (typically 5-30 seconds)
+  </Step>
+  <Step title="Confirmation">
+    Notch Pay confirms the payment status and notifies your application via webhook
+  </Step>
+</Steps>
 
 ## Integration Options
 
-### Using Collect
+We offer multiple ways to integrate Mobile Money payments into your application, from no-code solutions to fully customizable API implementations.
 
-The simplest way to accept Mobile Money payments is through [Notch Pay Collect](/accept-payments/collect). When creating a payment, the customer will be presented with Mobile Money as a payment option.
+<Tabs>
+    <Tab title="Collect (No-Code)">
+        The simplest way to accept Mobile Money payments is through [Notch Pay Collect](/accept-payments/collect). This
+        hosted payment page requires no coding and handles the entire payment flow.
 
-### Direct API Integration
+        ### Benefits of Using Collect
+        - **Quick Setup**: Integrate in minutes with minimal code
+        - **Optimized UX**: Mobile-responsive design with localized interfaces
+        - **Automatic Updates**: Always up-to-date with the latest features
+        - **Reduced PCI Scope**: Security handled by Notch Pay
 
-For more control over the payment flow, you can use the Notch Pay API to process Mobile Money payments directly:
-
-#### 1. Initialize a Payment
-
-```javascript
-// Create a payment
-fetch('https://api.notchpay.co/payments', {
-  method: 'POST',
-  headers: {
-    'Authorization': 'YOUR_PUBLIC_KEY',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    amount: 5000,
-    currency: 'XAF',
-    customer: {
-      name: 'John Doe',
-      email: 'john@example.com',
-      phone: '+237600000000'
+        ### How to Implement
+        ```javascript
+        // Create a payment session
+        fetch('https://api.notchpay.co/checkout/sessions', {
+        method: 'POST',
+        headers: {
+        'Authorization': 'Bearer YOUR_SECRET_KEY',
+        'Content-Type': 'application/json'
     },
-    description: 'Payment for Order #123',
-    reference: 'order_123'
-  })
-})
-.then(response => response.json())
-.then(data => {
-  // Store the payment reference for the next step
-  const paymentReference = data.transaction.reference;
-})
-```
+        body: JSON.stringify({
+        amount: 5000,
+        currency: 'XAF',
+        payment_methods: ['mobile_money'], // Limit to Mobile Money only
+        success_url: 'https://your-website.com/success',
+        cancel_url: 'https://your-website.com/cancel'
+    })
+    })
+        .then(response => response.json())
+        .then(data => {
+        // Redirect customer to the checkout page
+        window.location.href = data.checkout_url;
+    });
+        ```
 
-#### 2. Process the Payment with Mobile Money
+        [//]: # ({/*<Frame>)
 
-```javascript
-// Process the payment with Mobile Money
-fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
-  method: 'POST',
-  headers: {
-    'Authorization': 'YOUR_PUBLIC_KEY',
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    channel: 'cm.mtn', // or 'cm.orange' for Orange Money
-    data: {
-      phone: '+237680000000' // Customer's Mobile Money phone number
+[//]: # (  <img src="/images/screenshots/mobile-money-collect.png" alt="Mobile Money on Collect Payment Page" />)
+
+[//]: # (</Frame>*/})
+    </Tab>
+
+    <Tab title="Direct API Integration">
+        For more control over the payment flow, you can use the Notch Pay API to process Mobile Money payments directly:
+
+        ### Complete Integration Flow
+
+        #### 1. Initialize a Payment
+
+        ```javascript
+        // Create a payment
+        fetch('https://api.notchpay.co/payments', {
+        method: 'POST',
+        headers: {
+        'Authorization': 'Bearer YOUR_SECRET_KEY',
+        'Content-Type': 'application/json'
+    },
+        body: JSON.stringify({
+        amount: 5000,
+        currency: 'XAF',
+        customer: {
+        name: 'John Doe',
+        email: 'john@example.com',
+        phone: '+237600000000'
+    },
+        description: 'Payment for Order #123',
+        reference: 'order_123',
+        metadata: {
+        order_id: '123',
+        product_name: 'Premium Subscription'
     }
-  })
-})
-.then(response => response.json())
-.then(data => {
-  // Payment is now processing
-  // The customer will receive a prompt on their phone
-})
-```
+    })
+    })
+        .then(response => response.json())
+        .then(data => {
+        // Store the payment reference for the next step
+        const paymentReference = data.payment.reference;
+    })
+        ```
 
-#### 3. Verify the Payment Status
+        #### 2. Process the Payment with Mobile Money
 
-```javascript
-// Check the payment status
-fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
-  headers: {
-    'Authorization': 'YOUR_PUBLIC_KEY'
-  }
-})
-.then(response => response.json())
-.then(data => {
-  if (data.transaction.status === 'complete') {
-    // Payment successful
-  } else if (data.transaction.status === 'failed') {
-    // Payment failed
-  } else {
-    // Payment still processing
-  }
-})
-```
+        ```javascript
+        // Process the payment with Mobile Money
+        fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
+        method: 'POST',
+        headers: {
+        'Authorization': 'Bearer YOUR_SECRET_KEY',
+        'Content-Type': 'application/json'
+    },
+        body: JSON.stringify({
+        channel: 'cm.mtn', // or 'cm.orange' for Orange Money
+        data: {
+        phone: '+237680000000' // Customer's Mobile Money phone number
+    }
+    })
+    })
+        .then(response => response.json())
+        .then(data => {
+        // Payment is now processing
+        // The customer will receive a prompt on their phone
+
+        // Store transaction ID for status checks
+        const transactionId = data.payment.id;
+    })
+        ```
+
+        #### 3. Verify the Payment Status
+
+        ```javascript
+        // Check the payment status
+        fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
+        headers: {
+        'Authorization': 'Bearer YOUR_SECRET_KEY'
+    }
+    })
+        .then(response => response.json())
+        .then(data => {
+        if (data.transaction.status === 'complete') {
+        // Payment successful
+        // Update your database and fulfill the order
+    } else if (data.transaction.status === 'failed') {
+        // Payment failed
+        // Show error message to customer
+    } else {
+        // Payment still processing
+        // Show waiting message to customer
+    }
+    })
+        ```
+
+        <Tip>
+            For production environments, we strongly recommend using webhooks instead of polling for payment status
+            updates. See our [Webhooks Guide](/get-started/webhooks) for implementation details.
+        </Tip>
+    </Tab>
+
+    <Tab title="SDK Integration">
+        Our SDKs provide a simplified way to integrate Mobile Money payments with pre-built components and helper
+        methods.
+
+        ### JavaScript SDK
+
+        ```javascript
+        // Initialize Notch Pay
+        const notchpay = new NotchPay('YOUR_PUBLIC_KEY');
+
+        // Create a payment
+        notchpay.createPayment({
+        amount: 5000,
+        currency: 'XAF',
+        customer: {
+        name: 'John Doe',
+        email: 'john@example.com',
+        phone: '+237600000000'
+    },
+        description: 'Payment for Order #123'
+    })
+        .then(payment => {
+        // Process with Mobile Money
+        return notchpay.processMobileMoney(payment.reference, {
+        provider: 'mtn', // or 'orange', 'airtel', etc.
+        country: 'cm',   // country code
+        phone: '+237680000000'
+    });
+    })
+        .then(result => {
+        console.log('Payment initiated:', result);
+        // The customer will receive a prompt on their phone
+    })
+        .catch(error => {
+        console.error('Payment error:', error);
+    });
+        ```
+
+        For more SDK examples, see our [SDK Documentation](/sdks).
+    </Tab>
+</Tabs>
 
 ## Mobile Money Channel Codes
 
 When processing a payment with Mobile Money, you need to specify the correct channel code based on the provider and country:
 
-| Provider | Country | Channel Code |
-|----------|---------|--------------|
-| MTN / Orange | Cameroon | `cm.mobile` |
-| MTN | Cameroon | `cm.mtn` |
-| Orange | Cameroon | `cm.orange` |
-| MTN | Côte d'Ivoire | `ci.mtn` |
-| Orange | Côte d'Ivoire | `ci.orange` |
-| Wave | Senegal | `sn.wave` |
-| Orange | Senegal | `sn.orange` |
+| Provider | Country | Channel Code | Currency | Processing Time |
+|----------|---------|--------------|----------|----------------|
+| MTN / Orange | Cameroon | `cm.mobile` | XAF | 5-30 seconds |
+| MTN | Cameroon | `cm.mtn` | XAF | 5-20 seconds |
+| Orange | Cameroon | `cm.orange` | XAF | 10-30 seconds |
+| MTN | Côte d'Ivoire | `ci.mtn` | XOF | 5-20 seconds |
+| Orange | Côte d'Ivoire | `ci.orange` | XOF | 10-30 seconds |
+| Wave | Senegal | `sn.wave` | XOF | 5-15 seconds |
+| Orange | Senegal | `sn.orange` | XOF | 10-30 seconds |
+| M-Pesa | Kenya | `ke.mpesa` | KES | 5-15 seconds |
+| Airtel | Uganda | `ug.airtel` | UGX | 10-30 seconds |
+| MTN | Ghana | `gh.mtn` | GHS | 5-20 seconds |
+
+<Tip>
+    Use the format `{country_code}.{provider}` when specifying channel codes. For example, `cm.mtn` for MTN Cameroon.
+</Tip>
 
 For a complete list of supported channels, use the [Channels API](/api-reference/resources).
 
+## Country-Specific Information
+
+Mobile Money usage, regulations, and best practices vary significantly across different African countries. Below are specific details for key markets where Notch Pay operates.
+
+<Tabs>
+    <Tab title="Cameroon">
+        #### Market Overview
+
+        - Population: ~27 million
+        - Mobile Money Penetration: ~40%
+        - Primary Providers: MTN Mobile Money, Orange Money
+        - Currency: CFA Franc (XAF)
+        - Average Transaction Size: 5,000-50,000 XAF
+
+        #### Regulatory Information
+
+        - Regulated by: BEAC (Central Bank)
+        - KYC Requirements: Basic for small transactions, enhanced for larger amounts
+        - Transaction Limits:
+        - Daily: Up to 500,000 XAF
+        - Monthly: Up to 5,000,000 XAF
+
+        #### Best Practices
+
+        - Ensure phone numbers use the format +237XXXXXXXX
+        - MTN has higher market share in anglophone regions
+        - Orange has higher market share in francophone regions
+        - Consider offering both MTN and Orange options
+        - Peak processing times: 8-10 AM and 5-8 PM
+
+        #### Common Issues
+
+        - Network congestion during evenings
+        - USSD session timeouts (advise customers to respond promptly)
+        - Occasional service outages during system maintenance (typically late night)
+    </Tab>
+
+    <Tab title="Côte d'Ivoire">
+        #### Market Overview
+
+        - Population: ~26 million
+        - Mobile Money Penetration: ~45%
+        - Primary Providers: MTN Mobile Money, Orange Money, Wave
+        - Currency: CFA Franc (XOF)
+        - Average Transaction Size: 3,000-30,000 XOF
+
+        #### Regulatory Information
+
+        - Regulated by: BCEAO (Central Bank)
+        - KYC Requirements: Government ID required for account creation
+        - Transaction Limits:
+        - Daily: Up to 2,000,000 XOF
+        - Monthly: Up to 10,000,000 XOF
+
+        #### Best Practices
+
+        - Ensure phone numbers use the format +225XXXXXXXX
+        - Wave offers lower fees and is growing rapidly
+        - French language support is essential
+        - Consider offering all three major providers
+        - Transactions process faster during business hours
+
+        #### Common Issues
+
+        - Occasional delays during high-volume periods
+        - Some users have multiple mobile money accounts
+        - Network coverage issues in rural areas
+    </Tab>
+
+    <Tab title="Senegal">
+        #### Market Overview
+
+        - Population: ~17 million
+        - Mobile Money Penetration: ~50%
+        - Primary Providers: Wave, Orange Money, Free Money
+        - Currency: CFA Franc (XOF)
+        - Average Transaction Size: 5,000-50,000 XOF
+
+        #### Regulatory Information
+
+        - Regulated by: BCEAO (Central Bank)
+        - KYC Requirements: Government ID required
+        - Transaction Limits:
+        - Daily: Up to 2,000,000 XOF
+        - Monthly: Up to 10,000,000 XOF
+
+        #### Best Practices
+
+        - Ensure phone numbers use the format +221XXXXXXXX
+        - Wave has become the dominant provider due to lower fees
+        - French language support is essential
+        - Wolof language support is a plus
+        - Transactions typically process faster with Wave
+
+        #### Common Issues
+
+        - Wave has daily transaction limits that may affect larger payments
+        - Orange Money requires a PIN for confirmation
+        - Network coverage varies by region
+    </Tab>
+
+    <Tab title="Other Countries">
+        <p>
+            Notch Pay supports Mobile Money payments in many other African countries. For detailed information about a
+            specific country not listed here, please contact our support team or refer to our <a
+            href="/api-reference/resources">Resources API</a> for the most up-to-date information.
+        </p>
+
+        #### General Considerations for All Countries
+
+        - Always use the international phone number format with country code
+        - Be aware of local regulations and transaction limits
+        - Consider local language support for customer communications
+        - Monitor transaction success rates by provider and adjust your implementation accordingly
+        - Stay informed about new Mobile Money providers entering the market
+    </Tab>
+</Tabs>
+
 ## Best Practices
 
-1. **Validate Phone Numbers**: Ensure that the phone number is in the correct format for the selected Mobile Money provider
-2. **Handle Timeouts**: Mobile Money payments may take some time to complete, especially if the customer delays confirming the payment
-3. **Implement Webhooks**: Set up webhooks to receive real-time notifications when the payment status changes
-4. **Provide Clear Instructions**: Guide your customers on how to complete the payment on their mobile phones
-5. **Test Thoroughly**: Use test credentials to simulate different payment scenarios before going live
+### Integration Best Practices
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div>
+        <h4 className="font-semibold">Technical Implementation</h4>
+
+        - **Validate Phone Numbers**: Ensure phone numbers are in the correct international format (e.g., +237XXXXXXXXX)
+        - **Implement Idempotency**: Use unique reference IDs for each transaction to prevent duplicate payments
+        - **Handle Timeouts Properly**: Set appropriate timeout values (we recommend 60 seconds minimum)
+        - **Implement Webhooks**: Set up webhooks for real-time payment status updates instead of polling
+        - **Store Transaction References**: Save all transaction IDs and references for reconciliation
+        - **Implement Proper Error Handling**: Display user-friendly error messages based on error codes
+    </div>
+
+    <div>
+        <h4 className="font-semibold">User Experience</h4>
+
+        - **Clear Instructions**: Provide step-by-step guidance on how to complete the payment
+        - **Local Language Support**: Offer instructions in relevant local languages
+        - **Progress Indicators**: Show clear payment status and processing indicators
+        - **Fallback Options**: Offer alternative payment methods if Mobile Money fails
+        - **Confirmation Messages**: Send SMS or email confirmations after successful payments
+        - **Save User Preferences**: Remember the customer's preferred Mobile Money provider
+    </div>
+</div>
+
+### Security Best Practices
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+    <div>
+        <h4 className="font-semibold">Fraud Prevention</h4>
+
+        - **Monitor Unusual Patterns**: Watch for multiple failed attempts from the same number
+        - **Implement Rate Limiting**: Limit the number of payment attempts per user/session
+        - **Verify Phone Ownership**: Consider implementing OTP verification for high-value transactions
+        - **Keep Logs**: Maintain detailed logs of all transaction attempts for auditing
+    </div>
+
+    <div>
+        <h4 className="font-semibold">Data Protection</h4>
+
+        - **Secure Storage**: Never store sensitive customer data in plaintext
+        - **Minimize Data Collection**: Only collect information necessary for the transaction
+        - **Use HTTPS**: Ensure all API calls are made over secure connections
+        - **Rotate API Keys**: Regularly update your API keys and keep them secure
+    </div>
+</div>
+
+### Operational Best Practices
+
+<div className="mt-4">
+    <h4 className="font-semibold">Business Operations</h4>
+
+    - **Test Thoroughly**: Use test credentials to simulate different payment scenarios before going live
+    - **Monitor Success Rates**: Track success rates by provider and country to identify issues
+    - **Reconcile Daily**: Perform daily reconciliation between your system and Notch Pay dashboard
+    - **Customer Support**: Train your support team on common Mobile Money issues and resolutions
+    - **Stay Updated**: Keep informed about changes to Mobile Money services in your target countries
+</div>
 
 ## Troubleshooting
 
-### Common Issues
+### Common Issues and Solutions
 
-- **Invalid Phone Number**: Ensure the phone number is in the correct international format (e.g., +237XXXXXXXXX)
-- **Insufficient Funds**: The customer may not have enough funds in their Mobile Money account
-- **Transaction Timeout**: The customer may not have confirmed the payment within the allowed time
-- **Network Issues**: Mobile network problems can affect the payment process
+<AccordionGroup>
+    <Accordion title="Invalid Phone Number">
+        <h4>Symptoms</h4>
+
+        - Error message: "Invalid phone number" or "Phone number not registered"
+        - Payment fails immediately without customer receiving a prompt
+
+        <h4>Solutions</h4>
+
+        - Ensure the phone number is in the correct international format (e.g., +237XXXXXXXXX)
+        - Verify that the phone number is registered with the selected Mobile Money provider
+        - Check that you're using the correct country code
+        - Implement client-side validation with regex patterns for each country
+
+        <h4>Prevention</h4>
+
+        - Use a phone number input mask in your UI
+        - Implement country detection to automatically format phone numbers
+        - Provide examples of correct phone number formats
+    </Accordion>
+
+    <Accordion title="Insufficient Funds">
+        <h4>Symptoms</h4>
+
+        - Customer receives a prompt but payment fails
+        - Error message: "Insufficient funds" or "Balance too low"
+
+        <h4>Solutions</h4>
+
+        - Advise the customer to top up their Mobile Money account
+        - Offer the option to try a different Mobile Money provider
+        - Consider offering a partial payment option for large amounts
+
+        <h4>Prevention</h4>
+
+        - For large transactions, inform customers about the amount before they initiate payment
+        - Offer alternative payment methods as fallback options
+    </Accordion>
+
+    <Accordion title="Transaction Timeout">
+        <h4>Symptoms</h4>
+
+        - Payment remains in "pending" state for an extended period
+        - Customer reports receiving a prompt but transaction never completes
+
+        <h4>Solutions</h4>
+
+        - Implement a status check endpoint that polls the payment status
+        - After 2-3 minutes, prompt the customer to check their phone and respond to any pending requests
+        - After 5 minutes, offer the option to retry the payment
+        - Use webhooks to receive real-time updates when the payment status changes
+
+        <h4>Prevention</h4>
+
+        - Clearly communicate to customers that they need to respond to the prompt on their phone
+        - Set appropriate expectations about processing times
+        - Implement a countdown timer for USSD-based confirmations
+    </Accordion>
+
+    <Accordion title="Network Issues">
+        <h4>Symptoms</h4>
+
+        - Intermittent failures or timeouts
+        - Customer reports not receiving a prompt
+        - Error message: "Network error" or "Service unavailable"
+
+        <h4>Solutions</h4>
+
+        - Implement automatic retries with exponential backoff
+        - Advise customers to check their network connection
+        - Offer the option to receive the payment prompt via SMS if USSD fails
+
+        <h4>Prevention</h4>
+
+        - Monitor Mobile Money provider status and avoid initiating payments during known outages
+        - Implement circuit breakers to prevent cascading failures
+        - Have fallback payment methods ready
+    </Accordion>
+</AccordionGroup>
+
+### Error Codes
+
+Here are some common error codes you might encounter when processing Mobile Money payments:
+
+| Error Code | Description | Recommended Action |
+|------------|-------------|-------------------|
+| `INVALID_PHONE` | Phone number format is incorrect | Validate phone number format |
+| `UNREGISTERED_PHONE` | Phone not registered with provider | Suggest customer to register or use different number |
+| `INSUFFICIENT_BALANCE` | Customer has insufficient funds | Prompt customer to top up account |
+| `TRANSACTION_LIMIT_EXCEEDED` | Transaction exceeds daily/monthly limits | Suggest smaller transaction or alternative method |
+| `TIMEOUT` | Customer did not respond to prompt | Prompt customer to check their phone |
+| `PROVIDER_ERROR` | Error from Mobile Money provider | Retry after a few minutes |
+| `CANCELLED_BY_USER` | Customer rejected the payment | Ask customer if they want to try again |
+| `DUPLICATE_TRANSACTION` | Same transaction attempted multiple times | Check if previous transaction was successful |
 
 ## Testing Mobile Money Payments
 
-To test Mobile Money payments in the sandbox environment:
+Testing is a critical part of implementing Mobile Money payments. Notch Pay provides a comprehensive sandbox environment that allows you to simulate various payment scenarios without processing real transactions.
 
-1. Use your test API key
-2. Use the following test phone numbers:
-   - MTN: `+237670000000`
-   - Orange: `+237690000000`
-3. The test payments will be automatically approved or declined based on the test scenario
+<Note>
+    For detailed information on testing Mobile Money payments, including test phone numbers for all supported providers across different countries, test scenarios, webhook testing, and best practices, please refer to our comprehensive [Testing Guide](/get-started/testing).
+</Note>
 
-For more information on testing, see the [Testing Guide](/get-started/testing).
+The Testing Guide includes everything you need to thoroughly test your Mobile Money integration, including test phone numbers, test scenarios, webhook testing, fraud detection information, and best practices.
 
 ## Next Steps
 
@@ -170,3 +595,4 @@ For more information on testing, see the [Testing Guide](/get-started/testing).
 - [Direct Charge](/accept-payments/charge) - Build a custom payment experience
 - [Invoices](/accept-payments/invoices) - Create and manage professional invoices
 - [Webhooks](/get-started/webhooks) - Set up webhooks for payment notifications
+- [Dashboard](/dashboard) - Learn how to use the Notch Pay Dashboard to manage transactions

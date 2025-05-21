@@ -9,6 +9,20 @@ description: Integrate Notch Pay into your PHP applications
   The Notch Pay PHP SDK provides a convenient way to integrate Notch Pay into your PHP applications, including frameworks like Laravel, Symfony, and WordPress.
 </Note>
 
+## Integration Flow
+
+<Frame>
+  <img src="/images/php-sdk-flow.png" alt="PHP SDK Integration Flow" />
+</Frame>
+
+The diagram above illustrates the typical integration flow when using the Notch Pay PHP SDK:
+
+1. **Initialize the SDK** - Set up the SDK with your API keys
+2. **Create a Payment** - Generate a payment request with customer and transaction details
+3. **Process the Payment** - Redirect the customer to complete the payment or process it directly
+4. **Handle Webhooks** - Receive and process payment notifications
+5. **Verify the Payment** - Confirm the payment status and fulfill the order
+
 ## Installation
 
 <Tabs>
@@ -21,7 +35,7 @@ description: Integrate Notch Pay into your PHP applications
     ```php
     // Download the latest release from GitHub
     // https://github.com/notchafrica/notchpay-php/releases
-    
+
     // Include the autoloader
     require_once '/path/to/notchpay-php/autoload.php';
     ```
@@ -61,7 +75,7 @@ try {
         'callback' => 'https://example.com/callback',
         'description' => 'Payment for Order #123'
     ]);
-    
+
     // Redirect to the payment page
     header('Location: ' . $payment->authorization_url);
     exit;
@@ -81,7 +95,7 @@ try {
 try {
     $reference = 'order_123';
     $payment = $notchpay->payments->retrieve($reference);
-    
+
     if ($payment->transaction->status === 'complete') {
         // Payment is complete, fulfill the order
         echo 'Payment complete!';
@@ -105,7 +119,7 @@ try {
         'page' => 1,
         'status' => 'complete'
     ]);
-    
+
     foreach ($payments->items as $payment) {
         echo $payment->reference . ': ' . $payment->amount . ' ' . $payment->currency . '<br>';
     }
@@ -122,7 +136,7 @@ try {
 try {
     // Set grant key for transfers
     $notchpay->setGrantKey('YOUR_PRIVATE_KEY');
-    
+
     $transfer = $notchpay->transfers->create([
         'amount' => 5000,
         'currency' => 'XAF',
@@ -133,7 +147,7 @@ try {
         'description' => 'Salary payment',
         'reference' => 'transfer_123'
     ]);
-    
+
     echo 'Transfer created: ' . $transfer->transaction->id;
 } catch (\NotchPay\Exception\ApiException $e) {
     // Handle API error
@@ -148,9 +162,9 @@ try {
 try {
     // Set grant key for balance
     $notchpay->setGrantKey('YOUR_PRIVATE_KEY');
-    
+
     $balance = $notchpay->balance->retrieve();
-    
+
     echo 'Available balance: <br>';
     foreach ($balance->balance->available as $currency => $amount) {
         echo $currency . ': ' . $amount . '<br>';
@@ -219,7 +233,7 @@ class PaymentController extends Controller
             'email' => 'required|email',
             'name' => 'required|string',
         ]);
-        
+
         try {
             $payment = NotchPay::payments()->create([
                 'amount' => $request->amount,
@@ -232,20 +246,20 @@ class PaymentController extends Controller
                 'callback' => route('payment.callback'),
                 'description' => 'Payment from Laravel app'
             ]);
-            
+
             return redirect($payment->authorization_url);
         } catch (\Exception $e) {
             return back()->withErrors(['error' => $e->getMessage()]);
         }
     }
-    
+
     public function handleCallback(Request $request)
     {
         $reference = $request->query('reference');
-        
+
         try {
             $payment = NotchPay::payments()->retrieve($reference);
-            
+
             if ($payment->transaction->status === 'complete') {
                 // Payment is complete, fulfill the order
                 return view('payment.success', [
@@ -263,12 +277,12 @@ class PaymentController extends Controller
             ]);
         }
     }
-    
+
     public function handleWebhook(Request $request)
     {
         $payload = $request->all();
         $event = $payload;
-        
+
         // Process the event based on its type
         switch ($event['type']) {
             case 'payment.complete':
@@ -276,16 +290,16 @@ class PaymentController extends Controller
                 $payment = $event['data'];
                 // Update order status, send confirmation email, etc.
                 break;
-                
+
             case 'payment.failed':
                 // Handle failed payment
                 $payment = $event['data'];
                 // Update order status, notify customer, etc.
                 break;
-                
+
             // Handle other event types...
         }
-        
+
         return response()->json(['status' => 'success']);
     }
 }
@@ -328,25 +342,25 @@ function notchpay_payment_form_shortcode($atts) {
         'currency' => 'XAF',
         'button_text' => 'Pay Now',
     ), $atts);
-    
+
     $form = '<form action="' . esc_url(admin_url('admin-post.php')) . '" method="post">
         <input type="hidden" name="action" value="process_notchpay_payment">
         <input type="hidden" name="amount" value="' . esc_attr($atts['amount']) . '">
         <input type="hidden" name="currency" value="' . esc_attr($atts['currency']) . '">
-        
+
         <div class="form-group">
             <label for="name">Name</label>
             <input type="text" name="name" id="name" required>
         </div>
-        
+
         <div class="form-group">
             <label for="email">Email</label>
             <input type="email" name="email" id="email" required>
         </div>
-        
+
         <button type="submit">' . esc_html($atts['button_text']) . ' (' . esc_html($atts['amount']) . ' ' . esc_html($atts['currency']) . ')</button>
     </form>';
-    
+
     return $form;
 }
 add_shortcode('notchpay_payment_form', 'notchpay_payment_form_shortcode');
@@ -354,11 +368,11 @@ add_shortcode('notchpay_payment_form', 'notchpay_payment_form_shortcode');
 // Process the payment form
 function process_notchpay_payment() {
     global $notchpay;
-    
+
     if (!isset($_POST['amount']) || !isset($_POST['email']) || !isset($_POST['name'])) {
         wp_die('Missing required fields');
     }
-    
+
     try {
         $payment = $notchpay->payments->create([
             'amount' => intval($_POST['amount']),
@@ -371,7 +385,7 @@ function process_notchpay_payment() {
             'callback' => home_url('/payment-callback/'),
             'description' => 'Payment from WordPress site'
         ]);
-        
+
         wp_redirect($payment->authorization_url);
         exit;
     } catch (\Exception $e) {
@@ -384,13 +398,13 @@ add_action('admin_post_nopriv_process_notchpay_payment', 'process_notchpay_payme
 // Handle the payment callback
 function handle_notchpay_callback() {
     global $notchpay;
-    
+
     if (isset($_GET['reference'])) {
         $reference = sanitize_text_field($_GET['reference']);
-        
+
         try {
             $payment = $notchpay->payments->retrieve($reference);
-            
+
             if ($payment->transaction->status === 'complete') {
                 // Payment is complete
                 echo '<h1>Payment Complete!</h1>';
@@ -407,7 +421,7 @@ function handle_notchpay_callback() {
             echo '<p>' . $e->getMessage() . '</p>';
             echo '<p><a href="' . home_url() . '">Return to Home</a></p>';
         }
-        
+
         exit;
     }
 }
