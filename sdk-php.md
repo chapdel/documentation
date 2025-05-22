@@ -1,32 +1,14 @@
----
-title: PHP SDK
-description: Integrate Notch Pay into your PHP applications
----
-
 # NotchPay PHP Library
 
-<Note>
-  A PHP library to easily integrate the [NotchPay](https://notchpay.co/) API into your applications.
-</Note>
+A PHP library to easily integrate the [Notch Pay](https://notchpay.co/) API into your applications.
 
 ## Installation
 
-<Tabs>
-  <Tab title="Composer">
-    ```bash
-    composer require notchpay/notchpay-php
-    ```
-  </Tab>
-  <Tab title="Manual Installation">
-    ```php
-    // Download the latest release from GitHub
-    // https://github.com/notchafrica/notchpay-php/releases
+You can install the package via Composer:
 
-    // Include the autoloader
-    require_once '/path/to/notchpay-php/autoload.php';
-    ```
-  </Tab>
-</Tabs>
+```bash
+composer require notchpay/notchpay-php
+```
 
 ## Configuration
 
@@ -65,13 +47,12 @@ try {
         'callback' => 'https://example.com/callback', // Callback URL (optional)
         'reference' => 'order_123',      // Unique transaction reference
         'description' => 'Product purchase', // Description (optional)
-        'channels' => ['mobile_money', 'card'], // Payment channels (optional)
         'metadata' => [                  // Metadata (optional)
             'customer_id' => '123',
             'order_id' => '456'
         ]
     ]);
-
+    
     // Redirect user to payment URL
     header('Location: ' . $payment->authorization_url);
     exit();
@@ -94,7 +75,7 @@ NotchPay::setApiKey('b.xxxxxxx');
 try {
     $reference = $_GET['reference']; // Get reference from callback URL
     $payment = Payment::verify($reference);
-
+    
     if ($payment->transaction->status === 'complete') {
         // Payment was successful
         // Deliver product or service
@@ -123,9 +104,36 @@ try {
         'date_start' => '2023-01-01', // Start date (optional)
         'date_end' => '2023-12-31'    // End date (optional)
     ]);
-
+    
     foreach ($payments->data as $payment) {
         echo $payment->reference . ' - ' . $payment->amount . ' ' . $payment->currency . "\n";
+    }
+} catch(\NotchPay\Exceptions\ApiException $e) {
+    // Handle error
+    echo $e->getMessage();
+}
+```
+
+### Process a payment
+
+```php
+use NotchPay\NotchPay;
+use NotchPay\Payment;
+
+NotchPay::setApiKey('b.xxxxxxx');
+
+try {
+    $reference = 'order_123';
+    $data = [
+        "channel": "cm.mtn",
+        "data": [
+            "account_number" => "670000000"
+        ]       
+    ];
+    $result = Payment::charge($reference, $data);
+    
+    if ($result->status === 'success') {
+        // Payment cancelled successfully
     }
 } catch(\NotchPay\Exceptions\ApiException $e) {
     // Handle error
@@ -144,7 +152,7 @@ NotchPay::setApiKey('b.xxxxxxx');
 try {
     $reference = 'order_123';
     $result = Payment::cancel($reference);
-
+    
     if ($result->status === 'success') {
         // Payment cancelled successfully
     }
@@ -182,7 +190,7 @@ try {
             'employee_id' => '123'
         ]
     ]);
-
+    
     // Process response
     echo "Transfer initialized with reference: " . $transfer->reference;
 } catch(\NotchPay\Exceptions\ApiException $e) {
@@ -203,7 +211,7 @@ NotchPay::setPrivateKey('private_key_here');
 try {
     $reference = 'transfer_123';
     $transfer = Transfer::verify($reference);
-
+    
     echo "Transfer status: " . $transfer->status;
 } catch(\NotchPay\Exceptions\ApiException $e) {
     // Handle error
@@ -225,7 +233,7 @@ try {
         'limit' => 20,           // Number of items per page (optional)
         'page' => 1              // Page number (optional)
     ]);
-
+    
     foreach ($transfers->data as $transfer) {
         echo $transfer->reference . ' - ' . $transfer->amount . ' ' . $transfer->currency . "\n";
     }
@@ -257,7 +265,7 @@ try {
         'currency' => 'XAF',
         'description' => 'Employee' // Optional
     ]);
-
+    
     echo "Beneficiary created with ID: " . $beneficiary->id;
 } catch(\NotchPay\Exceptions\ApiException $e) {
     // Handle error
@@ -277,7 +285,7 @@ NotchPay::setApiKey('b.xxxxxxx');
 try {
     $id = 'ben_123456';
     $beneficiary = Beneficiary::retrieve($id);
-
+    
     echo "Beneficiary name: " . $beneficiary->name;
 } catch(\NotchPay\Exceptions\ApiException $e) {
     // Handle error
@@ -300,7 +308,7 @@ try {
         'name' => 'John Updated',
         'description' => 'New position'
     ]);
-
+    
     echo "Beneficiary updated: " . $beneficiary->name;
 } catch(\NotchPay\Exceptions\ApiException $e) {
     // Handle error
@@ -322,7 +330,7 @@ try {
         'limit' => 20,           // Number of items per page (optional)
         'page' => 1              // Page number (optional)
     ]);
-
+    
     foreach ($beneficiaries->data as $beneficiary) {
         echo $beneficiary->name . ' - ' . $beneficiary->account . "\n";
     }
@@ -344,7 +352,7 @@ NotchPay::setPrivateKey('private_key_here');
 try {
     $id = 'ben_123456';
     $result = Beneficiary::delete($id);
-
+    
     if ($result->status === 'success') {
         echo "Beneficiary deleted successfully";
     }
@@ -375,7 +383,7 @@ try {
             'address' => 'Douala, Cameroon'
         ]
     ]);
-
+    
     echo "Customer created with ID: " . $customer->id;
 } catch(\NotchPay\Exceptions\ApiException $e) {
     // Handle error
@@ -394,7 +402,7 @@ NotchPay::setApiKey('b.xxxxxxx');
 try {
     $id = 'cus_123456';
     $customer = Customer::retrieve($id);
-
+    
     echo "Customer name: " . $customer->name;
 } catch(\NotchPay\Exceptions\ApiException $e) {
     // Handle error
@@ -416,7 +424,7 @@ try {
         'name' => 'John Updated',
         'phone' => '+237611111111'
     ]);
-
+    
     echo "Customer updated: " . $customer->name;
 } catch(\NotchPay\Exceptions\ApiException $e) {
     // Handle error
@@ -437,7 +445,7 @@ try {
         'limit' => 20,           // Number of items per page (optional)
         'page' => 1              // Page number (optional)
     ]);
-
+    
     foreach ($customers->data as $customer) {
         echo $customer->name . ' - ' . $customer->email . "\n";
     }
@@ -458,7 +466,7 @@ NotchPay::setApiKey('b.xxxxxxx');
 try {
     $id = 'cus_123456';
     $result = Customer::block($id);
-
+    
     if ($result->status === 'success') {
         echo "Customer blocked successfully";
     }
@@ -479,7 +487,7 @@ NotchPay::setApiKey('b.xxxxxxx');
 try {
     $id = 'cus_123456';
     $result = Customer::unblock($id);
-
+    
     if ($result->status === 'success') {
         echo "Customer unblocked successfully";
     }
@@ -500,7 +508,7 @@ NotchPay::setApiKey('b.xxxxxxx');
 try {
     $id = 'cus_123456';
     $paymentMethods = Customer::paymentMethods($id);
-
+    
     foreach ($paymentMethods->data as $method) {
         echo $method->type . ' - ' . $method->last4 . "\n";
     }
@@ -524,7 +532,7 @@ try {
         'limit' => 10,
         'page' => 1
     ]);
-
+    
     foreach ($payments->data as $payment) {
         echo $payment->reference . ' - ' . $payment->amount . ' ' . $payment->currency . "\n";
     }
@@ -552,7 +560,7 @@ try {
         'description' => 'Webhook for payments', // Optional
         'active' => true // Optional
     ]);
-
+    
     echo "Webhook created with ID: " . $webhook->id;
 } catch(\NotchPay\Exceptions\ApiException $e) {
     // Handle error
@@ -572,7 +580,7 @@ NotchPay::setPrivateKey('private_key_here');
 try {
     $id = 'wh_123456';
     $webhook = Webhook::retrieve($id);
-
+    
     echo "Webhook URL: " . $webhook->url;
 } catch(\NotchPay\Exceptions\ApiException $e) {
     // Handle error
@@ -595,7 +603,7 @@ try {
         'events' => ['payment.complete', 'payment.failed', 'transfer.complete'],
         'active' => true
     ]);
-
+    
     echo "Webhook updated: " . $webhook->url;
 } catch(\NotchPay\Exceptions\ApiException $e) {
     // Handle error
@@ -614,7 +622,7 @@ NotchPay::setPrivateKey('private_key_here');
 
 try {
     $webhooks = Webhook::all();
-
+    
     foreach ($webhooks->data as $webhook) {
         echo $webhook->url . ' - ' . ($webhook->active ? 'Active' : 'Inactive') . "\n";
     }
@@ -636,7 +644,7 @@ NotchPay::setPrivateKey('private_key_here');
 try {
     $id = 'wh_123456';
     $result = Webhook::delete($id);
-
+    
     if ($result->status === 'success') {
         echo "Webhook deleted successfully";
     }
@@ -659,7 +667,7 @@ NotchPay::setPrivateKey('private_key_here');
 
 try {
     $balance = Balance::check();
-
+    
     echo "Available balance: " . $balance->available . " " . $balance->currency . "\n";
     echo "Pending balance: " . $balance->pending . " " . $balance->currency;
 } catch(\NotchPay\Exceptions\ApiException $e) {
@@ -680,7 +688,7 @@ NotchPay::setApiKey('b.xxxxxxx');
 
 try {
     $channels = Channel::all();
-
+    
     foreach ($channels->data as $channel) {
         echo $channel->name . ' - ' . $channel->code . "\n";
     }
@@ -701,7 +709,7 @@ NotchPay::setApiKey('b.xxxxxxx');
 try {
     $code = 'mtn_momo';
     $channel = Channel::retrieve($code);
-
+    
     echo "Channel name: " . $channel->name;
 } catch(\NotchPay\Exceptions\ApiException $e) {
     // Handle error
@@ -721,7 +729,7 @@ NotchPay::setApiKey('b.xxxxxxx');
 
 try {
     $countries = Country::all();
-
+    
     foreach ($countries->data as $country) {
         echo $country->name . ' - ' . $country->code . "\n";
     }
@@ -743,7 +751,7 @@ NotchPay::setApiKey('b.xxxxxxx');
 
 try {
     $currencies = Currency::all();
-
+    
     foreach ($currencies->data as $currency) {
         echo $currency->name . ' - ' . $currency->code . "\n";
     }
@@ -777,16 +785,18 @@ try {
 
 For more information on API parameters and responses, see the [official NotchPay documentation](https://developer.notchpay.co/).
 
-## Related Resources
+## Changelog
 
-<CardGroup cols={3}>
-  <Card title="API Reference" icon="book" href="/api-reference">
-    Complete API documentation
-  </Card>
-  <Card title="JavaScript SDK" icon="js" href="/sdks/javascript">
-    Integrate with JavaScript applications
-  </Card>
-  <Card title="Laravel Integration" icon="laravel" href="/sdks/laravel">
-    Dedicated Laravel package
-  </Card>
-</CardGroup>
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
+## Contributing
+
+Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+
+## Security
+
+If you discover any security related issues, please email hello@notchpay.co instead of using the issue tracker.
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.

@@ -54,11 +54,23 @@ description: Find answers to common questions about Notch Pay
     <Accordion title="How do I accept my first payment?">
         To accept your first payment:
 
-        1. Log in to your Notch Pay Business suite
-        2. Go to Payments > Create Payment
-        3. Enter the payment details and customer information
-        4. Click "Create Payment" to generate a payment link
-        5. Share the payment link with your customer
+        <Steps>
+          <Step title="Log in to your account">
+            Log in to your Notch Pay Business suite
+          </Step>
+          <Step title="Navigate to Payments">
+            Go to Payments > Create Payment
+          </Step>
+          <Step title="Enter payment details">
+            Enter the payment details and customer information
+          </Step>
+          <Step title="Create the payment">
+            Click "Create Payment" to generate a payment link
+          </Step>
+          <Step title="Share with customer">
+            Share the payment link with your customer
+          </Step>
+        </Steps>
 
         Alternatively, you can integrate Notch Pay into your website or application using our [API](/accept-payments) or [SDKs](/sdks).
     </Accordion>
@@ -81,10 +93,20 @@ description: Find answers to common questions about Notch Pay
     <Accordion title="How do I send money to a beneficiary?">
         To send money to a beneficiary:
 
-        1. Log in to your Notch Pay Business suite
-        2. Go to Transfers > Create Transfer
-        3. Enter the transfer details and beneficiary information
-        4. Click "Create Transfer" to initiate the transfer
+        <Steps>
+          <Step title="Log in to your account">
+            Log in to your Notch Pay Business suite
+          </Step>
+          <Step title="Navigate to Transfers">
+            Go to Transfers > Create Transfer
+          </Step>
+          <Step title="Enter transfer details">
+            Enter the transfer details and beneficiary information
+          </Step>
+          <Step title="Initiate the transfer">
+            Click "Create Transfer" to initiate the transfer
+          </Step>
+        </Steps>
 
         You can also use our [API](/api-reference/transfers) to programmatically send money to beneficiaries.
     </Accordion>
@@ -105,10 +127,20 @@ description: Find answers to common questions about Notch Pay
     <Accordion title="How do I integrate Notch Pay into my website?">
         You can integrate Notch Pay into your website in several ways:
 
-        1. **Collect**: Use our hosted checkout page for a quick and easy integration
-        2. **Quick (Payment Links)**: Create shareable payment links without any coding
-        3. **API Integration**: Integrate directly using our RESTful API
-        4. **SDKs**: Use our official libraries for various programming languages
+        <CardGroup cols={2}>
+          <Card title="Collect" icon="globe">
+            Use our hosted checkout page for a quick and easy integration
+          </Card>
+          <Card title="Payment Links" icon="link">
+            Create shareable payment links without any coding
+          </Card>
+          <Card title="API Integration" icon="code">
+            Integrate directly using our RESTful API
+          </Card>
+          <Card title="SDKs" icon="box">
+            Use our official libraries for various programming languages
+          </Card>
+        </CardGroup>
 
         Check our [Accept Payments](/accept-payments) documentation for detailed integration guides.
     </Accordion>
@@ -127,21 +159,41 @@ description: Find answers to common questions about Notch Pay
     <Accordion title="How do I set up webhooks?">
         To set up webhooks:
 
-        1. Go to your Notch Pay Business suite
-        2. Navigate to Settings > Webhooks
-        3. Click "Add Endpoint"
-        4. Enter your endpoint URL and select the events you want to receive
-        5. Click "Save" to create the webhook
+        <Steps>
+          <Step title="Access your account">
+            Go to your Notch Pay Business suite
+          </Step>
+          <Step title="Navigate to Webhooks">
+            Navigate to Settings > Webhooks
+          </Step>
+          <Step title="Add new endpoint">
+            Click "Add Endpoint"
+          </Step>
+          <Step title="Configure the webhook">
+            Enter your endpoint URL and select the events you want to receive
+          </Step>
+          <Step title="Save the webhook">
+            Click "Save" to create the webhook
+          </Step>
+        </Steps>
 
-        Check our [Webhooks](/get-started/webhooks/index) documentation for more information.
+        Check our [Webhooks](/get-started/webhooks) documentation for more information.
     </Accordion>
 
     <Accordion title="How do I test my integration?">
         You can test your integration using our sandbox environment:
 
-        1. Switch to Test Mode in your dashboard
-        2. Use test credentials and accounts
-        3. Simulate payments and transfers
+        <Steps>
+          <Step title="Enable Test Mode">
+            Switch to Test Mode in your dashboard
+          </Step>
+          <Step title="Use test credentials">
+            Use test credentials and accounts
+          </Step>
+          <Step title="Simulate transactions">
+            Simulate payments and transfers
+          </Step>
+        </Steps>
 
         Check our [Testing](/get-started/testing) documentation for detailed testing instructions.
     </Accordion>
@@ -158,11 +210,23 @@ description: Find answers to common questions about Notch Pay
     <Accordion title="How do I keep my integration secure?">
         To keep your integration secure:
 
-        1. Never expose your API keys in client-side code
-        2. Always use HTTPS for all payment-related pages
-        3. Validate and sanitize all user inputs
-        4. Verify webhook signatures
-        5. Implement proper error handling
+        <Steps>
+          <Step title="Protect your API keys">
+            Never expose your API keys in client-side code
+          </Step>
+          <Step title="Use secure connections">
+            Always use HTTPS for all payment-related pages
+          </Step>
+          <Step title="Validate inputs">
+            Validate and sanitize all user inputs
+          </Step>
+          <Step title="Verify webhooks">
+            Verify webhook signatures
+          </Step>
+          <Step title="Handle errors properly">
+            Implement proper error handling
+          </Step>
+        </Steps>
 
         Check our [Security](/security/best-practices) documentation for more security best practices.
     </Accordion>
@@ -174,9 +238,17 @@ description: Find answers to common questions about Notch Pay
     <Accordion title="How do I get help if I have a problem?">
         If you need assistance, you can:
 
-        1. Check our [documentation](/) for answers to common questions
-        2. Contact our [support team](mailto:hello@notchpay.co) for personalized assistance
-        3. Join our [developer community](https://community.notchpay.co) to connect with other users
+        <CardGroup cols={3}>
+          <Card title="Documentation" icon="book">
+            Check our [documentation](/) for answers to common questions
+          </Card>
+          <Card title="Support Team" icon="headset">
+            Contact our [support team](mailto:hello@notchpay.co) for personalized assistance
+          </Card>
+          <Card title="Developer Community" icon="users">
+            Join our [developer community](https://community.notchpay.co) to connect with other users
+          </Card>
+        </CardGroup>
     </Accordion>
 
     <Accordion title="What are your support hours?">

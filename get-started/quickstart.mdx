@@ -38,7 +38,7 @@ description: Get up and running with Notch Pay in minutes
         <Callout type="warning">
           Always use **test keys** during development and testing. Only switch to **live keys** when you're ready to process real transactions.
         </Callout>
-        
+
         Test keys contains `test_` while live keys doesn't.
       </Tab>
     </Tabs>
@@ -206,7 +206,7 @@ description: Get up and running with Notch Pay in minutes
       // Example callback handler in Express.js
       app.get('/callback', (req, res) => {
         const reference = req.query.reference;
-        
+
         // Verify the payment status
         fetch(`https://api.notchpay.co/payments/${reference}`, {
           headers: {
@@ -261,14 +261,14 @@ description: Get up and running with Notch Pay in minutes
       @app.route('/callback')
       def callback():
           reference = request.args.get('reference')
-          
+
           headers = {
               "Authorization": "YOUR_PUBLIC_KEY"
           }
-          
+
           response = requests.get(f"https://api.notchpay.co/payments/{reference}", headers=headers)
           data = response.json()
-          
+
           if data['transaction']['status'] == 'complete':
               # Payment successful, update your database and show success page
               return 'Payment successful!'
@@ -299,10 +299,10 @@ description: Get up and running with Notch Pay in minutes
           // Example webhook handler in Express.js
           app.post('/webhooks', express.json(), (req, res) => {
             const event = req.body;
-            
+
             // Verify webhook signature (recommended for security)
             // ...
-            
+
             // Handle different event types
             switch (event.type) {
               case 'payment.complete':
@@ -313,7 +313,7 @@ description: Get up and running with Notch Pay in minutes
                 break;
               // Handle other event types
             }
-            
+
             // Acknowledge receipt of the webhook
             res.status(200).send('Webhook received');
           });
@@ -378,7 +378,7 @@ Here are some next steps to enhance your integration:
   <Card title="Customer Management" icon="users" href="/customers">
     Save customer information for future payments
   </Card>
-  <Card title="Webhook Setup" icon="bell" href="/get-started/webhooks/index">
+  <Card title="Webhook Setup" icon="bell" href="/get-started/webhooks">
     Set up reliable payment notifications
   </Card>
   <Card title="Testing" icon="vial" href="/get-started/testing">

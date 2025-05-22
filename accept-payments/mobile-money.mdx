@@ -24,74 +24,31 @@ Mobile Money is a service that allows users to store, send, and receive money us
 - **Instant Confirmation**: Real-time payment notifications
 - **Reduced Fraud**: Two-factor authentication built into the payment flow
 
-## Supported Mobile Money Providers
-
-Notch Pay supports the following Mobile Money providers across Africa:
-
-<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-        <h3 className="text-md font-semibold mb-2">MTN Mobile Money</h3>
-        <p className="text-sm">Available in Cameroon, Côte d'Ivoire, Ghana, Rwanda, Uganda, and other countries where
-            MTN operates.</p>
-        <p className="text-xs mt-2 text-gray-500">Average success rate: 92%</p>
-    </div>
-    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-        <h3 className="text-md font-semibold mb-2">Orange Money</h3>
-        <p className="text-sm">Available in Cameroon, Senegal, Côte d'Ivoire, Mali, and other countries where Orange
-            operates.</p>
-        <p className="text-xs mt-2 text-gray-500">Average success rate: 90%</p>
-    </div>
-    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-        <h3 className="text-md font-semibold mb-2">Wave</h3>
-        <p className="text-sm">Available in Senegal and Côte d'Ivoire with rapid expansion to other West African
-            countries.</p>
-        <p className="text-xs mt-2 text-gray-500">Average success rate: 94%</p>
-    </div>
-</div>
-
-<div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-        <h3 className="text-md font-semibold mb-2">Airtel Money</h3>
-        <p className="text-sm">Available in multiple East African countries including Kenya, Tanzania, and Uganda.</p>
-        <p className="text-xs mt-2 text-gray-500">Average success rate: 89%</p>
-    </div>
-    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-        <h3 className="text-md font-semibold mb-2">M-Pesa</h3>
-        <p className="text-sm">Available in Kenya, Tanzania, and other East African countries.</p>
-        <p className="text-xs mt-2 text-gray-500">Average success rate: 95%</p>
-    </div>
-    <div className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-        <h3 className="text-md font-semibold mb-2">Other Providers</h3>
-        <p className="text-sm">We also support other local Mobile Money providers depending on the country.</p>
-        <p className="text-xs mt-2 text-gray-500">Contact us for specific provider details</p>
-    </div>
-</div>
-
 ## How Mobile Money Payments Work
 
-<img src="/images/mobile-money-flow.png" alt="Mobile Money Payment Flow" />
+<img src="/images/screenshots/payment-page.png" alt="Mobile Money Payment Flow"/>
 
 The Mobile Money payment flow with Notch Pay works as follows:
 
 <Steps>
-  <Step title="Initialize Payment">
-    Create a payment with customer and transaction details
-  </Step>
-  <Step title="Customer Enters Phone Number">
-    The customer enters their Mobile Money phone number
-  </Step>
-  <Step title="Payment Request">
-    Notch Pay sends a payment request to the Mobile Money provider
-  </Step>
-  <Step title="Customer Confirmation">
-    The customer receives a prompt on their phone to confirm the payment (USSD or app-based)
-  </Step>
-  <Step title="Payment Processing">
-    The Mobile Money provider processes the payment (typically 5-30 seconds)
-  </Step>
-  <Step title="Confirmation">
-    Notch Pay confirms the payment status and notifies your application via webhook
-  </Step>
+    <Step title="Initialize Payment">
+        Create a payment with customer and transaction details
+    </Step>
+    <Step title="Customer Enters Phone Number">
+        The customer enters their Mobile Money phone number
+    </Step>
+    <Step title="Payment Request">
+        Notch Pay sends a payment request to the Mobile Money provider
+    </Step>
+    <Step title="Customer Confirmation">
+        The customer receives a prompt on their phone to confirm the payment (USSD or app-based)
+    </Step>
+    <Step title="Payment Processing">
+        The Mobile Money provider processes the payment (typically 5-30 seconds)
+    </Step>
+    <Step title="Confirmation">
+        Notch Pay confirms the payment status and notifies your application via webhook
+    </Step>
 </Steps>
 
 ## Integration Options
@@ -112,24 +69,23 @@ We offer multiple ways to integrate Mobile Money payments into your application,
         ### How to Implement
         ```javascript
         // Create a payment session
-        fetch('https://api.notchpay.co/checkout/sessions', {
+        fetch('https://api.notchpay.co/payment', {
         method: 'POST',
         headers: {
-        'Authorization': 'Bearer YOUR_SECRET_KEY',
+        'Authorization': 'YOUR_PUBLIC_KEY',
         'Content-Type': 'application/json'
     },
         body: JSON.stringify({
         amount: 5000,
         currency: 'XAF',
-        payment_methods: ['mobile_money'], // Limit to Mobile Money only
-        success_url: 'https://your-website.com/success',
-        cancel_url: 'https://your-website.com/cancel'
+        phone: '+237670000000'
+        callback: 'https://your-website.com/callback'
     })
     })
         .then(response => response.json())
         .then(data => {
-        // Redirect customer to the checkout page
-        window.location.href = data.checkout_url;
+        // Redirect customer to the collect page
+        window.location.href = data.authorization_url;
     });
         ```
 
@@ -152,7 +108,7 @@ We offer multiple ways to integrate Mobile Money payments into your application,
         fetch('https://api.notchpay.co/payments', {
         method: 'POST',
         headers: {
-        'Authorization': 'Bearer YOUR_SECRET_KEY',
+        'Authorization': 'YOUR_PUBLIC_KEY',
         'Content-Type': 'application/json'
     },
         body: JSON.stringify({
@@ -185,13 +141,13 @@ We offer multiple ways to integrate Mobile Money payments into your application,
         fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
         method: 'POST',
         headers: {
-        'Authorization': 'Bearer YOUR_SECRET_KEY',
+        'Authorization': 'YOUR_PUBLIC_KEY',
         'Content-Type': 'application/json'
     },
         body: JSON.stringify({
         channel: 'cm.mtn', // or 'cm.orange' for Orange Money
         data: {
-        phone: '+237680000000' // Customer's Mobile Money phone number
+        phone: '+237670000000' // Customer's Mobile Money phone number
     }
     })
     })
@@ -211,7 +167,7 @@ We offer multiple ways to integrate Mobile Money payments into your application,
         // Check the payment status
         fetch(`https://api.notchpay.co/payments/${paymentReference}`, {
         headers: {
-        'Authorization': 'Bearer YOUR_SECRET_KEY'
+        'Authorization': 'YOUR_PUBLIC_KEY'
     }
     })
         .then(response => response.json())
@@ -259,9 +215,9 @@ We offer multiple ways to integrate Mobile Money payments into your application,
         .then(payment => {
         // Process with Mobile Money
         return notchpay.processMobileMoney(payment.reference, {
-        provider: 'mtn', // or 'orange', 'airtel', etc.
+        provider: 'cm.mtn', // or 'orange', 'airtel', etc.
         country: 'cm',   // country code
-        phone: '+237680000000'
+        phone: '+237670000000'
     });
     })
         .then(result => {
@@ -584,7 +540,9 @@ Here are some common error codes you might encounter when processing Mobile Mone
 Testing is a critical part of implementing Mobile Money payments. Notch Pay provides a comprehensive sandbox environment that allows you to simulate various payment scenarios without processing real transactions.
 
 <Note>
-    For detailed information on testing Mobile Money payments, including test phone numbers for all supported providers across different countries, test scenarios, webhook testing, and best practices, please refer to our comprehensive [Testing Guide](/get-started/testing).
+    For detailed information on testing Mobile Money payments, including test phone numbers for all supported providers
+    across different countries, test scenarios, webhook testing, and best practices, please refer to our comprehensive
+    [Testing Guide](/get-started/testing).
 </Note>
 
 The Testing Guide includes everything you need to thoroughly test your Mobile Money integration, including test phone numbers, test scenarios, webhook testing, fraud detection information, and best practices.

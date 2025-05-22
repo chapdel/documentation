@@ -54,11 +54,11 @@ app.post('/webhooks/notchpay', (req, res) => {
   const payload = JSON.stringify(req.body);
   const signature = req.headers['x-notch-signature'];
   const hash = 'your_webhook_hash'; // Use test_hash for sandbox, live_hash for production
-  
+
   if (!verifyWebhookSignature(payload, signature, hash)) {
     return res.status(403).send('Invalid signature');
   }
-  
+
   // Process the webhook
   // ...
 });
@@ -106,10 +106,10 @@ def webhook():
     payload = request.data.decode('utf-8')
     signature = request.headers.get('x-notch-signature')
     hash_key = 'your_webhook_hash'  # Use test_hash for sandbox, live_hash for production
-    
+
     if not verify_webhook_signature(payload, signature, hash_key):
         return jsonify({'error': 'Invalid signature'}), 403
-    
+
     # Process the webhook
     # ...
 ```
@@ -146,5 +146,5 @@ If you're having trouble with webhook verification:
 
 ## Next Steps
 
-- [Webhook Overview](/get-started/webhooks/index) - Learn how to set up webhook endpoints
+- [Webhook Overview](/get-started/webhooks) - Learn how to set up webhook endpoints
 - [Webhooks API](/api-reference/webhooks) - Use the API to manage your webhook endpoints

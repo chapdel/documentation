@@ -18,131 +18,151 @@ Before setting up webhooks, make sure you have:
 
 ## Creating a Webhook Endpoint
 
-### Step 1: Create a Server Endpoint
+<Steps>
+  <Step title="Create a Server Endpoint">
+    First, you need to create an endpoint on your server that can receive webhook notifications from Notch Pay. This endpoint should:
 
-First, you need to create an endpoint on your server that can receive webhook notifications from Notch Pay. This endpoint should:
+    - Accept HTTP POST requests
+    - Parse JSON request bodies
+    - Return a 2xx status code (preferably 200 OK) to acknowledge receipt
 
-- Accept HTTP POST requests
-- Parse JSON request bodies
-- Return a 2xx status code (preferably 200 OK) to acknowledge receipt
+    <Tabs>
+      <Tab title="Node.js (Express)">
+        ```javascript
+        const express = require('express');
+        const app = express();
 
-<Tabs>
-  <Tab title="Node.js (Express)">
-    ```javascript
-    const express = require('express');
-    const app = express();
-    
-    // Parse JSON request bodies
-    app.use(express.json());
-    
-    app.post('/webhooks/notchpay', (req, res) => {
-      // Get the webhook payload
-      const event = req.body;
-      
-      // Log the event type
-      console.log(`Received event: ${event.type}`);
-      
-      // Process the webhook event (implement your business logic here)
-      // ...
-      
-      // Return a 200 OK response
-      res.status(200).send('Webhook received');
-    });
-    
-    app.listen(3000, () => {
-      console.log('Webhook server running on port 3000');
-    });
+        // Parse JSON request bodies
+        app.use(express.json());
+
+        app.post('/webhooks/notchpay', (req, res) => {
+          // Get the webhook payload
+          const event = req.body;
+
+          // Log the event type
+          console.log(`Received event: ${event.type}`);
+
+          // Process the webhook event (implement your business logic here)
+          // ...
+
+          // Return a 200 OK response
+          res.status(200).send('Webhook received');
+        });
+
+        app.listen(3000, () => {
+          console.log('Webhook server running on port 3000');
+        });
+        ```
+      </Tab>
+
+      <Tab title="PHP">
+        ```php
+        <?php
+        // Get the request body
+        $input = file_get_contents('php://input');
+        $event = json_decode($input, true);
+
+        // Log the event type
+        error_log("Received event: {$event['type']}");
+
+        // Process the webhook event (implement your business logic here)
+        // ...
+
+        // Return a 200 OK response
+        http_response_code(200);
+        echo json_encode(['status' => 'success', 'message' => 'Webhook received']);
+        ```
+      </Tab>
+
+      <Tab title="Python (Flask)">
+        ```python
+        from flask import Flask, request, jsonify
+
+        app = Flask(__name__)
+
+        @app.route('/webhooks/notchpay', methods=['POST'])
+        def webhook():
+            # Get the webhook payload
+            event = request.json
+
+            # Log the event type
+            print(f"Received event: {event['type']}")
+
+            # Process the webhook event (implement your business logic here)
+            # ...
+
+            # Return a 200 OK response
+            return jsonify({'status': 'success', 'message': 'Webhook received'}), 200
+
+        if __name__ == '__main__':
+            app.run(port=3000)
+        ```
+      </Tab>
+    </Tabs>
+  </Step>
+
+  <Step title="Make Your Endpoint Publicly Accessible">
+    Your webhook endpoint must be publicly accessible so that Notch Pay can send notifications to it. If you're developing locally, you can use a tool like [ngrok](https://ngrok.com/) to expose your local server to the internet:
+
+    ```bash
+    # Start your local server (e.g., on port 3000)
+    # Then in another terminal, run:
+    ngrok http 3000
     ```
-  </Tab>
-  
-  <Tab title="PHP">
-    ```php
-    <?php
-    // Get the request body
-    $input = file_get_contents('php://input');
-    $event = json_decode($input, true);
-    
-    // Log the event type
-    error_log("Received event: {$event['type']}");
-    
-    // Process the webhook event (implement your business logic here)
-    // ...
-    
-    // Return a 200 OK response
-    http_response_code(200);
-    echo json_encode(['status' => 'success', 'message' => 'Webhook received']);
-    ```
-  </Tab>
-  
-  <Tab title="Python (Flask)">
-    ```python
-    from flask import Flask, request, jsonify
-    
-    app = Flask(__name__)
-    
-    @app.route('/webhooks/notchpay', methods=['POST'])
-    def webhook():
-        # Get the webhook payload
-        event = request.json
-        
-        # Log the event type
-        print(f"Received event: {event['type']}")
-        
-        # Process the webhook event (implement your business logic here)
-        # ...
-        
-        # Return a 200 OK response
-        return jsonify({'status': 'success', 'message': 'Webhook received'}), 200
-    
-    if __name__ == '__main__':
-        app.run(port=3000)
-    ```
-  </Tab>
-</Tabs>
 
-### Step 2: Make Your Endpoint Publicly Accessible
+    This will give you a temporary public URL (e.g., `https://abc123.ngrok.io`) that forwards to your local server. You can use this URL for testing webhooks during development.
 
-Your webhook endpoint must be publicly accessible so that Notch Pay can send notifications to it. If you're developing locally, you can use a tool like [ngrok](https://ngrok.com/) to expose your local server to the internet:
-
-```bash
-# Start your local server (e.g., on port 3000)
-# Then in another terminal, run:
-ngrok http 3000
-```
-
-This will give you a temporary public URL (e.g., `https://abc123.ngrok.io`) that forwards to your local server. You can use this URL for testing webhooks during development.
-
-For production, make sure your endpoint is hosted on a reliable server with a stable URL.
+    For production, make sure your endpoint is hosted on a reliable server with a stable URL.
+  </Step>
+</Steps>
 
 ## Registering Your Webhook in Notch Pay
 
 Once you have your endpoint ready, you need to register it with Notch Pay:
 
-### Using the Dashboard
+<Tabs>
+  <Tab title="Using the Dashboard">
+    <Steps>
+      <Step title="Log in to your account">
+        Log in to your [Notch Pay Business account](https://business.notchpay.co/)
+      </Step>
+      <Step title="Navigate to Webhooks settings">
+        Navigate to **Settings** > **Developers** > **Webhooks**
+      </Step>
+      <Step title="Add a new endpoint">
+        Click **Add Endpoint**
+      </Step>
+      <Step title="Configure the webhook">
+        Enter your webhook URL (e.g., `https://example.com/webhooks/notchpay` or your ngrok URL for testing)
+      </Step>
+      <Step title="Select events">
+        Select the events you want to receive notifications for
+      </Step>
+      <Step title="Add a description">
+        Optionally, add a description to help you identify this webhook
+      </Step>
+      <Step title="Save the webhook">
+        Click **Save** to create the webhook
+      </Step>
+    </Steps>
+  </Tab>
 
-1. Log in to your [Notch Pay Business account](https://business.notchpay.co/)
-2. Navigate to **Settings** > **Developers** > **Webhooks**
-3. Click **Add Endpoint**
-4. Enter your webhook URL (e.g., `https://example.com/webhooks/notchpay` or your ngrok URL for testing)
-5. Select the events you want to receive notifications for
-6. Optionally, add a description to help you identify this webhook
-7. Click **Save** to create the webhook
+  <Tab title="Using the API">
+    You can also create webhooks programmatically using the Notch Pay API:
 
-### Using the API
-
-You can also create webhooks programmatically using the Notch Pay API:
-
-```bash
-curl https://api.notchpay.co/webhooks \
-  -X POST \
-  -H "Authorization: Bearer YOUR_PUBLIC_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://example.com/webhooks/notchpay",
-    "events": ["payment.complete", "payment.failed", "transfer.complete"],
-    "description": "Payment notifications for my e-commerce site"
-  }'
-```
+    ```bash
+    curl https://api.notchpay.co/webhooks \
+      -X POST \
+      -H "Authorization: Bearer YOUR_PUBLIC_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "url": "https://example.com/webhooks/notchpay",
+        "events": ["payment.complete", "payment.failed", "transfer.complete"],
+        "description": "Payment notifications for my e-commerce site"
+      }'
+    ```
+  </Tab>
+</Tabs>
 
 ## Selecting Webhook Events
 
@@ -159,7 +179,7 @@ When setting up your webhook, you can choose which events you want to receive no
     | `payment.expired` | A payment has expired |
     | `payment.refunded` | A payment has been refunded |
   </Accordion>
-  
+
   <Accordion title="Transfer Events">
     | Event | Description |
     |-------|-------------|
@@ -168,7 +188,7 @@ When setting up your webhook, you can choose which events you want to receive no
     | `transfer.failed` | A transfer has failed |
     | `transfer.canceled` | A transfer has been canceled |
   </Accordion>
-  
+
   <Accordion title="Customer Events">
     | Event | Description |
     |-------|-------------|
@@ -176,7 +196,7 @@ When setting up your webhook, you can choose which events you want to receive no
     | `customer.updated` | A customer's information has been updated |
     | `customer.deleted` | A customer has been deleted |
   </Accordion>
-  
+
   <Accordion title="Other Events">
     | Event | Description |
     |-------|-------------|
@@ -211,10 +231,20 @@ For detailed instructions on how to verify webhook signatures, see our [Verifyin
 
 After setting up your webhook, you should test it to make sure it's working correctly:
 
-1. In your Notch Pay dashboard, go to **Settings** > **Developers** > **Webhooks**
-2. Find your webhook endpoint and click the **Test** button
-3. Select an event type to test (e.g., `payment.complete`)
-4. Click **Send Test Event**
+<Steps>
+  <Step title="Access webhook settings">
+    In your Notch Pay dashboard, go to **Settings** > **Developers** > **Webhooks**
+  </Step>
+  <Step title="Find your endpoint">
+    Find your webhook endpoint and click the **Test** button
+  </Step>
+  <Step title="Select event type">
+    Select an event type to test (e.g., `payment.complete`)
+  </Step>
+  <Step title="Send test event">
+    Click **Send Test Event**
+  </Step>
+</Steps>
 
 This will send a test event to your webhook endpoint. Check your server logs to make sure the event was received and processed correctly.
 
@@ -250,7 +280,7 @@ To ensure reliable webhook delivery:
     </div>
     <p className="text-gray-600 dark:text-gray-400">Return a 2xx status code as quickly as possible, even if you need to process the webhook asynchronously.</p>
   </div>
-  
+
   <div className="border rounded-lg p-5 hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
     <div className="flex items-center mb-3">
       <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
@@ -262,7 +292,7 @@ To ensure reliable webhook delivery:
     </div>
     <p className="text-gray-600 dark:text-gray-400">Always verify webhook signatures to ensure they're coming from Notch Pay and not from a malicious third party.</p>
   </div>
-  
+
   <div className="border rounded-lg p-5 hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
     <div className="flex items-center mb-3">
       <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
@@ -274,7 +304,7 @@ To ensure reliable webhook delivery:
     </div>
     <p className="text-gray-600 dark:text-gray-400">Design your webhook handler to be idempotent, so it can safely process the same webhook event multiple times without causing issues.</p>
   </div>
-  
+
   <div className="border rounded-lg p-5 hover:shadow-md transition-shadow bg-white dark:bg-gray-800">
     <div className="flex items-center mb-3">
       <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mr-3">
@@ -306,6 +336,6 @@ If you're having trouble with webhooks, check the following:
 
 ## Next Steps
 
-- [Webhook Overview](/get-started/webhooks/index) - Learn more about webhooks and how they work
+- [Webhook Overview](/get-started/webhooks) - Learn more about webhooks and how they work
 - [Verifying Webhooks](/get-started/webhooks/verify) - Learn how to verify webhook signatures
 - [Webhooks API Reference](/api-reference/webhooks) - Explore the Webhooks API for programmatic management

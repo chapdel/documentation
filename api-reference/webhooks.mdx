@@ -15,19 +15,19 @@ description: Configure and manage webhook endpoints to receive real-time event n
   <Step title="Create a Webhook Endpoint">
     First, create an endpoint on your server that can receive HTTP POST requests. This endpoint will process webhook events from Notch Pay.
   </Step>
-  
+
   <Step title="Register the Endpoint">
     Register your endpoint URL with Notch Pay through the API or dashboard. You can specify which events you want to receive.
   </Step>
-  
+
   <Step title="Receive Events">
     When an event occurs (like a payment with status "complete"), Notch Pay sends a POST request to your endpoint with event data.
   </Step>
-  
+
   <Step title="Process the Event">
     Your endpoint processes the event data and takes appropriate action (e.g., fulfilling an order after a payment).
   </Step>
-  
+
   <Step title="Respond with 200 OK">
     Your endpoint should respond with a 200 OK status code to acknowledge receipt of the webhook.
   </Step>
@@ -322,7 +322,7 @@ description: Configure and manage webhook endpoints to receive real-time event n
         Triggered when a payment expires
       </ResponseField>
     </Card>
-    
+
     <Card title="Transfer Events" icon="money-bill-transfer">
       <ResponseField name="transfer.created" type="event">
         Triggered when a transfer is created
@@ -337,7 +337,7 @@ description: Configure and manage webhook endpoints to receive real-time event n
         Triggered when a transfer fails
       </ResponseField>
     </Card>
-    
+
     <Card title="Customer Events" icon="users">
       <ResponseField name="customer.created" type="event">
         Triggered when a customer is created
@@ -346,7 +346,7 @@ description: Configure and manage webhook endpoints to receive real-time event n
         Triggered when a customer is updated
       </ResponseField>
     </Card>
-    
+
     <Card title="Beneficiary Events" icon="user-plus">
       <ResponseField name="beneficiary.created" type="event">
         Triggered when a beneficiary is created
@@ -371,16 +371,16 @@ description: Configure and manage webhook endpoints to receive real-time event n
   <Step title="Retrieve Your Webhook Secret">
     Each webhook has a secret that you can find in your dashboard or when creating a webhook via the API.
   </Step>
-  
+
   <Step title="Extract the Signature">
     When Notch Pay sends a webhook, it includes a `X-Notch-Signature` header with a signature.
   </Step>
-  
+
   <Step title="Verify the Signature">
     <CodeGroup>
       ```javascript Node.js
       const crypto = require('crypto');
-      
+
       function verifyWebhookSignature(payload, signature, secret) {
         const hmac = crypto.createHmac('sha256', secret);
         const calculatedSignature = hmac.update(payload).digest('hex');
@@ -389,51 +389,51 @@ description: Configure and manage webhook endpoints to receive real-time event n
           Buffer.from(signature, 'hex')
         );
       }
-      
+
       // In your webhook handler
       app.post('/webhooks', express.raw({type: 'application/json'}), (req, res) => {
         const signature = req.headers['x-notch-signature'];
         const payload = req.body.toString();
-        
+
         if (!verifyWebhookSignature(payload, signature, 'your_webhook_secret')) {
           return res.status(400).send('Invalid signature');
         }
-        
+
         const event = JSON.parse(payload);
         // Process the event
-        
+
         res.status(200).send('Webhook received');
       });
       ```
-      
+
       ```php PHP
       <?php
       function verifyWebhookSignature($payload, $signature, $secret) {
         $calculatedSignature = hash_hmac('sha256', $payload, $secret);
         return hash_equals($calculatedSignature, $signature);
       }
-      
+
       // In your webhook handler
       $payload = file_get_contents('php://input');
       $signature = $_SERVER['HTTP_X_NOTCH_SIGNATURE'];
-      
+
       if (!verifyWebhookSignature($payload, $signature, 'your_webhook_secret')) {
         http_response_code(400);
         echo 'Invalid signature';
         exit;
       }
-      
+
       $event = json_decode($payload, true);
       // Process the event
-      
+
       http_response_code(200);
       echo 'Webhook received';
       ```
-      
+
       ```python Python
       import hmac
       import hashlib
-      
+
       def verify_webhook_signature(payload, signature, secret):
           calculated_signature = hmac.new(
               secret.encode('utf-8'),
@@ -441,19 +441,19 @@ description: Configure and manage webhook endpoints to receive real-time event n
               hashlib.sha256
           ).hexdigest()
           return hmac.compare_digest(calculated_signature, signature)
-      
+
       # In your webhook handler (using Flask)
       @app.route('/webhooks', methods=['POST'])
       def handle_webhook():
           payload = request.data.decode('utf-8')
           signature = request.headers.get('X-Notch-Signature')
-          
+
           if not verify_webhook_signature(payload, signature, 'your_webhook_secret'):
               return 'Invalid signature', 400
-          
+
           event = json.loads(payload)
           # Process the event
-          
+
           return 'Webhook received', 200
       ```
     </CodeGroup>
@@ -465,25 +465,25 @@ description: Configure and manage webhook endpoints to receive real-time event n
 <CardGroup cols={2}>
   <Card title="Respond Quickly" icon="bolt" color="#16A34A">
     Respond to webhooks with a 200 status code as quickly as possible, even before processing the event. This prevents Notch Pay from retrying the webhook.
-    
+
     Process the event asynchronously if it requires time-consuming operations.
   </Card>
-  
+
   <Card title="Handle Retries" icon="rotate" color="#16A34A">
     Notch Pay will retry failed webhook deliveries several times with increasing delays. Make your webhook handler idempotent to avoid processing the same event multiple times.
-    
+
     Store the event ID and check if you've already processed it before taking action.
   </Card>
-  
+
   <Card title="Monitor Webhook Health" icon="heart-pulse" color="#16A34A">
     Regularly check your webhook logs in the Notch Pay dashboard to ensure they're being delivered correctly.
-    
+
     Set up monitoring for your webhook endpoint to detect and alert on failures.
   </Card>
-  
+
   <Card title="Use HTTPS" icon="lock" color="#16A34A">
     Always use HTTPS for your webhook endpoints to ensure the data is encrypted in transit.
-    
+
     Use a valid SSL certificate from a trusted certificate authority.
   </Card>
 </CardGroup>
@@ -496,68 +496,68 @@ description: Configure and manage webhook endpoints to receive real-time event n
       <Step title="Go to Webhooks Section">
         Navigate to the Webhooks section in your Notch Pay dashboard.
       </Step>
-      
+
       <Step title="Select a Webhook">
         Select the webhook you want to test.
       </Step>
-      
+
       <Step title="Click 'Send Test Event'">
         Click the "Send Test Event" button and select the event type you want to test.
       </Step>
-      
+
       <Step title="Check Your Logs">
         Check your server logs to confirm that the test event was received and processed correctly.
       </Step>
     </Steps>
   </Tab>
-  
+
   <Tab title="Using a Webhook Debugger">
     <Steps>
       <Step title="Set Up a Webhook Debugger">
         Use a service like [webhook.site](https://webhook.site) or [Beeceptor](https://beeceptor.com) to get a temporary URL for testing.
       </Step>
-      
+
       <Step title="Create a Test Webhook">
         Create a new webhook in your Notch Pay account using the temporary URL.
       </Step>
-      
+
       <Step title="Trigger Events">
         Trigger events (like creating a test payment) to see the webhook payloads in real-time.
       </Step>
-      
+
       <Step title="Analyze the Payload">
         Analyze the webhook payload to understand the data structure and implement your handler accordingly.
       </Step>
     </Steps>
-    
+
     <Callout type="info">
       Remember to delete test webhooks when you're done to avoid sending sensitive data to third-party services.
     </Callout>
   </Tab>
-  
+
   <Tab title="Local Development">
     <Steps>
       <Step title="Use a Tunnel Service">
         Use a service like [ngrok](https://ngrok.com) or [Localtunnel](https://localtunnel.github.io/www/) to expose your local server to the internet.
-        
+
         ```bash
         # Example with ngrok
         ngrok http 3000
         ```
       </Step>
-      
+
       <Step title="Create a Webhook">
         Create a webhook in your Notch Pay account using the tunnel URL.
-        
+
         ```
         https://abc123.ngrok.io/webhooks
         ```
       </Step>
-      
+
       <Step title="Implement Your Handler">
         Implement your webhook handler in your local development environment.
       </Step>
-      
+
       <Step title="Trigger Events">
         Trigger events in your Notch Pay test account to test your handler.
       </Step>
@@ -573,42 +573,42 @@ description: Configure and manage webhook endpoints to receive real-time event n
       <Step title="Check Webhook Status">
         Verify that the webhook is active in your Notch Pay dashboard.
       </Step>
-      
+
       <Step title="Check Event Subscriptions">
         Make sure you're subscribed to the event types you expect to receive.
       </Step>
-      
+
       <Step title="Check Server Logs">
         Check your server logs for any errors or failed webhook deliveries.
       </Step>
-      
+
       <Step title="Verify Endpoint Accessibility">
         Ensure your endpoint is publicly accessible and responds with a 200 status code.
       </Step>
     </Steps>
   </Accordion>
-  
+
   <Accordion title="Invalid Signature Errors">
     <Steps>
       <Step title="Check Secret Key">
         Verify that you're using the correct webhook secret.
       </Step>
-      
+
       <Step title="Check Raw Payload">
         Ensure you're verifying the signature against the raw request body, not the parsed JSON.
       </Step>
-      
+
       <Step title="Check for Modifications">
         Make sure the payload isn't being modified before verification (e.g., by a proxy or middleware).
       </Step>
     </Steps>
   </Accordion>
-  
+
   <Accordion title="Duplicate Events">
     <Steps>
       <Step title="Implement Idempotency">
         Store processed event IDs and check for duplicates before processing.
-        
+
         ```javascript
         // Example with a database
         async function handleWebhook(event) {
@@ -618,16 +618,16 @@ description: Configure and manage webhook endpoints to receive real-time event n
             console.log(`Event ${event.id} already processed, skipping`);
             return;
           }
-          
+
           // Process the event
           await processEvent(event);
-          
+
           // Store the event ID to prevent duplicate processing
           await db.events.insertOne({ id: event.id, processed_at: new Date() });
         }
         ```
       </Step>
-      
+
       <Step title="Use Database Constraints">
         Use unique constraints in your database to prevent duplicate event processing.
       </Step>
@@ -636,5 +636,5 @@ description: Configure and manage webhook endpoints to receive real-time event n
 </AccordionGroup>
 
 <Callout type="success">
-  For more help with webhooks, check our [Webhook Integration Guide](/get-started/webhooks/index) or contact our [support team](mailto:hello@notchpay.co).
+  For more help with webhooks, check our [Webhook Integration Guide](/get-started/webhooks) or contact our [support team](mailto:hello@notchpay.co).
 </Callout>

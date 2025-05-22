@@ -15,12 +15,12 @@ description: Learn how to authenticate with the Notch Pay API
   <Tabs>
     <Tab title="Test Keys">
       **Test API Keys**: Used for development and testing. These keys contain `test_` prefix.
-      
+
       All transactions made with test API keys don't affect your live data and are only visible in test mode.
     </Tab>
     <Tab title="Live Keys">
       **Live API Keys**: Used for production environments.
-      
+
       Only use these keys when your application is ready for real transactions.
     </Tab>
   </Tabs>
@@ -119,7 +119,7 @@ description: Learn how to authenticate with the Notch Pay API
       ```
     </CodeGroup>
   </Tab>
-  
+
   <Tab title="Advanced Authentication">
     <Callout type="warning">
       Some endpoints that perform sensitive operations require additional authentication beyond the standard API key. These endpoints are protected by the `GrantedMiddleware` and require a private key.
@@ -162,7 +162,7 @@ description: Learn how to authenticate with the Notch Pay API
       ```
     </CodeGroup>
   </Tab>
-  
+
   <Tab title="Sync Account Authentication">
     For operations related to synchronized accounts, you need to pass the sync account identifier in the `X-Sync` header:
 
@@ -226,9 +226,14 @@ description: Learn how to authenticate with the Notch Pay API
       **Never share your API keys** in publicly accessible areas such as GitHub, client-side code, or social media.
     </Callout>
   </Step>
+  <Step title="Whitelist Your IP Addresses">
+    <Callout type="info">
+      For API transfers, you must add your IP address to the whitelist in your dashboard at https://business.notchpay.co/settings/developer/ips
+    </Callout>
+  </Step>
   <Step title="Use Environment Variables">
     **Use environment variables** or secure vaults to store API keys in your applications.
-    
+
     ```javascript
     // Example in Node.js
     const apiKey = process.env.NOTCHPAY_API_KEY;
@@ -236,17 +241,17 @@ description: Learn how to authenticate with the Notch Pay API
   </Step>
   <Step title="Implement Access Controls">
     **Implement proper access controls** to limit who can access your API keys.
-    
+
     Only give access to team members who absolutely need it.
   </Step>
   <Step title="Rotate Keys Regularly">
     **Rotate your API keys** periodically, especially if you suspect they may have been compromised.
-    
+
     You can generate new API keys in your Notch Pay dashboard.
   </Step>
   <Step title="Use Test Keys for Development">
     **Use test API keys** for development and testing to avoid accidental charges.
-    
+
     Switch to live keys only when you're ready to process real transactions.
   </Step>
 </Steps>
@@ -263,7 +268,7 @@ description: Learn how to authenticate with the Notch Pay API
         "message": "API key is missing"
       }
       ```
-      
+
       This error occurs when you don't include the `Authorization` header in your request.
     </Accordion>
     <Accordion title="Invalid API Key">
@@ -274,7 +279,7 @@ description: Learn how to authenticate with the Notch Pay API
         "message": "Invalid API key"
       }
       ```
-      
+
       This error occurs when the API key you provided is incorrect or has been revoked.
     </Accordion>
     <Accordion title="Missing Grant Key">
@@ -285,7 +290,7 @@ description: Learn how to authenticate with the Notch Pay API
         "message": "This endpoint requires additional authentication"
       }
       ```
-      
+
       This error occurs when you try to access an endpoint that requires the `X-Grant` header without providing it.
     </Accordion>
     <Accordion title="Invalid Grant Key">
@@ -296,7 +301,7 @@ description: Learn how to authenticate with the Notch Pay API
         "message": "Invalid grant key"
       }
       ```
-      
+
       This error occurs when the private key you provided in the `X-Grant` header is incorrect.
     </Accordion>
     <Accordion title="Invalid Sync Account">
@@ -307,7 +312,7 @@ description: Learn how to authenticate with the Notch Pay API
         "message": "Sync account not found"
       }
       ```
-      
+
       This error occurs when the sync account ID you provided in the `X-Sync` header doesn't exist or you don't have access to it.
     </Accordion>
   </AccordionGroup>
@@ -318,27 +323,27 @@ description: Learn how to authenticate with the Notch Pay API
 <CardGroup cols={2}>
   <Card title="Use HTTPS" icon="lock" color="#16A34A">
     Always use HTTPS to encrypt your API requests and prevent man-in-the-middle attacks.
-    
+
     Never send API requests over unencrypted HTTP connections.
   </Card>
   <Card title="Proper Error Handling" icon="bug" color="#16A34A">
     Handle authentication errors gracefully in your application.
-    
+
     Implement retry logic with exponential backoff for transient errors.
   </Card>
   <Card title="Limit API Key Exposure" icon="shield" color="#16A34A">
     Only share API keys with trusted systems and developers.
-    
+
     Consider using different API keys for different services or environments.
   </Card>
   <Card title="Monitor API Usage" icon="chart-line" color="#16A34A">
     Regularly review your API logs to detect unauthorized access.
-    
+
     Set up alerts for unusual API activity patterns.
   </Card>
   <Card title="Implement Rate Limiting" icon="stopwatch" color="#16A34A">
     Protect your API endpoints from brute force attacks by implementing rate limiting.
-    
+
     Consider using a service like Redis to track and limit request rates.
   </Card>
 </CardGroup>

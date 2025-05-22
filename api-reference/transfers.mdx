@@ -11,11 +11,15 @@ description: Send money to beneficiaries with the Notch Pay Transfers API
 
 <Callout type="warning">
   All transfer-related endpoints require both standard API key authentication and additional authentication using the `X-Grant` header for enhanced security.
-  
+
   ```bash
   Authorization: YOUR_PUBLIC_KEY
   X-Grant: YOUR_PRIVATE_KEY
   ```
+</Callout>
+
+<Callout type="info">
+  For API transfers, you must add your IP address to the whitelist in your dashboard at https://business.notchpay.co/settings/developer/ips
 </Callout>
 
 ## The Transfer Object
@@ -266,7 +270,7 @@ description: Send money to beneficiaries with the Notch Pay Transfers API
         }
       }
       ```
-      
+
       <Callout type="info">
         After initiating a transfer, you should monitor its status using webhooks or by retrieving it periodically.
       </Callout>
@@ -336,7 +340,7 @@ description: Send money to beneficiaries with the Notch Pay Transfers API
         "message": "Transfer canceled successfully"
       }
       ```
-      
+
       <Callout type="warning">
         You can only cancel transfers that are in the `pending` status. Transfers that are already `processing`, `complete`, or `failed` cannot be canceled.
       </Callout>
@@ -446,7 +450,7 @@ description: Send money to beneficiaries with the Notch Pay Transfers API
         }
       }
       ```
-      
+
       <Callout type="info">
         Bulk transfers are processed asynchronously. Individual transfers may succeed or fail independently.
       </Callout>
@@ -538,7 +542,7 @@ description: Send money to beneficiaries with the Notch Pay Transfers API
 <CardGroup cols={3}>
   <Card title="transfer.created" icon="plus" color="#16A34A">
     Triggered when a new transfer is created
-    
+
     ```json
     {
       "id": "evt_123456789",
@@ -553,7 +557,7 @@ description: Send money to beneficiaries with the Notch Pay Transfers API
   </Card>
   <Card title="transfer.complete" icon="check-circle" color="#16A34A">
     Triggered when a transfer status changes to "complete"
-    
+
     ```json
     {
       "id": "evt_123456789",
@@ -568,7 +572,7 @@ description: Send money to beneficiaries with the Notch Pay Transfers API
   </Card>
   <Card title="transfer.failed" icon="x-circle" color="#dc2626">
     Triggered when a transfer fails
-    
+
     ```json
     {
       "id": "evt_123456789",
@@ -592,35 +596,35 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
   <Accordion title="Common Error Codes">
     <ResponseField name="400" type="Bad Request">
       Invalid request parameters
-      
+
       This typically occurs when required parameters are missing or have invalid values.
     </ResponseField>
 
     <ResponseField name="401" type="Unauthorized">
       Invalid API key
-      
+
       Check that you're using the correct API key and that it's properly included in the Authorization header.
     </ResponseField>
 
     <ResponseField name="403" type="Forbidden">
       Missing or invalid grant key
-      
+
       Transfer endpoints require the `X-Grant` header with your private key for additional security.
     </ResponseField>
 
     <ResponseField name="404" type="Not Found">
       Transfer not found
-      
+
       The transfer ID or reference you provided doesn't exist or belongs to another account.
     </ResponseField>
 
     <ResponseField name="422" type="Unprocessable Entity">
       Transfer cannot be processed
-      
+
       This occurs when there's a business logic error, such as insufficient balance or invalid beneficiary details.
     </ResponseField>
   </Accordion>
-  
+
   <Accordion title="Specific Transfer Errors">
     <ResponseField name="Insufficient Balance" type="error">
       ```json
@@ -630,10 +634,10 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
         "message": "Insufficient balance to complete this transfer"
       }
       ```
-      
+
       **Solution**: Add funds to your Notch Pay account before attempting the transfer.
     </ResponseField>
-    
+
     <ResponseField name="Invalid Beneficiary" type="error">
       ```json
       {
@@ -645,10 +649,10 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
         }
       }
       ```
-      
+
       **Solution**: Ensure the beneficiary exists and is correctly specified.
     </ResponseField>
-    
+
     <ResponseField name="Invalid Channel" type="error">
       ```json
       {
@@ -660,7 +664,7 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
         }
       }
       ```
-      
+
       **Solution**: Use one of the supported payment channels for transfers.
     </ResponseField>
   </Accordion>
@@ -698,7 +702,7 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
         <CodeGroup>
           ```javascript Node.js
           const axios = require('axios');
-          
+
           async function createTransfer() {
             try {
               const response = await axios.post('https://api.notchpay.co/transfers', {
@@ -715,7 +719,7 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
                   'Content-Type': 'application/json'
                 }
               });
-              
+
               console.log('Transfer initiated:', response.data);
               return response.data.transfer.id;
             } catch (error) {
@@ -724,12 +728,12 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
             }
           }
           ```
-          
+
           ```php PHP
           <?php
           function createTransfer() {
             $curl = curl_init();
-            
+
             $data = [
               'amount' => 5000,
               'currency' => 'XAF',
@@ -738,7 +742,7 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
               'description' => 'Salary payment',
               'reference' => 'salary_jan_2023'
             ];
-            
+
             curl_setopt_array($curl, [
               CURLOPT_URL => 'https://api.notchpay.co/transfers',
               CURLOPT_RETURNTRANSFER => true,
@@ -750,15 +754,15 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
                 'Content-Type: application/json'
               ]
             ]);
-            
+
             $response = curl_exec($curl);
             $err = curl_error($curl);
             curl_close($curl);
-            
+
             if ($err) {
               throw new Exception("Error creating transfer: " . $err);
             }
-            
+
             $result = json_decode($response, true);
             echo "Transfer initiated: " . $result['transfer']['id'] . "\n";
             return $result['transfer']['id'];
@@ -766,7 +770,7 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
           ```
         </CodeGroup>
       </Step>
-      
+
       <Step title="Check Transfer Status">
         <CodeGroup>
           ```javascript Node.js
@@ -778,7 +782,7 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
                   'X-Grant': 'YOUR_PRIVATE_KEY'
                 }
               });
-              
+
               console.log('Transfer status:', response.data.transfer.status);
               return response.data.transfer;
             } catch (error) {
@@ -787,11 +791,11 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
             }
           }
           ```
-          
+
           ```php PHP
           function checkTransferStatus($transferId) {
             $curl = curl_init();
-            
+
             curl_setopt_array($curl, [
               CURLOPT_URL => "https://api.notchpay.co/transfers/{$transferId}",
               CURLOPT_RETURNTRANSFER => true,
@@ -800,15 +804,15 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
                 'X-Grant: YOUR_PRIVATE_KEY'
               ]
             ]);
-            
+
             $response = curl_exec($curl);
             $err = curl_error($curl);
             curl_close($curl);
-            
+
             if ($err) {
               throw new Exception("Error checking transfer: " . $err);
             }
-            
+
             $result = json_decode($response, true);
             echo "Transfer status: " . $result['transfer']['status'] . "\n";
             return $result['transfer'];
@@ -818,7 +822,7 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
       </Step>
     </Steps>
   </Tab>
-  
+
   <Tab title="Bulk Transfer">
     <Steps>
       <Step title="Create a Bulk Transfer">
@@ -854,7 +858,7 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
                   'Content-Type': 'application/json'
                 }
               });
-              
+
               console.log('Bulk transfer initiated:', response.data);
               return response.data.bulk_transfer.id;
             } catch (error) {
@@ -865,7 +869,7 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
           ```
         </CodeGroup>
       </Step>
-      
+
       <Step title="Check Bulk Transfer Status">
         <CodeGroup>
           ```javascript Node.js
@@ -877,14 +881,14 @@ See the [Webhooks API](/api-reference/webhooks) documentation for more informati
                   'X-Grant': 'YOUR_PRIVATE_KEY'
                 }
               });
-              
+
               console.log('Bulk transfer details:', response.data);
-              
+
               // Check status of individual transfers
               response.data.bulk_transfer.transfers.forEach(transfer => {
                 console.log(`Transfer ${transfer.id}: ${transfer.status}`);
               });
-              
+
               return response.data.bulk_transfer;
             } catch (error) {
               console.error('Error checking bulk transfer:', error.response?.data || error.message);
